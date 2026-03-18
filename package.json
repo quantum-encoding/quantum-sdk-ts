@@ -1,0 +1,28 @@
+{
+  "name": "@quantum-encoding/sdk",
+  "version": "0.1.0",
+  "description": "TypeScript client SDK for the Quantum AI API",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [
+    "quantum-ai",
+    "llm",
+    "ai",
+    "sdk",
+    "typescript"
+  ],
+  "author": "Quantum Encoding Ltd",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^25.5.0",
+    "typescript": "^5.9.3"
+  },
+  "files": [
+    "dist"
+  ]
+}

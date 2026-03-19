@@ -1,41 +1,143 @@
 import { parseAPIError } from "./errors.js";
 import { chat, chatStream } from "./chat.js";
+import { chatSession } from "./session.js";
+import { agentRun, missionRun } from "./agent.js";
 import { generateImage, editImage } from "./image.js";
-import { speak, transcribe, generateMusic } from "./audio.js";
-import { generateVideo } from "./video.js";
+import {
+  speak,
+  transcribe,
+  soundEffects,
+  generateMusic,
+  dialogue,
+  speechToSpeech,
+  isolateVoice,
+  remixVoice,
+  dub,
+  align,
+  voiceDesign,
+  starfishTTS,
+} from "./audio.js";
+import {
+  generateVideo,
+  videoStudio,
+  videoTranslate,
+  videoPhotoAvatar,
+  videoDigitalTwin,
+  videoAvatars,
+  videoTemplates,
+  videoHeygenVoices,
+} from "./video.js";
 import { embed } from "./embeddings.js";
-import { extractDocument } from "./documents.js";
-import { ragSearch, ragCorpora, surrealRagSearch } from "./rag.js";
+import { extractDocument, chunkDocument, processDocument } from "./documents.js";
+import { ragSearch, ragCorpora, surrealRagSearch, surrealRagProviders } from "./rag.js";
 import { listModels, getPricing } from "./models.js";
+import {
+  accountBalance,
+  accountUsage,
+  accountUsageSummary,
+  accountPricing,
+} from "./account.js";
+import { createJob, getJob, pollJob, listJobs } from "./jobs.js";
+import { createKey, listKeys, revokeKey } from "./keys.js";
+import {
+  computeTemplates,
+  computeProvision,
+  computeInstances,
+  computeInstance,
+  computeDelete,
+  computeSSHKey,
+  computeKeepalive,
+} from "./compute.js";
+import { listVoices, cloneVoice, deleteVoice } from "./voices.js";
 import type {
+  AccountPricingResponse,
+  AgentEvent,
+  AgentRequest,
+  AlignRequest,
+  AlignResponse,
+  AsyncJobResponse,
+  AvatarsResponse,
+  BalanceResponse,
   ChatRequest,
   ChatResponse,
+  ChunkDocumentRequest,
+  ChunkDocumentResponse,
   ClientOptions,
+  CloneVoiceRequest,
+  CloneVoiceResponse,
+  CreateKeyRequest,
+  CreateKeyResponse,
+  DeleteResponse,
+  DialogueRequest,
+  DialogueResponse,
+  DigitalTwinRequest,
   DocumentRequest,
   DocumentResponse,
+  DubRequest,
+  DubResponse,
   EmbedRequest,
   EmbedResponse,
+  HeyGenTemplatesResponse,
+  HeyGenVoicesResponse,
   ImageEditRequest,
   ImageEditResponse,
   ImageRequest,
   ImageResponse,
+  InstanceResponse,
+  InstancesResponse,
+  IsolateVoiceRequest,
+  IsolateVoiceResponse,
+  JobCreateRequest,
+  JobCreateResponse,
+  JobListResponse,
+  JobStatusResponse,
+  ListKeysResponse,
+  MissionEvent,
+  MissionRequest,
   ModelInfo,
   MusicRequest,
   MusicResponse,
+  PhotoAvatarRequest,
   PricingInfo,
+  ProcessDocumentRequest,
+  ProcessDocumentResponse,
+  ProvisionRequest,
+  ProvisionResponse,
   RAGCorpus,
   RAGSearchRequest,
   RAGSearchResponse,
+  RemixVoiceRequest,
+  RemixVoiceResponse,
   ResponseMeta,
+  SessionChatRequest,
+  SessionChatResponse,
+  SoundEffectRequest,
+  SoundEffectResponse,
+  SpeechToSpeechRequest,
+  SpeechToSpeechResponse,
+  SSHKeyRequest,
+  StarfishTTSRequest,
+  StarfishTTSResponse,
+  StatusResponse,
   STTRequest,
   STTResponse,
   StreamEvent,
+  SurrealRAGProvidersResponse,
   SurrealRAGSearchRequest,
   SurrealRAGSearchResponse,
+  TemplatesResponse,
   TTSRequest,
   TTSResponse,
+  UsageQuery,
+  UsageResponse,
+  UsageSummaryResponse,
   VideoRequest,
   VideoResponse,
+  VideoStudioRequest,
+  VideoTranslateRequest,
+  VoiceDesignRequest,
+  VoiceDesignResponse,
+  VoicesResponse,
 } from "./types.js";
 import { DEFAULT_BASE_URL } from "./types.js";
 
@@ -90,6 +192,72 @@ export class QuantumClient {
     yield* chatStream(this, req, signal);
   }
 
+  // ── Session Chat ────────────────────────────────────────────────
+
+  /**
+   * Send a session-based chat request. The server manages conversation history.
+   *
+   * @example
+   * ```ts
+   * // Start a new session
+   * const resp = await client.chatSession({
+   *   message: "Hello!",
+   *   model: "claude-sonnet-4-6",
+   * });
+   *
+   * // Continue the conversation
+   * const resp2 = await client.chatSession({
+   *   session_id: resp.session_id,
+   *   message: "Tell me more",
+   * });
+   * ```
+   */
+  async chatSession(req: SessionChatRequest): Promise<SessionChatResponse> {
+    return chatSession(this, req);
+  }
+
+  // ── Agent ───────────────────────────────────────────────────────
+
+  /**
+   * Run a server-side agent orchestration. Streams SSE events as the
+   * conductor delegates work to workers.
+   *
+   * @example
+   * ```ts
+   * for await (const event of client.agentRun({
+   *   task: "Research the latest AI papers and summarize them",
+   * })) {
+   *   console.log(event.type, event);
+   * }
+   * ```
+   */
+  async *agentRun(
+    req: AgentRequest,
+    signal?: AbortSignal,
+  ): AsyncIterableIterator<AgentEvent> {
+    yield* agentRun(this, req, signal);
+  }
+
+  /**
+   * Run a full mission orchestration. Streams SSE events as the conductor
+   * plans, delegates, and workers execute.
+   *
+   * @example
+   * ```ts
+   * for await (const event of client.missionRun({
+   *   goal: "Build a REST API server in Go",
+   * })) {
+   *   console.log(event.type, event);
+   * }
+   * ```
+   */
+  async *missionRun(
+    req: MissionRequest,
+    signal?: AbortSignal,
+  ): AsyncIterableIterator<MissionEvent> {
+    yield* missionRun(this, req, signal);
+  }
+
   // ── Image ─────────────────────────────────────────────────────────
 
   /** Generate images from a text prompt. */
@@ -114,9 +282,58 @@ export class QuantumClient {
     return transcribe(this, req);
   }
 
+  /** Generate sound effects from a text prompt (ElevenLabs). */
+  async soundEffects(req: SoundEffectRequest): Promise<SoundEffectResponse> {
+    return soundEffects(this, req);
+  }
+
   /** Generate music from a text prompt. */
   async generateMusic(req: MusicRequest): Promise<MusicResponse> {
     return generateMusic(this, req);
+  }
+
+  /** Generate multi-speaker dialogue audio (ElevenLabs). */
+  async dialogue(req: DialogueRequest): Promise<DialogueResponse> {
+    return dialogue(this, req);
+  }
+
+  /** Convert speech audio to a different voice (ElevenLabs). */
+  async speechToSpeech(
+    req: SpeechToSpeechRequest,
+  ): Promise<SpeechToSpeechResponse> {
+    return speechToSpeech(this, req);
+  }
+
+  /** Remove background noise and isolate speech (ElevenLabs). */
+  async isolateVoice(
+    req: IsolateVoiceRequest,
+  ): Promise<IsolateVoiceResponse> {
+    return isolateVoice(this, req);
+  }
+
+  /** Transform a voice by modifying attributes (ElevenLabs). */
+  async remixVoice(req: RemixVoiceRequest): Promise<RemixVoiceResponse> {
+    return remixVoice(this, req);
+  }
+
+  /** Dub audio/video into a target language (ElevenLabs). */
+  async dub(req: DubRequest): Promise<DubResponse> {
+    return dub(this, req);
+  }
+
+  /** Get word-level timestamps for audio+text alignment (ElevenLabs). */
+  async align(req: AlignRequest): Promise<AlignResponse> {
+    return align(this, req);
+  }
+
+  /** Generate voice previews from a text description (ElevenLabs). */
+  async voiceDesign(req: VoiceDesignRequest): Promise<VoiceDesignResponse> {
+    return voiceDesign(this, req);
+  }
+
+  /** Generate speech using HeyGen's Starfish TTS model. */
+  async starfishTTS(req: StarfishTTSRequest): Promise<StarfishTTSResponse> {
+    return starfishTTS(this, req);
   }
 
   // ── Video ─────────────────────────────────────────────────────────
@@ -131,6 +348,47 @@ export class QuantumClient {
     return generateVideo(this, req);
   }
 
+  /** Create a talking-head video via HeyGen Studio. Returns an async job. */
+  async videoStudio(req: VideoStudioRequest): Promise<AsyncJobResponse> {
+    return videoStudio(this, req);
+  }
+
+  /** Submit a video translation job via HeyGen. Returns an async job. */
+  async videoTranslate(
+    req: VideoTranslateRequest,
+  ): Promise<AsyncJobResponse> {
+    return videoTranslate(this, req);
+  }
+
+  /** Create a photo avatar via HeyGen. Returns an async job. */
+  async videoPhotoAvatar(
+    req: PhotoAvatarRequest,
+  ): Promise<AsyncJobResponse> {
+    return videoPhotoAvatar(this, req);
+  }
+
+  /** Create a digital twin via HeyGen. Returns an async job. */
+  async videoDigitalTwin(
+    req: DigitalTwinRequest,
+  ): Promise<AsyncJobResponse> {
+    return videoDigitalTwin(this, req);
+  }
+
+  /** List available HeyGen avatars. */
+  async videoAvatars(): Promise<AvatarsResponse> {
+    return videoAvatars(this);
+  }
+
+  /** List available HeyGen templates. */
+  async videoTemplates(): Promise<HeyGenTemplatesResponse> {
+    return videoTemplates(this);
+  }
+
+  /** List available HeyGen voices. */
+  async videoHeygenVoices(): Promise<HeyGenVoicesResponse> {
+    return videoHeygenVoices(this);
+  }
+
   // ── Embeddings ────────────────────────────────────────────────────
 
   /** Generate text embeddings for the given inputs. */
@@ -143,6 +401,20 @@ export class QuantumClient {
   /** Extract text content from a document (PDF, image, etc.). */
   async extractDocument(req: DocumentRequest): Promise<DocumentResponse> {
     return extractDocument(this, req);
+  }
+
+  /** Chunk a document into smaller pieces for embedding or processing. */
+  async chunkDocument(
+    req: ChunkDocumentRequest,
+  ): Promise<ChunkDocumentResponse> {
+    return chunkDocument(this, req);
+  }
+
+  /** Process a document with extraction + optional instructions. */
+  async processDocument(
+    req: ProcessDocumentRequest,
+  ): Promise<ProcessDocumentResponse> {
+    return processDocument(this, req);
   }
 
   // ── RAG ───────────────────────────────────────────────────────────
@@ -164,6 +436,11 @@ export class QuantumClient {
     return surrealRagSearch(this, req);
   }
 
+  /** List available documentation providers in SurrealDB RAG. */
+  async surrealRagProviders(): Promise<SurrealRAGProvidersResponse> {
+    return surrealRagProviders(this);
+  }
+
   // ── Models ────────────────────────────────────────────────────────
 
   /** List all available models with provider and pricing information. */
@@ -174,6 +451,134 @@ export class QuantumClient {
   /** Get the complete pricing table for all models. */
   async getPricing(): Promise<PricingInfo[]> {
     return getPricing(this);
+  }
+
+  // ── Account ───────────────────────────────────────────────────────
+
+  /** Get the account credit balance. */
+  async accountBalance(): Promise<BalanceResponse> {
+    return accountBalance(this);
+  }
+
+  /** Get paginated usage history. */
+  async accountUsage(query?: UsageQuery): Promise<UsageResponse> {
+    return accountUsage(this, query);
+  }
+
+  /** Get monthly usage summary. */
+  async accountUsageSummary(months?: number): Promise<UsageSummaryResponse> {
+    return accountUsageSummary(this, months);
+  }
+
+  /** Get the full pricing table (model ID -> pricing entry map). */
+  async accountPricing(): Promise<AccountPricingResponse> {
+    return accountPricing(this);
+  }
+
+  // ── Jobs ──────────────────────────────────────────────────────────
+
+  /** Create an async job. Returns the job ID for polling. */
+  async createJob(req: JobCreateRequest): Promise<JobCreateResponse> {
+    return createJob(this, req);
+  }
+
+  /** Check the status of an async job. */
+  async getJob(jobId: string): Promise<JobStatusResponse> {
+    return getJob(this, jobId);
+  }
+
+  /**
+   * Poll a job until completion or timeout.
+   *
+   * @param jobId - Job ID to poll.
+   * @param intervalMs - Polling interval in milliseconds (default 2000).
+   * @param maxAttempts - Maximum poll attempts before timeout (default 150).
+   */
+  async pollJob(
+    jobId: string,
+    intervalMs?: number,
+    maxAttempts?: number,
+  ): Promise<JobStatusResponse> {
+    return pollJob(this, jobId, intervalMs, maxAttempts);
+  }
+
+  /** List all jobs for the authenticated user. */
+  async listJobs(): Promise<JobListResponse> {
+    return listJobs(this);
+  }
+
+  // ── API Keys ──────────────────────────────────────────────────────
+
+  /** Create a scoped API key. */
+  async createKey(req: CreateKeyRequest): Promise<CreateKeyResponse> {
+    return createKey(this, req);
+  }
+
+  /** List all API keys for the authenticated user. */
+  async listKeys(): Promise<ListKeysResponse> {
+    return listKeys(this);
+  }
+
+  /** Revoke an API key. */
+  async revokeKey(id: string): Promise<StatusResponse> {
+    return revokeKey(this, id);
+  }
+
+  // ── Compute ───────────────────────────────────────────────────────
+
+  /** Get available compute templates with pricing. */
+  async computeTemplates(): Promise<TemplatesResponse> {
+    return computeTemplates(this);
+  }
+
+  /** Provision a new GPU compute instance. */
+  async computeProvision(req: ProvisionRequest): Promise<ProvisionResponse> {
+    return computeProvision(this, req);
+  }
+
+  /** List all compute instances for the authenticated user. */
+  async computeInstances(): Promise<InstancesResponse> {
+    return computeInstances(this);
+  }
+
+  /** Get full status of a single compute instance. */
+  async computeInstance(id: string): Promise<InstanceResponse> {
+    return computeInstance(this, id);
+  }
+
+  /** Tear down a compute instance and finalize billing. */
+  async computeDelete(id: string): Promise<DeleteResponse> {
+    return computeDelete(this, id);
+  }
+
+  /** Inject an SSH public key into a running instance. */
+  async computeSSHKey(
+    id: string,
+    req: SSHKeyRequest,
+  ): Promise<StatusResponse> {
+    return computeSSHKey(this, id, req);
+  }
+
+  /** Reset the inactivity timer on a compute instance. */
+  async computeKeepalive(id: string): Promise<StatusResponse> {
+    return computeKeepalive(this, id);
+  }
+
+  // ── Voice Management ──────────────────────────────────────────────
+
+  /** List all available voices (ElevenLabs). */
+  async listVoices(): Promise<VoicesResponse> {
+    return listVoices(this);
+  }
+
+  /** Create an instant voice clone from audio samples (ElevenLabs). */
+  async cloneVoice(req: CloneVoiceRequest): Promise<CloneVoiceResponse> {
+    return cloneVoice(this, req);
+  }
+
+  /** Delete a cloned voice (ElevenLabs). */
+  async deleteVoice(id: string): Promise<StatusResponse> {
+    return deleteVoice(this, id);
   }
 
   // ── Internal HTTP helpers ─────────────────────────────────────────

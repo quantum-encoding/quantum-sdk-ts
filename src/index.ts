@@ -12,6 +12,9 @@ export {
 // ── Chat helpers ────────────────────────────────────────────────────
 export { responseText, responseThinking, responseToolCalls } from "./chat.js";
 
+// ── Contact (standalone, no auth required) ──────────────────────────
+export { contact } from "./contact.js";
+
 // ── Types ───────────────────────────────────────────────────────────
 export type {
   ClientOptions,
@@ -26,6 +29,20 @@ export type {
   StreamEvent,
   StreamDelta,
   StreamToolUse,
+  // Session Chat
+  SessionChatRequest,
+  SessionChatResponse,
+  SessionToolResult,
+  ContextConfig,
+  ContextMetadata,
+  // Agent
+  AgentRequest,
+  AgentWorkerConfig,
+  AgentEvent,
+  // Missions
+  MissionRequest,
+  MissionWorkerConfig,
+  MissionEvent,
   // Image
   ImageRequest,
   ImageResponse,
@@ -40,16 +57,55 @@ export type {
   MusicRequest,
   MusicClip,
   MusicResponse,
+  SoundEffectRequest,
+  SoundEffectResponse,
+  // Advanced Audio
+  DialogueRequest,
+  DialogueResponse,
+  DialogueVoice,
+  SpeechToSpeechRequest,
+  SpeechToSpeechResponse,
+  IsolateVoiceRequest,
+  IsolateVoiceResponse,
+  RemixVoiceRequest,
+  RemixVoiceResponse,
+  DubRequest,
+  DubResponse,
+  AlignRequest,
+  AlignResponse,
+  AlignedWord,
+  VoiceDesignRequest,
+  VoiceDesignResponse,
+  VoicePreview,
+  StarfishTTSRequest,
+  StarfishTTSResponse,
   // Video
   VideoRequest,
   VideoResponse,
   GeneratedVideo,
+  // HeyGen Video
+  VideoStudioRequest,
+  VideoTranslateRequest,
+  PhotoAvatarRequest,
+  DigitalTwinRequest,
+  AsyncJobResponse,
+  AvatarsResponse,
+  HeyGenAvatar,
+  HeyGenTemplatesResponse,
+  HeyGenTemplate,
+  HeyGenVoicesResponse,
+  HeyGenVoice,
   // Embeddings
   EmbedRequest,
   EmbedResponse,
   // Documents
   DocumentRequest,
   DocumentResponse,
+  ChunkDocumentRequest,
+  ChunkDocumentResponse,
+  DocumentChunk,
+  ProcessDocumentRequest,
+  ProcessDocumentResponse,
   // RAG
   RAGSearchRequest,
   RAGSearchResponse,
@@ -58,9 +114,51 @@ export type {
   SurrealRAGSearchRequest,
   SurrealRAGSearchResponse,
   SurrealRAGResult,
+  SurrealRAGProvidersResponse,
+  SurrealRAGProviderInfo,
   // Models
   ModelInfo,
   PricingInfo,
+  // Account
+  BalanceResponse,
+  UsageEntry,
+  UsageResponse,
+  UsageQuery,
+  UsageSummaryMonth,
+  UsageSummaryResponse,
+  PricingEntry,
+  AccountPricingResponse,
+  // Jobs
+  JobCreateRequest,
+  JobCreateResponse,
+  JobStatusResponse,
+  JobListResponse,
+  JobListItem,
+  // API Keys
+  CreateKeyRequest,
+  CreateKeyResponse,
+  KeyDetails,
+  ListKeysResponse,
+  // Compute
+  ComputeTemplate,
+  TemplatesResponse,
+  ProvisionRequest,
+  ProvisionResponse,
+  ComputeInstanceInfo,
+  InstancesResponse,
+  InstanceDetailInfo,
+  InstanceResponse,
+  SSHKeyRequest,
+  DeleteResponse,
+  // Voice Management
+  VoiceInfo,
+  VoicesResponse,
+  CloneVoiceRequest,
+  CloneVoiceResponse,
+  // Contact
+  ContactRequest,
+  // Common
+  StatusResponse,
 } from "./types.js";
 
 // ── Constants ───────────────────────────────────────────────────────

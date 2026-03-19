@@ -4,6 +4,7 @@ import type {
   RAGCorpus,
   RAGSearchRequest,
   RAGSearchResponse,
+  SurrealRAGProvidersResponse,
   SurrealRAGSearchRequest,
   SurrealRAGSearchResponse,
 } from "./types.js";
@@ -68,6 +69,22 @@ export async function surrealRagSearch(
   if (!data.request_id) {
     data.request_id = meta.requestId;
   }
+
+  return data;
+}
+
+/**
+ * List available documentation providers in SurrealDB RAG.
+ * @internal — called by QuantumClient.surrealRagProviders()
+ */
+export async function surrealRagProviders(
+  client: QuantumClient,
+): Promise<SurrealRAGProvidersResponse> {
+  const { data } = await client._doJSON<SurrealRAGProvidersResponse>(
+    "GET",
+    "/qai/v1/rag/surreal/providers",
+    undefined,
+  );
 
   return data;
 }

@@ -162,10 +162,87 @@ export class RealtimeReceiver {
   }
 }
 
-// ── Connect ────────────────────────────────────────────────────────
+// ── Ephemeral token flow (direct xAI connection) ───────────────────
+
+/** Response from POST /qai/v1/realtime/session. */
+export interface RealtimeSession {
+  /** Ephemeral xAI token for direct WebSocket connection. */
+  ephemeral_token: string;
+  /** WebSocket URL to connect to (e.g. "wss://api.x.ai/v1/realtime"). */
+  url: string;
+  /** Session ID for billing (pass to realtimeEnd on disconnect). */
+  session_id: string;
+}
 
 /**
- * Open a realtime voice session.
+ * Request an ephemeral token from the QAI proxy for direct xAI voice connection.
+ * Call this before `realtimeConnectDirect` to get a scoped token.
+ */
+export async function realtimeSession(
+  client: QuantumClient,
+): Promise<RealtimeSession> {
+  const { data } = await client._doJSON<RealtimeSession>("POST", "/qai/v1/realtime/session", {});
+  return data;
+}
+
+/**
+ * End a realtime session and finalize billing.
+ * Call after disconnecting from the direct xAI WebSocket.
+ */
+export async function realtimeEnd(
+  client: QuantumClient,
+  sessionId: string,
+  durationSeconds: number,
+): Promise<void> {
+  await client._doJSON("POST", "/qai/v1/realtime/end", {
+    session_id: sessionId,
+    duration_seconds: durationSeconds,
+  });
+}
+
+/**
+ * Refresh an ephemeral token for long sessions (>4 min).
+ * Returns a new ephemeral token string.
+ */
+export async function realtimeRefresh(
+  client: QuantumClient,
+  sessionId: string,
+): Promise<string> {
+  const { data } = await client._doJSON<{ ephemeral_token: string }>(
+    "POST", "/qai/v1/realtime/refresh", { session_id: sessionId },
+  );
+  return data.ephemeral_token;
+}
+
+/**
+ * Connect directly to xAI's realtime API with an ephemeral token.
+ * Much lower latency than the proxy path — no extra hop.
+ * Use `realtimeSession()` first to get the token.
+ */
+export async function realtimeConnectDirect(
+  ephemeralToken: string,
+  config?: RealtimeConfig,
+  wsUrl = "wss://api.x.ai/v1/realtime",
+): Promise<[RealtimeSender, RealtimeReceiver]> {
+  const ws = new WebSocket(wsUrl, ["realtime", `token-${ephemeralToken}`]);
+
+  await new Promise<void>((resolve, reject) => {
+    const timeout = setTimeout(() => {
+      ws.close();
+      reject(new Error("Direct xAI WebSocket connection timed out (10s)"));
+    }, 10_000);
+    ws.addEventListener("open", () => { clearTimeout(timeout); resolve(); });
+    ws.addEventListener("error", () => { clearTimeout(timeout); reject(new Error("Direct xAI WebSocket connection failed")); });
+  });
+
+  sendSessionUpdate(ws, config);
+  return [new RealtimeSender(ws), new RealtimeReceiver(ws)];
+}
+
+// ── Connect (proxy path) ───────────────────────────────────────────
+
+/**
+ * Open a realtime voice session via the QAI proxy.
  * Returns [sender, receiver] for bidirectional communication.
  */
 export async function realtimeConnect(
@@ -206,15 +283,18 @@ export async function realtimeConnect(
     });
   });
 
-  // Send session.update
-  const voice = config?.voice ?? "Sal";
-  const sampleRate = config?.sampleRate ?? 24000;
+  sendSessionUpdate(ws, config);
+  return [new RealtimeSender(ws), new RealtimeReceiver(ws)];
+}
 
+// ── Session update helper ──────────────────────────────────────────
+
+function sendSessionUpdate(ws: WebSocket, config?: RealtimeConfig): void {
   ws.send(
     JSON.stringify({
       type: "session.update",
       session: {
-        voice,
+        voice: config?.voice ?? "Sal",
         instructions: config?.instructions ?? "",
         input_audio_format: "pcm16",
         output_audio_format: "pcm16",
@@ -224,8 +304,6 @@ export async function realtimeConnect(
       },
     }),
   );
-
-  return [new RealtimeSender(ws), new RealtimeReceiver(ws)];
 }
 
 // ── Event parsing ──────────────────────────────────────────────────

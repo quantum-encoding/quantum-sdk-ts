@@ -49,8 +49,8 @@ import {
   computeKeepalive,
 } from "./compute.js";
 import { listVoices, cloneVoice, deleteVoice } from "./voices.js";
-import { realtimeConnect, RealtimeSender, RealtimeReceiver } from "./realtime.js";
-import type { RealtimeConfig } from "./realtime.js";
+import { realtimeConnect, realtimeConnectDirect, realtimeSession, realtimeEnd, realtimeRefresh, RealtimeSender, RealtimeReceiver } from "./realtime.js";
+import type { RealtimeConfig, RealtimeSession } from "./realtime.js";
 import type {
   AccountPricingResponse,
   AgentEvent,
@@ -596,13 +596,28 @@ export class QuantumClient {
   // ── Realtime Voice ────────────────────────────────────────────────
 
   /**
-   * Open a realtime voice session via WebSocket.
+   * Open a realtime voice session via WebSocket (proxy path).
    * Returns [sender, receiver] for bidirectional audio communication.
    */
   async realtimeConnect(
     config?: RealtimeConfig,
   ): Promise<[RealtimeSender, RealtimeReceiver]> {
     return realtimeConnect(this, config);
+  }
+
+  /** Request an ephemeral token for direct xAI voice connection (lower latency). */
+  async realtimeSession(): Promise<RealtimeSession> {
+    return realtimeSession(this);
+  }
+
+  /** End a realtime session and finalize billing. */
+  async realtimeEnd(sessionId: string, durationSeconds: number): Promise<void> {
+    return realtimeEnd(this, sessionId, durationSeconds);
+  }
+
+  /** Refresh an ephemeral token for long sessions (>4 min). */
+  async realtimeRefresh(sessionId: string): Promise<string> {
+    return realtimeRefresh(this, sessionId);
   }
 
   // ── Internal HTTP helpers ─────────────────────────────────────────

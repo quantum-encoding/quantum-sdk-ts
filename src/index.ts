@@ -13,8 +13,8 @@ export {
 export { responseText, responseThinking, responseToolCalls } from "./chat.js";
 
 // ── Realtime Voice ──────────────────────────────────────────────────
-export { realtimeConnect, RealtimeSender, RealtimeReceiver } from "./realtime.js";
-export type { RealtimeConfig, RealtimeEvent } from "./realtime.js";
+export { realtimeConnect, realtimeConnectDirect, realtimeSession, realtimeEnd, realtimeRefresh, RealtimeSender, RealtimeReceiver } from "./realtime.js";
+export type { RealtimeConfig, RealtimeEvent, RealtimeSession } from "./realtime.js";
 
 // ── Contact (standalone, no auth required) ──────────────────────────
 export { contact } from "./contact.js";

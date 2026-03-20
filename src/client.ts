@@ -49,6 +49,8 @@ import {
   computeKeepalive,
 } from "./compute.js";
 import { listVoices, cloneVoice, deleteVoice } from "./voices.js";
+import { realtimeConnect, RealtimeSender, RealtimeReceiver } from "./realtime.js";
+import type { RealtimeConfig } from "./realtime.js";
 import type {
   AccountPricingResponse,
   AgentEvent,
@@ -163,6 +165,16 @@ export class QuantumClient {
     this.apiKey = apiKey;
     this.baseUrl = options?.baseUrl ?? DEFAULT_BASE_URL;
     this._fetch = options?.fetch ?? globalThis.fetch.bind(globalThis);
+  }
+
+  /** @internal — used by realtime module to build WebSocket URL. */
+  get _baseUrl(): string {
+    return this.baseUrl;
+  }
+
+  /** @internal — used by realtime module for auth. */
+  get _apiKey(): string {
+    return this.apiKey;
   }
 
   // ── Chat ──────────────────────────────────────────────────────────
@@ -579,6 +591,18 @@ export class QuantumClient {
   /** Delete a cloned voice (ElevenLabs). */
   async deleteVoice(id: string): Promise<StatusResponse> {
     return deleteVoice(this, id);
+  }
+
+  // ── Realtime Voice ────────────────────────────────────────────────
+
+  /**
+   * Open a realtime voice session via WebSocket.
+   * Returns [sender, receiver] for bidirectional audio communication.
+   */
+  async realtimeConnect(
+    config?: RealtimeConfig,
+  ): Promise<[RealtimeSender, RealtimeReceiver]> {
+    return realtimeConnect(this, config);
   }
 
   // ── Internal HTTP helpers ─────────────────────────────────────────

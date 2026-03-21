@@ -128,7 +128,7 @@ export async function* chatStream(
           return;
         }
 
-        const event: StreamEvent = { type: raw.type, done: false };
+        const event: StreamEvent = { type: raw.type || "unknown", done: false };
 
         switch (raw.type) {
           case "content_delta":
@@ -138,10 +138,10 @@ export async function* chatStream(
 
           case "tool_use":
             event.tool_use = {
-              id: raw.id ?? "",
-              name: raw.name ?? "",
-              input: raw.input ?? {},
-            } satisfies StreamToolUse;
+              id: String(raw.id ?? ""),
+              name: String(raw.name ?? ""),
+              input: (raw.input as Record<string, unknown>) ?? {},
+            };
             break;
 
           case "usage":

@@ -116,6 +116,19 @@ export interface StreamEvent {
   done?: boolean;
 }
 
+/** Raw SSE event before parsing into StreamEvent. */
+export interface RawStreamEvent {
+  type?: string;
+  delta?: StreamDelta;
+  tool_use?: StreamToolUse;
+  usage?: ChatUsage;
+  message?: string;
+  input_tokens?: number;
+  output_tokens?: number;
+  cost_ticks?: number;
+  [key: string]: unknown;
+}
+
 // ── Session Chat ──────────────────────────────────────────────────
 
 export interface SessionChatRequest {
@@ -199,6 +212,7 @@ export interface AgentWorkerConfig {
 
 export interface AgentEvent {
   type: string;
+  done: boolean;
   worker?: string;
   content?: string;
   tool_use?: StreamToolUse;
@@ -231,6 +245,7 @@ export interface MissionWorkerConfig {
 
 export interface MissionEvent {
   type: string;
+  done: boolean;
   worker?: string;
   content?: string;
   tool_use?: StreamToolUse;

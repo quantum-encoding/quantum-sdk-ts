@@ -51,6 +51,9 @@ import {
 import { listVoices, cloneVoice, deleteVoice } from "./voices.js";
 import { realtimeConnect, realtimeConnectDirect, realtimeSession, realtimeEnd, realtimeRefresh, RealtimeSender, RealtimeReceiver } from "./realtime.js";
 import type { RealtimeConfig, RealtimeSession } from "./realtime.js";
+import { batchSubmit, batchSubmitJsonl, batchJobs, batchJob } from "./batch.js";
+import { creditPacks, creditPurchase, creditBalance, creditTiers, devProgramApply } from "./credits.js";
+import { authApple } from "./auth.js";
 import type {
   AccountPricingResponse,
   AgentEvent,
@@ -58,8 +61,15 @@ import type {
   AlignRequest,
   AlignResponse,
   AsyncJobResponse,
+  AuthAppleRequest,
+  AuthResponse,
   AvatarsResponse,
   BalanceResponse,
+  BatchJobInfo,
+  BatchJobsResponse,
+  BatchJsonlResponse,
+  BatchSubmitRequest,
+  BatchSubmitResponse,
   ChatRequest,
   ChatResponse,
   ChunkDocumentRequest,
@@ -69,7 +79,14 @@ import type {
   CloneVoiceResponse,
   CreateKeyRequest,
   CreateKeyResponse,
+  CreditBalanceResponse,
+  CreditPacksResponse,
+  CreditPurchaseRequest,
+  CreditPurchaseResponse,
+  CreditTiersResponse,
   DeleteResponse,
+  DevProgramApplyRequest,
+  DevProgramApplyResponse,
   DialogueRequest,
   DialogueResponse,
   DigitalTwinRequest,
@@ -618,6 +635,62 @@ export class QuantumClient {
   /** Refresh an ephemeral token for long sessions (>4 min). */
   async realtimeRefresh(sessionId: string): Promise<string> {
     return realtimeRefresh(this, sessionId);
+  }
+
+  // ── Batch Processing ──────────────────────────────────────────────
+
+  /** Submit a batch of jobs for processing. */
+  async batchSubmit(req: BatchSubmitRequest): Promise<BatchSubmitResponse> {
+    return batchSubmit(this, req);
+  }
+
+  /** Submit a batch of jobs using JSONL format. */
+  async batchSubmitJsonl(jsonl: string): Promise<BatchJsonlResponse> {
+    return batchSubmitJsonl(this, jsonl);
+  }
+
+  /** List all batch jobs for the account. */
+  async batchJobs(): Promise<BatchJobsResponse> {
+    return batchJobs(this);
+  }
+
+  /** Get the status and result of a single batch job. */
+  async batchJob(id: string): Promise<BatchJobInfo> {
+    return batchJob(this, id);
+  }
+
+  // ── Credits ───────────────────────────────────────────────────────
+
+  /** List available credit packs (no auth required). */
+  async creditPacks(): Promise<CreditPacksResponse> {
+    return creditPacks(this);
+  }
+
+  /** Purchase a credit pack. Returns a checkout URL for payment. */
+  async creditPurchase(req: CreditPurchaseRequest): Promise<CreditPurchaseResponse> {
+    return creditPurchase(this, req);
+  }
+
+  /** Get the current credit balance. */
+  async creditBalance(): Promise<CreditBalanceResponse> {
+    return creditBalance(this);
+  }
+
+  /** List available credit tiers (no auth required). */
+  async creditTiers(): Promise<CreditTiersResponse> {
+    return creditTiers(this);
+  }
+
+  /** Apply for the developer program. */
+  async devProgramApply(req: DevProgramApplyRequest): Promise<DevProgramApplyResponse> {
+    return devProgramApply(this, req);
+  }
+
+  // ── Auth ──────────────────────────────────────────────────────────
+
+  /** Authenticate with Apple Sign-In. */
+  async authApple(req: AuthAppleRequest): Promise<AuthResponse> {
+    return authApple(this, req);
   }
 
   // ── Internal HTTP helpers ─────────────────────────────────────────

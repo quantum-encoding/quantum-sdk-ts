@@ -161,6 +161,27 @@ export type {
   CloneVoiceResponse,
   // Contact
   ContactRequest,
+  // Batch Processing
+  BatchJobInput,
+  BatchSubmitRequest,
+  BatchSubmitResponse,
+  BatchJsonlResponse,
+  BatchJobInfo,
+  BatchJobsResponse,
+  // Credits
+  CreditPack,
+  CreditPacksResponse,
+  CreditPurchaseRequest,
+  CreditPurchaseResponse,
+  CreditBalanceResponse,
+  CreditTier,
+  CreditTiersResponse,
+  DevProgramApplyRequest,
+  DevProgramApplyResponse,
+  // Auth
+  AuthUser,
+  AuthResponse,
+  AuthAppleRequest,
   // Common
   StatusResponse,
 } from "./types.js";

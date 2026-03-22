@@ -8,7 +8,7 @@ import type {
 
 /**
  * Create an async job. Returns the job ID for polling.
- * @internal — called by QuantumClient.createJob()
+ * @internal
  */
 export async function createJob(
   client: QuantumClient,
@@ -25,7 +25,7 @@ export async function createJob(
 
 /**
  * Check the status of an async job.
- * @internal — called by QuantumClient.getJob()
+ * @internal
  */
 export async function getJob(
   client: QuantumClient,
@@ -42,7 +42,7 @@ export async function getJob(
 
 /**
  * Poll a job until completion or timeout.
- * @internal — called by QuantumClient.pollJob()
+ * @internal
  */
 export async function pollJob(
   client: QuantumClient,
@@ -68,7 +68,7 @@ export async function pollJob(
 
 /**
  * List all jobs for the authenticated user.
- * @internal — called by QuantumClient.listJobs()
+ * @internal
  */
 export async function listJobs(
   client: QuantumClient,
@@ -80,4 +80,22 @@ export async function listJobs(
   );
 
   return data;
+}
+
+/**
+ * Convenience method for 3D model generation via the async jobs system.
+ * Submits a job with type "3d/generate" and the given parameters.
+ * @internal
+ */
+export async function generate3D(
+  client: QuantumClient,
+  model: string,
+  prompt?: string,
+  imageUrl?: string,
+): Promise<JobCreateResponse> {
+  const params: Record<string, unknown> = { model };
+  if (prompt) params.prompt = prompt;
+  if (imageUrl) params.image_url = imageUrl;
+
+  return createJob(client, { type: "3d/generate", params });
 }

@@ -540,6 +540,52 @@ export interface StarfishTTSResponse {
   cost_ticks: number;
 }
 
+// ── Advanced Music + Finetunes ────────────────────────────────────
+
+export interface MusicAdvancedRequest {
+  /** Prompt describing the music to generate. */
+  prompt: string;
+  /** Target duration in seconds. */
+  duration_seconds?: number;
+  /** Music generation model. */
+  model?: string;
+  /** Finetune ID to apply. */
+  finetune_id?: string;
+}
+
+export interface MusicAdvancedClip {
+  base64: string;
+  format: string;
+  size: number;
+}
+
+export interface MusicAdvancedResponse {
+  clips: MusicAdvancedClip[];
+  model: string;
+  cost_ticks: number;
+  request_id: string;
+}
+
+export interface MusicFinetuneInfo {
+  finetune_id: string;
+  name: string;
+  description?: string;
+  status: string;
+  model_id?: string;
+  created_at?: string;
+}
+
+export interface MusicFinetuneListResponse {
+  finetunes: MusicFinetuneInfo[];
+}
+
+export interface MusicFinetuneCreateRequest {
+  name: string;
+  description?: string;
+  /** Base64-encoded audio samples. */
+  samples: string[];
+}
+
 // ── Video ──────────────────────────────────────────────────────────
 
 export interface VideoRequest {
@@ -1012,6 +1058,58 @@ export interface CloneVoiceRequest {
 export interface CloneVoiceResponse {
   voice_id: string;
   name: string;
+}
+
+// ── Voice Library ─────────────────────────────────────────────────
+
+export interface SharedVoice {
+  public_owner_id: string;
+  voice_id: string;
+  name: string;
+  category?: string;
+  description?: string;
+  preview_url?: string;
+  gender?: string;
+  age?: string;
+  accent?: string;
+  language?: string;
+  use_case?: string;
+  rate?: number;
+  cloned_by_count?: number;
+  free_users_allowed?: boolean;
+}
+
+export interface SharedVoicesResponse {
+  voices: SharedVoice[];
+  next_cursor?: string;
+  has_more: boolean;
+}
+
+export interface VoiceLibraryQuery {
+  query?: string;
+  page_size?: number;
+  cursor?: string;
+  gender?: string;
+  language?: string;
+  use_case?: string;
+}
+
+export interface AddVoiceFromLibraryRequest {
+  public_owner_id: string;
+  voice_id: string;
+  name?: string;
+}
+
+export interface AddVoiceFromLibraryResponse {
+  voice_id: string;
+}
+
+// ── 3D Generation ─────────────────────────────────────────────────
+
+export interface Generate3DRequest {
+  model: string;
+  prompt?: string;
+  image_url?: string;
 }
 
 // ── Contact ───────────────────────────────────────────────────────

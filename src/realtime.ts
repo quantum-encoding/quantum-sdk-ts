@@ -162,26 +162,37 @@ export class RealtimeReceiver {
   }
 }
 
-// ── Ephemeral token flow (direct xAI connection) ───────────────────
+// ── Ephemeral token flow (direct connection) ───────────────────────
 
 /** Response from POST /qai/v1/realtime/session. */
 export interface RealtimeSession {
-  /** Ephemeral xAI token for direct WebSocket connection. */
+  /** Ephemeral token for direct WebSocket connection (xAI/OpenAI). */
   ephemeral_token: string;
-  /** WebSocket URL to connect to (e.g. "wss://api.x.ai/v1/realtime"). */
+  /** WebSocket URL to connect to. */
   url: string;
+  /** Signed WebSocket URL (ElevenLabs returns this field). */
+  signed_url?: string;
   /** Session ID for billing (pass to realtimeEnd on disconnect). */
   session_id: string;
+  /** Provider name (e.g. "xai", "elevenlabs"). */
+  provider?: string;
 }
 
 /**
- * Request an ephemeral token from the QAI proxy for direct xAI voice connection.
+ * Request an ephemeral token from the QAI proxy for direct voice connection.
  * Call this before `realtimeConnectDirect` to get a scoped token.
+ *
+ * @param provider - Optional provider ("xai" default, "elevenlabs"). When
+ *   provider is "elevenlabs", the response contains a WebSocket proxy URL
+ *   (signed_url) instead of an ephemeral token.
  */
 export async function realtimeSession(
   client: QuantumClient,
+  provider?: string,
 ): Promise<RealtimeSession> {
-  const { data } = await client._doJSON<RealtimeSession>("POST", "/qai/v1/realtime/session", {});
+  const body: Record<string, unknown> = {};
+  if (provider) body.provider = provider;
+  const { data } = await client._doJSON<RealtimeSession>("POST", "/qai/v1/realtime/session", body);
   return data;
 }
 
@@ -216,7 +227,7 @@ export async function realtimeRefresh(
 
 /**
  * Connect directly to xAI's realtime API with an ephemeral token.
- * Much lower latency than the proxy path — no extra hop.
+ * Much lower latency than the proxy path -- no extra hop.
  * Use `realtimeSession()` first to get the token.
  */
 export async function realtimeConnectDirect(
@@ -252,7 +263,7 @@ export async function realtimeConnect(
   const baseUrl = client._baseUrl;
   const apiKey = client._apiKey;
 
-  // Convert https:// → wss://, http:// → ws://
+  // Convert https:// -> wss://, http:// -> ws://
   const wsBase = baseUrl
     .replace(/^https:\/\//, "wss://")
     .replace(/^http:\/\//, "ws://");
@@ -260,7 +271,7 @@ export async function realtimeConnect(
   const url = `${wsBase}/qai/v1/realtime`;
 
   // Browser WebSocket doesn't support custom headers, so pass token as protocol
-  // For Node.js, we'd use the headers option — but the QAI proxy also accepts
+  // For Node.js, we'd use the headers option -- but the QAI proxy also accepts
   // the token as a query parameter for browser compatibility.
   const wsUrl = `${url}?token=${encodeURIComponent(apiKey)}`;
 
@@ -277,7 +288,7 @@ export async function realtimeConnect(
       resolve();
     });
 
-    ws.addEventListener("error", (ev) => {
+    ws.addEventListener("error", () => {
       clearTimeout(timeout);
       reject(new Error("WebSocket connection failed"));
     });

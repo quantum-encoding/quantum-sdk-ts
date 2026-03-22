@@ -8,6 +8,11 @@ import type {
   DubResponse,
   IsolateVoiceRequest,
   IsolateVoiceResponse,
+  MusicAdvancedRequest,
+  MusicAdvancedResponse,
+  MusicFinetuneCreateRequest,
+  MusicFinetuneInfo,
+  MusicFinetuneListResponse,
   MusicRequest,
   MusicResponse,
   RemixVoiceRequest,
@@ -18,6 +23,7 @@ import type {
   SpeechToSpeechResponse,
   StarfishTTSRequest,
   StarfishTTSResponse,
+  StatusResponse,
   STTRequest,
   STTResponse,
   TTSRequest,
@@ -44,7 +50,7 @@ function backfillMeta<T extends { cost_ticks: number; request_id: string }>(
 
 /**
  * Generate speech from text.
- * @internal — called by QuantumClient.speak()
+ * @internal
  */
 export async function speak(
   client: QuantumClient,
@@ -61,7 +67,7 @@ export async function speak(
 
 /**
  * Convert speech to text.
- * @internal — called by QuantumClient.transcribe()
+ * @internal
  */
 export async function transcribe(
   client: QuantumClient,
@@ -78,7 +84,7 @@ export async function transcribe(
 
 /**
  * Generate sound effects from a text prompt (ElevenLabs).
- * @internal — called by QuantumClient.soundEffects()
+ * @internal
  */
 export async function soundEffects(
   client: QuantumClient,
@@ -95,7 +101,7 @@ export async function soundEffects(
 
 /**
  * Generate music from a text prompt.
- * @internal — called by QuantumClient.generateMusic()
+ * @internal
  */
 export async function generateMusic(
   client: QuantumClient,
@@ -112,7 +118,7 @@ export async function generateMusic(
 
 /**
  * Generate multi-speaker dialogue audio (ElevenLabs).
- * @internal — called by QuantumClient.dialogue()
+ * @internal
  */
 export async function dialogue(
   client: QuantumClient,
@@ -129,7 +135,7 @@ export async function dialogue(
 
 /**
  * Convert speech audio to a different voice (ElevenLabs).
- * @internal — called by QuantumClient.speechToSpeech()
+ * @internal
  */
 export async function speechToSpeech(
   client: QuantumClient,
@@ -146,7 +152,7 @@ export async function speechToSpeech(
 
 /**
  * Remove background noise and isolate speech (ElevenLabs).
- * @internal — called by QuantumClient.isolateVoice()
+ * @internal
  */
 export async function isolateVoice(
   client: QuantumClient,
@@ -158,19 +164,12 @@ export async function isolateVoice(
     req,
   );
 
-  if (!data.cost_ticks) {
-    data.cost_ticks = meta.costTicks;
-  }
-  if (!data.request_id) {
-    data.request_id = meta.requestId;
-  }
-
-  return data;
+  return backfillMeta(data, meta);
 }
 
 /**
  * Transform a voice by modifying attributes (ElevenLabs).
- * @internal — called by QuantumClient.remixVoice()
+ * @internal
  */
 export async function remixVoice(
   client: QuantumClient,
@@ -182,19 +181,12 @@ export async function remixVoice(
     req,
   );
 
-  if (!data.cost_ticks) {
-    data.cost_ticks = meta.costTicks;
-  }
-  if (!data.request_id) {
-    data.request_id = meta.requestId;
-  }
-
-  return data;
+  return backfillMeta(data, meta);
 }
 
 /**
  * Dub audio/video into a target language (ElevenLabs).
- * @internal — called by QuantumClient.dub()
+ * @internal
  */
 export async function dub(
   client: QuantumClient,
@@ -206,19 +198,12 @@ export async function dub(
     req,
   );
 
-  if (!data.cost_ticks) {
-    data.cost_ticks = meta.costTicks;
-  }
-  if (!data.request_id) {
-    data.request_id = meta.requestId;
-  }
-
-  return data;
+  return backfillMeta(data, meta);
 }
 
 /**
  * Get word-level timestamps for audio+text alignment (ElevenLabs).
- * @internal — called by QuantumClient.align()
+ * @internal
  */
 export async function align(
   client: QuantumClient,
@@ -230,19 +215,12 @@ export async function align(
     req,
   );
 
-  if (!data.cost_ticks) {
-    data.cost_ticks = meta.costTicks;
-  }
-  if (!data.request_id) {
-    data.request_id = meta.requestId;
-  }
-
-  return data;
+  return backfillMeta(data, meta);
 }
 
 /**
  * Generate voice previews from a text description (ElevenLabs).
- * @internal — called by QuantumClient.voiceDesign()
+ * @internal
  */
 export async function voiceDesign(
   client: QuantumClient,
@@ -254,19 +232,12 @@ export async function voiceDesign(
     req,
   );
 
-  if (!data.cost_ticks) {
-    data.cost_ticks = meta.costTicks;
-  }
-  if (!data.request_id) {
-    data.request_id = meta.requestId;
-  }
-
-  return data;
+  return backfillMeta(data, meta);
 }
 
 /**
  * Generate speech using HeyGen's Starfish TTS model.
- * @internal — called by QuantumClient.starfishTTS()
+ * @internal
  */
 export async function starfishTTS(
   client: QuantumClient,
@@ -278,12 +249,72 @@ export async function starfishTTS(
     req,
   );
 
-  if (!data.cost_ticks) {
-    data.cost_ticks = meta.costTicks;
-  }
-  if (!data.request_id) {
-    data.request_id = meta.requestId;
-  }
+  return backfillMeta(data, meta);
+}
+
+/**
+ * Generate music via ElevenLabs Eleven Music (advanced: finetunes, etc).
+ * @internal
+ */
+export async function generateMusicAdvanced(
+  client: QuantumClient,
+  req: MusicAdvancedRequest,
+): Promise<MusicAdvancedResponse> {
+  const { data, meta } = await client._doJSON<MusicAdvancedResponse>(
+    "POST",
+    "/qai/v1/audio/music/advanced",
+    req,
+  );
+
+  return backfillMeta(data, meta);
+}
+
+/**
+ * List all music finetunes for the authenticated user.
+ * @internal
+ */
+export async function listFinetunes(
+  client: QuantumClient,
+): Promise<MusicFinetuneListResponse> {
+  const { data } = await client._doJSON<MusicFinetuneListResponse>(
+    "GET",
+    "/qai/v1/audio/finetunes",
+    undefined,
+  );
+
+  return data;
+}
+
+/**
+ * Create a new music finetune from audio samples (base64-encoded).
+ * @internal
+ */
+export async function createFinetune(
+  client: QuantumClient,
+  req: MusicFinetuneCreateRequest,
+): Promise<MusicFinetuneInfo> {
+  const { data } = await client._doJSON<MusicFinetuneInfo>(
+    "POST",
+    "/qai/v1/audio/finetunes",
+    req,
+  );
+
+  return data;
+}
+
+/**
+ * Delete a music finetune by ID.
+ * @internal
+ */
+export async function deleteFinetune(
+  client: QuantumClient,
+  id: string,
+): Promise<StatusResponse> {
+  const { data } = await client._doJSON<StatusResponse>(
+    "DELETE",
+    `/qai/v1/audio/finetunes/${id}`,
+    undefined,
+  );
 
   return data;
 }

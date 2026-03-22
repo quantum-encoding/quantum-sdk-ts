@@ -51,7 +51,7 @@ export async function batchJobs(
     "/qai/v1/batch/jobs",
     undefined,
   );
-  return data;
+  return { ...data, jobs: data.jobs ?? [] };
 }
 
 /**

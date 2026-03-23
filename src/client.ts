@@ -37,7 +37,9 @@ import {
   accountUsageSummary,
   accountPricing,
 } from "./account.js";
-import { createJob, getJob, pollJob, listJobs } from "./jobs.js";
+import { createJob, getJob, pollJob, listJobs, chatJob, streamJob, generate3D } from "./jobs.js";
+import { webSearch, searchContext, searchAnswer } from "./search.js";
+import type { BillingRequest, BillingResponse } from "./compute-billing.js";
 import { createKey, listKeys, revokeKey } from "./keys.js";
 import {
   computeTemplates,
@@ -109,6 +111,17 @@ import type {
   JobCreateRequest,
   JobCreateResponse,
   JobListResponse,
+  JobStreamEvent,
+  WebSearchRequest,
+  WebSearchResponse,
+  LLMContextRequest,
+  LLMContextResponse,
+  SearchAnswerRequest,
+  SearchAnswerResponse,
+  RemeshRequest,
+  RetextureRequest,
+  RigRequest,
+  AnimateRequest,
   JobStatusResponse,
   ListKeysResponse,
   MissionEvent,
@@ -470,6 +483,23 @@ export class QuantumClient {
     return surrealRagProviders(this);
   }
 
+  // ── Search (Brave) ──────────────────────────────────────────────
+
+  /** Perform a web search. Returns web results, news, videos, infobox, discussions. */
+  async webSearch(req: WebSearchRequest): Promise<WebSearchResponse> {
+    return webSearch(this, req);
+  }
+
+  /** Get LLM-optimized content chunks for grounding. */
+  async searchContext(req: LLMContextRequest): Promise<LLMContextResponse> {
+    return searchContext(this, req);
+  }
+
+  /** Get a grounded AI answer with citations. */
+  async searchAnswer(req: SearchAnswerRequest): Promise<SearchAnswerResponse> {
+    return searchAnswer(this, req);
+  }
+
   // ── Models ────────────────────────────────────────────────────────
 
   /** List all available models with provider and pricing information. */
@@ -536,6 +566,52 @@ export class QuantumClient {
     return listJobs(this);
   }
 
+  /**
+   * Submit a chat completion as an async job.
+   * Use for long-running models (e.g. Opus) where sync chat may time out.
+   * Params are the same shape as ChatRequest (model, messages, tools, etc.)
+   */
+  async chatJob(req: Omit<ChatRequest, "stream">): Promise<JobCreateResponse> {
+    return chatJob(this, req);
+  }
+
+  /**
+   * Stream job progress via SSE. Yields events as the job runs.
+   * Events: progress (status update), complete (with result), error.
+   */
+  streamJob(jobId: string, signal?: AbortSignal): AsyncIterableIterator<JobStreamEvent> {
+    return streamJob(this, jobId, signal);
+  }
+
+  /** Generate a 3D model via the async jobs system. */
+  async generate3D(model: string, prompt?: string, imageUrl?: string): Promise<JobCreateResponse> {
+    return generate3D(this, model, prompt, imageUrl);
+  }
+
+  /** Remesh a 3D model (re-topology + format conversion). Submits job and polls to completion. */
+  async remesh(req: RemeshRequest): Promise<JobStatusResponse> {
+    const job = await this.createJob({ type: "3d/remesh", params: req as unknown as Record<string, unknown> });
+    return this.pollJob(job.job_id, 5000, 120);
+  }
+
+  /** Retexture a 3D model with AI-generated textures from text or image. */
+  async retexture(req: RetextureRequest): Promise<JobStatusResponse> {
+    const job = await this.createJob({ type: "3d/retexture", params: req as unknown as Record<string, unknown> });
+    return this.pollJob(job.job_id, 5000, 120);
+  }
+
+  /** Rig a humanoid 3D model. Returns rigged character + basic walk/run animations. */
+  async rig(req: RigRequest): Promise<JobStatusResponse> {
+    const job = await this.createJob({ type: "3d/rig", params: req as unknown as Record<string, unknown> });
+    return this.pollJob(job.job_id, 5000, 120);
+  }
+
+  /** Apply an animation to a rigged character. */
+  async animate(req: AnimateRequest): Promise<JobStatusResponse> {
+    const job = await this.createJob({ type: "3d/animate", params: req as unknown as Record<string, unknown> });
+    return this.pollJob(job.job_id, 5000, 120);
+  }
+
   // ── API Keys ──────────────────────────────────────────────────────
 
   /** Create a scoped API key. */
@@ -593,6 +669,12 @@ export class QuantumClient {
     return computeKeepalive(this, id);
   }
 
+  /** Query compute billing from BigQuery. */
+  async computeBilling(req: BillingRequest): Promise<BillingResponse> {
+    const { data } = await this._doJSON<BillingResponse>("POST", "/qai/v1/compute/billing", req);
+    return data;
+  }
+
   // ── Voice Management ──────────────────────────────────────────────
 
   /** List all available voices (ElevenLabs). */
@@ -625,6 +707,15 @@ export class QuantumClient {
   /** Request an ephemeral token for direct xAI voice connection (lower latency). */
   async realtimeSession(): Promise<RealtimeSession> {
     return realtimeSession(this);
+  }
+
+  /**
+   * Request a realtime session with full configuration.
+   * Pass voice, prompt, tools, etc. for ElevenLabs ConvAI.
+   */
+  async realtimeSessionWith(body: Record<string, unknown>): Promise<RealtimeSession> {
+    const { data } = await this._doJSON<RealtimeSession>("POST", "/qai/v1/realtime/session", body);
+    return data;
   }
 
   /** End a realtime session and finalize billing. */

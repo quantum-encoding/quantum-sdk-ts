@@ -201,6 +201,12 @@ export interface AgentRequest {
 
   /** System prompt for the conductor. */
   system_prompt?: string;
+
+  /** Conversation session ID. */
+  session_id?: string;
+
+  /** Session context management. */
+  context_config?: ContextConfig;
 }
 
 export interface AgentWorkerConfig {
@@ -234,6 +240,33 @@ export interface MissionRequest {
 
   /** Maximum orchestration steps. */
   max_steps?: number;
+
+  /** Execution strategy ("wave", "dag", "codegen", etc.). */
+  strategy?: string;
+
+  /** Conductor system prompt. */
+  system_prompt?: string;
+
+  /** Conversation session ID. */
+  session_id?: string;
+
+  /** Auto-plan before executing. */
+  auto_plan?: boolean;
+
+  /** Session context management. */
+  context_config?: ContextConfig;
+
+  /** Route workers through a deployed Vertex endpoint. */
+  deployment_id?: string;
+
+  /** Model for codegen worker nodes. */
+  worker_model?: string;
+
+  /** Build command for codegen verification. */
+  build_command?: string;
+
+  /** Workspace directory for generated files. */
+  workspace_path?: string;
 }
 
 export interface MissionWorkerConfig {
@@ -947,6 +980,119 @@ export interface JobListResponse {
   jobs: JobListItem[];
 }
 
+/** SSE event from GET /qai/v1/jobs/{id}/stream */
+export interface JobStreamEvent {
+  type: "progress" | "complete" | "error";
+  job_id?: string;
+  status?: string;
+  result?: unknown;
+  error?: string;
+  cost_ticks?: number;
+  completed_at?: string;
+}
+
+// ── Search (Brave) ────────────────────────────────────────────────
+
+export interface WebSearchRequest {
+  query: string;
+  count?: number;
+  offset?: number;
+  country?: string;
+  language?: string;
+  freshness?: "pd" | "pw" | "pm";
+  safesearch?: string;
+}
+
+export interface WebSearchResult {
+  title?: string;
+  url?: string;
+  description?: string;
+  extra_snippets?: string[];
+  age?: string;
+  language?: string;
+  thumbnail?: { src?: string; height?: number; width?: number };
+}
+
+export interface NewsResult {
+  title?: string;
+  url?: string;
+  description?: string;
+  age?: string;
+  source?: string;
+  thumbnail?: { src?: string; height?: number; width?: number };
+}
+
+export interface VideoSearchResult {
+  title?: string;
+  url?: string;
+  description?: string;
+  age?: string;
+  thumbnail?: { src?: string; height?: number; width?: number };
+}
+
+export interface WebSearchResponse {
+  query?: { original?: string; altered?: string; language?: string };
+  web?: { results: WebSearchResult[]; family_friendly?: boolean };
+  news?: { results: NewsResult[] };
+  videos?: { results: VideoSearchResult[] };
+  infobox?: { title?: string; url?: string; description?: string; long_desc?: string };
+  discussions?: { results: { title?: string; url?: string; description?: string; age?: string }[] };
+}
+
+export interface LLMContextRequest {
+  query: string;
+  count?: number;
+  country?: string;
+  language?: string;
+  freshness?: "pd" | "pw" | "pm";
+}
+
+export interface ContentChunk {
+  content?: string;
+  url?: string;
+  title?: string;
+  score?: number;
+  content_type?: string;
+  index?: number;
+}
+
+export interface ContextSource {
+  url?: string;
+  title?: string;
+  description?: string;
+  snippet?: string;
+}
+
+export interface LLMContextResponse {
+  chunks: ContentChunk[];
+  sources?: ContextSource[];
+  query?: string;
+}
+
+export interface SearchAnswerRequest {
+  messages: { role: string; content: string }[];
+  model?: string;
+}
+
+export interface SearchAnswerChoice {
+  index?: number;
+  message?: { role: string; content: string };
+  finish_reason?: string;
+}
+
+export interface SearchCitation {
+  url?: string;
+  title?: string;
+  snippet?: string;
+}
+
+export interface SearchAnswerResponse {
+  choices: SearchAnswerChoice[];
+  model?: string;
+  id?: string;
+  citations?: SearchCitation[];
+}
+
 // ── API Keys ──────────────────────────────────────────────────────
 
 export interface CreateKeyRequest {
@@ -1305,4 +1451,63 @@ export interface APIErrorBody {
     type?: string;
     code?: string;
   };
+}
+
+// ── 3D Mesh Operations ───────────────────────────────────────────
+
+export interface RemeshRequest {
+  input_task_id?: string;
+  model_url?: string;
+  target_formats?: string[];
+  topology?: string;
+  target_polycount?: number;
+  resize_height?: number;
+  origin_at?: string;
+  convert_format_only?: boolean;
+}
+
+export interface ModelUrls {
+  glb?: string;
+  fbx?: string;
+  obj?: string;
+  usdz?: string;
+  stl?: string;
+  blend?: string;
+}
+
+export interface RigRequest {
+  input_task_id?: string;
+  model_url?: string;
+  height_meters?: number;
+  texture_image_url?: string;
+}
+
+export interface BasicAnimations {
+  walking_glb_url?: string;
+  walking_fbx_url?: string;
+  walking_armature_glb_url?: string;
+  running_glb_url?: string;
+  running_fbx_url?: string;
+  running_armature_glb_url?: string;
+}
+
+export interface AnimateRequest {
+  rig_task_id: string;
+  action_id: number;
+  post_process?: {
+    operation_type: string;
+    fps?: number;
+  };
+}
+
+export interface RetextureRequest {
+  input_task_id?: string;
+  model_url?: string;
+  text_style_prompt?: string;
+  image_style_url?: string;
+  ai_model?: string;
+  enable_original_uv?: boolean;
+  enable_pbr?: boolean;
+  remove_lighting?: boolean;
+  target_formats?: string[];
 }

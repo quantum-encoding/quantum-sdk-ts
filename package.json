@@ -1,7 +1,7 @@
 {
-  "name": "@quantum-encoding/sdk",
-  "version": "0.1.0",
-  "description": "TypeScript client SDK for the Quantum AI API",
+  "name": "quantum-ai-sdk",
+  "version": "0.3.4",
+  "description": "Cosmic Duck SDK — 100+ AI endpoints across 10 providers",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "type": "module",
@@ -10,11 +10,14 @@
     "typecheck": "tsc --noEmit"
   },
   "keywords": [
-    "quantum-ai",
-    "llm",
     "ai",
     "sdk",
-    "typescript"
+    "cosmic-duck",
+    "quantum-ai",
+    "openai",
+    "anthropic",
+    "gemini",
+    "grok"
   ],
   "author": "Quantum Encoding Ltd",
   "license": "MIT",
@@ -24,5 +27,9 @@
   },
   "files": [
     "dist"
-  ]
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/quantum-encoding/quantum-sdk-ts"
+  }
 }

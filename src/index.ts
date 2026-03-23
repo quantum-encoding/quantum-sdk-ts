@@ -19,6 +19,9 @@ export type { RealtimeConfig, RealtimeEvent, RealtimeSession } from "./realtime.
 // ── Contact (standalone, no auth required) ──────────────────────────
 export { contact } from "./contact.js";
 
+// ── Compute Billing (types + standalone function) ───────────────────
+export type { BillingRequest, BillingEntry, BillingResponse } from "./compute-billing.js";
+
 // ── Types ───────────────────────────────────────────────────────────
 export type {
   ClientOptions,
@@ -137,6 +140,7 @@ export type {
   JobCreateResponse,
   JobStatusResponse,
   JobListResponse,
+  JobStreamEvent,
   JobListItem,
   // API Keys
   CreateKeyRequest,
@@ -182,6 +186,20 @@ export type {
   AuthUser,
   AuthResponse,
   AuthAppleRequest,
+  // Search
+  WebSearchRequest,
+  WebSearchResponse,
+  WebSearchResult,
+  NewsResult,
+  VideoSearchResult,
+  LLMContextRequest,
+  LLMContextResponse,
+  ContentChunk,
+  ContextSource,
+  SearchAnswerRequest,
+  SearchAnswerResponse,
+  SearchAnswerChoice,
+  SearchCitation,
   // Common
   StatusResponse,
 } from "./types.js";

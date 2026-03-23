@@ -1,0 +1,7958 @@
+{
+  "sdks": [
+    {
+      "name": "ts",
+      "language": "typescript",
+      "dir": "src",
+      "scanned_at": "2026-03-23T20:44:45.87265+01:00"
+    }
+  ],
+  "types": [
+    {
+      "sdk": "ts",
+      "name": "BillingRequest",
+      "kind": "interface",
+      "file": "compute-billing.ts",
+      "fields": [
+        {
+          "name": "instance_id",
+          "type": "string",
+          "optional": true,
+          "json_tag": "instance_id"
+        },
+        {
+          "name": "start_date",
+          "type": "string",
+          "optional": true,
+          "json_tag": "start_date"
+        },
+        {
+          "name": "end_date",
+          "type": "string",
+          "optional": true,
+          "json_tag": "end_date"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "BillingEntry",
+      "kind": "interface",
+      "file": "compute-billing.ts",
+      "fields": [
+        {
+          "name": "instance_id",
+          "type": "string",
+          "optional": false,
+          "json_tag": "instance_id"
+        },
+        {
+          "name": "instance_name",
+          "type": "string",
+          "optional": true,
+          "json_tag": "instance_name"
+        },
+        {
+          "name": "cost_usd",
+          "type": "number",
+          "optional": false,
+          "json_tag": "cost_usd"
+        },
+        {
+          "name": "usage_hours",
+          "type": "number",
+          "optional": true,
+          "json_tag": "usage_hours"
+        },
+        {
+          "name": "sku_description",
+          "type": "string",
+          "optional": true,
+          "json_tag": "sku_description"
+        },
+        {
+          "name": "start_time",
+          "type": "string",
+          "optional": true,
+          "json_tag": "start_time"
+        },
+        {
+          "name": "end_time",
+          "type": "string",
+          "optional": true,
+          "json_tag": "end_time"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "BillingResponse",
+      "kind": "interface",
+      "file": "compute-billing.ts",
+      "fields": [
+        {
+          "name": "entries",
+          "type": "BillingEntry[]",
+          "optional": false,
+          "json_tag": "entries"
+        },
+        {
+          "name": "total_cost_usd",
+          "type": "number",
+          "optional": false,
+          "json_tag": "total_cost_usd"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "RealtimeConfig",
+      "kind": "interface",
+      "file": "realtime.ts",
+      "fields": [
+        {
+          "name": "voice",
+          "type": "string",
+          "optional": true,
+          "json_tag": "voice"
+        },
+        {
+          "name": "instructions",
+          "type": "string",
+          "optional": true,
+          "json_tag": "instructions"
+        },
+        {
+          "name": "sampleRate",
+          "type": "number",
+          "optional": true,
+          "json_tag": "sampleRate"
+        },
+        {
+          "name": "tools",
+          "type": "Record\u003cstring, unknown\u003e[]",
+          "optional": true,
+          "json_tag": "tools"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "RealtimeSession",
+      "kind": "interface",
+      "file": "realtime.ts",
+      "fields": [
+        {
+          "name": "ephemeral_token",
+          "type": "string",
+          "optional": false,
+          "json_tag": "ephemeral_token"
+        },
+        {
+          "name": "url",
+          "type": "string",
+          "optional": false,
+          "json_tag": "url"
+        },
+        {
+          "name": "signed_url",
+          "type": "string",
+          "optional": true,
+          "json_tag": "signed_url"
+        },
+        {
+          "name": "session_id",
+          "type": "string",
+          "optional": false,
+          "json_tag": "session_id"
+        },
+        {
+          "name": "provider",
+          "type": "string",
+          "optional": true,
+          "json_tag": "provider"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "ClientOptions",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "baseUrl",
+          "type": "string",
+          "optional": true,
+          "json_tag": "baseUrl"
+        },
+        {
+          "name": "fetch",
+          "type": "typeof globalThis.fetch",
+          "optional": true,
+          "json_tag": "fetch"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "ResponseMeta",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "costTicks",
+          "type": "number",
+          "optional": false,
+          "json_tag": "costTicks"
+        },
+        {
+          "name": "requestId",
+          "type": "string",
+          "optional": false,
+          "json_tag": "requestId"
+        },
+        {
+          "name": "cost_ticks",
+          "type": "number",
+          "optional": true,
+          "json_tag": "cost_ticks"
+        },
+        {
+          "name": "request_id",
+          "type": "string",
+          "optional": true,
+          "json_tag": "request_id"
+        },
+        {
+          "name": "model",
+          "type": "string",
+          "optional": false,
+          "json_tag": "model"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "ChatRequest",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "model",
+          "type": "string",
+          "optional": false,
+          "json_tag": "model"
+        },
+        {
+          "name": "messages",
+          "type": "ChatMessage[]",
+          "optional": false,
+          "json_tag": "messages"
+        },
+        {
+          "name": "tools",
+          "type": "ChatTool[]",
+          "optional": true,
+          "json_tag": "tools"
+        },
+        {
+          "name": "stream",
+          "type": "boolean",
+          "optional": true,
+          "json_tag": "stream"
+        },
+        {
+          "name": "temperature",
+          "type": "number",
+          "optional": true,
+          "json_tag": "temperature"
+        },
+        {
+          "name": "max_tokens",
+          "type": "number",
+          "optional": true,
+          "json_tag": "max_tokens"
+        },
+        {
+          "name": "provider_options",
+          "type": "Record\u003cstring, Record\u003cstring, unknown\u003e\u003e",
+          "optional": true,
+          "json_tag": "provider_options"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "ChatMessage",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "role",
+          "type": "\"system\" | \"user\" | \"assistant\" | \"tool\"",
+          "optional": false,
+          "json_tag": "role"
+        },
+        {
+          "name": "content",
+          "type": "string",
+          "optional": true,
+          "json_tag": "content"
+        },
+        {
+          "name": "content_blocks",
+          "type": "ContentBlock[]",
+          "optional": true,
+          "json_tag": "content_blocks"
+        },
+        {
+          "name": "tool_call_id",
+          "type": "string",
+          "optional": true,
+          "json_tag": "tool_call_id"
+        },
+        {
+          "name": "is_error",
+          "type": "boolean",
+          "optional": true,
+          "json_tag": "is_error"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "ChatTool",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "type",
+          "type": "\"function\"",
+          "optional": false,
+          "json_tag": "type"
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "optional": false,
+          "json_tag": "name"
+        },
+        {
+          "name": "description",
+          "type": "string",
+          "optional": true,
+          "json_tag": "description"
+        },
+        {
+          "name": "parameters",
+          "type": "Record\u003cstring, unknown\u003e",
+          "optional": true,
+          "json_tag": "parameters"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "ContentBlock",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "type",
+          "type": "string",
+          "optional": false,
+          "json_tag": "type"
+        },
+        {
+          "name": "block_type",
+          "type": "string",
+          "optional": true,
+          "json_tag": "block_type"
+        },
+        {
+          "name": "text",
+          "type": "string",
+          "optional": true,
+          "json_tag": "text"
+        },
+        {
+          "name": "id",
+          "type": "string",
+          "optional": true,
+          "json_tag": "id"
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "optional": true,
+          "json_tag": "name"
+        },
+        {
+          "name": "input",
+          "type": "Record\u003cstring, unknown\u003e",
+          "optional": true,
+          "json_tag": "input"
+        },
+        {
+          "name": "thought_signature",
+          "type": "string",
+          "optional": true,
+          "json_tag": "thought_signature"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "ChatUsage",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "input_tokens",
+          "type": "number",
+          "optional": false,
+          "json_tag": "input_tokens"
+        },
+        {
+          "name": "output_tokens",
+          "type": "number",
+          "optional": false,
+          "json_tag": "output_tokens"
+        },
+        {
+          "name": "cost_ticks",
+          "type": "number",
+          "optional": false,
+          "json_tag": "cost_ticks"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "ChatResponse",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string",
+          "optional": false,
+          "json_tag": "id"
+        },
+        {
+          "name": "model",
+          "type": "string",
+          "optional": false,
+          "json_tag": "model"
+        },
+        {
+          "name": "content",
+          "type": "ContentBlock[]",
+          "optional": false,
+          "json_tag": "content"
+        },
+        {
+          "name": "usage",
+          "type": "ChatUsage",
+          "optional": false,
+          "json_tag": "usage"
+        },
+        {
+          "name": "stop_reason",
+          "type": "string",
+          "optional": false,
+          "json_tag": "stop_reason"
+        },
+        {
+          "name": "request_id",
+          "type": "string",
+          "optional": false,
+          "json_tag": "request_id"
+        },
+        {
+          "name": "cost_ticks",
+          "type": "number",
+          "optional": false,
+          "json_tag": "cost_ticks"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "StreamDelta",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "text",
+          "type": "string",
+          "optional": true,
+          "json_tag": "text"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "StreamToolUse",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string",
+          "optional": false,
+          "json_tag": "id"
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "optional": false,
+          "json_tag": "name"
+        },
+        {
+          "name": "input",
+          "type": "Record\u003cstring, unknown\u003e",
+          "optional": false,
+          "json_tag": "input"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "StreamEvent",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "type",
+          "type": "string",
+          "optional": false,
+          "json_tag": "type"
+        },
+        {
+          "name": "event_type",
+          "type": "string",
+          "optional": true,
+          "json_tag": "event_type"
+        },
+        {
+          "name": "delta",
+          "type": "StreamDelta",
+          "optional": true,
+          "json_tag": "delta"
+        },
+        {
+          "name": "tool_use",
+          "type": "StreamToolUse",
+          "optional": true,
+          "json_tag": "tool_use"
+        },
+        {
+          "name": "usage",
+          "type": "ChatUsage",
+          "optional": true,
+          "json_tag": "usage"
+        },
+        {
+          "name": "error",
+          "type": "string",
+          "optional": true,
+          "json_tag": "error"
+        },
+        {
+          "name": "done",
+          "type": "boolean",
+          "optional": true,
+          "json_tag": "done"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "RawStreamEvent",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "type",
+          "type": "string",
+          "optional": true,
+          "json_tag": "type"
+        },
+        {
+          "name": "delta",
+          "type": "StreamDelta",
+          "optional": true,
+          "json_tag": "delta"
+        },
+        {
+          "name": "tool_use",
+          "type": "StreamToolUse",
+          "optional": true,
+          "json_tag": "tool_use"
+        },
+        {
+          "name": "usage",
+          "type": "ChatUsage",
+          "optional": true,
+          "json_tag": "usage"
+        },
+        {
+          "name": "message",
+          "type": "string",
+          "optional": true,
+          "json_tag": "message"
+        },
+        {
+          "name": "input_tokens",
+          "type": "number",
+          "optional": true,
+          "json_tag": "input_tokens"
+        },
+        {
+          "name": "output_tokens",
+          "type": "number",
+          "optional": true,
+          "json_tag": "output_tokens"
+        },
+        {
+          "name": "cost_ticks",
+          "type": "number",
+          "optional": true,
+          "json_tag": "cost_ticks"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "SessionChatRequest",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "session_id",
+          "type": "string",
+          "optional": true,
+          "json_tag": "session_id"
+        },
+        {
+          "name": "model",
+          "type": "string",
+          "optional": true,
+          "json_tag": "model"
+        },
+        {
+          "name": "message",
+          "type": "string",
+          "optional": false,
+          "json_tag": "message"
+        },
+        {
+          "name": "tools",
+          "type": "ChatTool[]",
+          "optional": true,
+          "json_tag": "tools"
+        },
+        {
+          "name": "tool_results",
+          "type": "SessionToolResult[]",
+          "optional": true,
+          "json_tag": "tool_results"
+        },
+        {
+          "name": "stream",
+          "type": "boolean",
+          "optional": true,
+          "json_tag": "stream"
+        },
+        {
+          "name": "system_prompt",
+          "type": "string",
+          "optional": true,
+          "json_tag": "system_prompt"
+        },
+        {
+          "name": "context_config",
+          "type": "ContextConfig",
+          "optional": true,
+          "json_tag": "context_config"
+        },
+        {
+          "name": "provider_options",
+          "type": "Record\u003cstring, Record\u003cstring, unknown\u003e\u003e",
+          "optional": true,
+          "json_tag": "provider_options"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "SessionToolResult",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "tool_call_id",
+          "type": "string",
+          "optional": false,
+          "json_tag": "tool_call_id"
+        },
+        {
+          "name": "content",
+          "type": "string",
+          "optional": false,
+          "json_tag": "content"
+        },
+        {
+          "name": "is_error",
+          "type": "boolean",
+          "optional": true,
+          "json_tag": "is_error"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "ContextConfig",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "max_tokens",
+          "type": "number",
+          "optional": true,
+          "json_tag": "max_tokens"
+        },
+        {
+          "name": "auto_compact",
+          "type": "boolean",
+          "optional": true,
+          "json_tag": "auto_compact"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "ContextMetadata",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "turn_count",
+          "type": "number",
+          "optional": false,
+          "json_tag": "turn_count"
+        },
+        {
+          "name": "estimated_tokens",
+          "type": "number",
+          "optional": false,
+          "json_tag": "estimated_tokens"
+        },
+        {
+          "name": "compacted",
+          "type": "boolean",
+          "optional": false,
+          "json_tag": "compacted"
+        },
+        {
+          "name": "compaction_note",
+          "type": "string",
+          "optional": true,
+          "json_tag": "compaction_note"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "SessionChatResponse",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "session_id",
+          "type": "string",
+          "optional": false,
+          "json_tag": "session_id"
+        },
+        {
+          "name": "response",
+          "type": "ChatResponse",
+          "optional": false,
+          "json_tag": "response"
+        },
+        {
+          "name": "context",
+          "type": "ContextMetadata",
+          "optional": false,
+          "json_tag": "context"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "AgentRequest",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "task",
+          "type": "string",
+          "optional": false,
+          "json_tag": "task"
+        },
+        {
+          "name": "conductor_model",
+          "type": "string",
+          "optional": true,
+          "json_tag": "conductor_model"
+        },
+        {
+          "name": "workers",
+          "type": "AgentWorkerConfig[]",
+          "optional": true,
+          "json_tag": "workers"
+        },
+        {
+          "name": "max_steps",
+          "type": "number",
+          "optional": true,
+          "json_tag": "max_steps"
+        },
+        {
+          "name": "system_prompt",
+          "type": "string",
+          "optional": true,
+          "json_tag": "system_prompt"
+        },
+        {
+          "name": "session_id",
+          "type": "string",
+          "optional": true,
+          "json_tag": "session_id"
+        },
+        {
+          "name": "context_config",
+          "type": "ContextConfig",
+          "optional": true,
+          "json_tag": "context_config"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "AgentWorkerConfig",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "name",
+          "type": "string",
+          "optional": false,
+          "json_tag": "name"
+        },
+        {
+          "name": "model",
+          "type": "string",
+          "optional": true,
+          "json_tag": "model"
+        },
+        {
+          "name": "tools",
+          "type": "ChatTool[]",
+          "optional": true,
+          "json_tag": "tools"
+        },
+        {
+          "name": "system_prompt",
+          "type": "string",
+          "optional": true,
+          "json_tag": "system_prompt"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "AgentEvent",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "type",
+          "type": "string",
+          "optional": false,
+          "json_tag": "type"
+        },
+        {
+          "name": "done",
+          "type": "boolean",
+          "optional": false,
+          "json_tag": "done"
+        },
+        {
+          "name": "worker",
+          "type": "string",
+          "optional": true,
+          "json_tag": "worker"
+        },
+        {
+          "name": "content",
+          "type": "string",
+          "optional": true,
+          "json_tag": "content"
+        },
+        {
+          "name": "tool_use",
+          "type": "StreamToolUse",
+          "optional": true,
+          "json_tag": "tool_use"
+        },
+        {
+          "name": "error",
+          "type": "string",
+          "optional": true,
+          "json_tag": "error"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "MissionRequest",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "goal",
+          "type": "string",
+          "optional": false,
+          "json_tag": "goal"
+        },
+        {
+          "name": "conductor_model",
+          "type": "string",
+          "optional": true,
+          "json_tag": "conductor_model"
+        },
+        {
+          "name": "workers",
+          "type": "MissionWorkerConfig[]",
+          "optional": true,
+          "json_tag": "workers"
+        },
+        {
+          "name": "max_steps",
+          "type": "number",
+          "optional": true,
+          "json_tag": "max_steps"
+        },
+        {
+          "name": "strategy",
+          "type": "string",
+          "optional": true,
+          "json_tag": "strategy"
+        },
+        {
+          "name": "system_prompt",
+          "type": "string",
+          "optional": true,
+          "json_tag": "system_prompt"
+        },
+        {
+          "name": "session_id",
+          "type": "string",
+          "optional": true,
+          "json_tag": "session_id"
+        },
+        {
+          "name": "auto_plan",
+          "type": "boolean",
+          "optional": true,
+          "json_tag": "auto_plan"
+        },
+        {
+          "name": "context_config",
+          "type": "ContextConfig",
+          "optional": true,
+          "json_tag": "context_config"
+        },
+        {
+          "name": "deployment_id",
+          "type": "string",
+          "optional": true,
+          "json_tag": "deployment_id"
+        },
+        {
+          "name": "worker_model",
+          "type": "string",
+          "optional": true,
+          "json_tag": "worker_model"
+        },
+        {
+          "name": "build_command",
+          "type": "string",
+          "optional": true,
+          "json_tag": "build_command"
+        },
+        {
+          "name": "workspace_path",
+          "type": "string",
+          "optional": true,
+          "json_tag": "workspace_path"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "MissionWorkerConfig",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "name",
+          "type": "string",
+          "optional": false,
+          "json_tag": "name"
+        },
+        {
+          "name": "model",
+          "type": "string",
+          "optional": true,
+          "json_tag": "model"
+        },
+        {
+          "name": "tools",
+          "type": "ChatTool[]",
+          "optional": true,
+          "json_tag": "tools"
+        },
+        {
+          "name": "system_prompt",
+          "type": "string",
+          "optional": true,
+          "json_tag": "system_prompt"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "MissionEvent",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "type",
+          "type": "string",
+          "optional": false,
+          "json_tag": "type"
+        },
+        {
+          "name": "done",
+          "type": "boolean",
+          "optional": false,
+          "json_tag": "done"
+        },
+        {
+          "name": "worker",
+          "type": "string",
+          "optional": true,
+          "json_tag": "worker"
+        },
+        {
+          "name": "content",
+          "type": "string",
+          "optional": true,
+          "json_tag": "content"
+        },
+        {
+          "name": "tool_use",
+          "type": "StreamToolUse",
+          "optional": true,
+          "json_tag": "tool_use"
+        },
+        {
+          "name": "error",
+          "type": "string",
+          "optional": true,
+          "json_tag": "error"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "ImageRequest",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "model",
+          "type": "string",
+          "optional": false,
+          "json_tag": "model"
+        },
+        {
+          "name": "prompt",
+          "type": "string",
+          "optional": false,
+          "json_tag": "prompt"
+        },
+        {
+          "name": "n",
+          "type": "number",
+          "optional": true,
+          "json_tag": "n"
+        },
+        {
+          "name": "count",
+          "type": "number",
+          "optional": true,
+          "json_tag": "count"
+        },
+        {
+          "name": "size",
+          "type": "string",
+          "optional": true,
+          "json_tag": "size"
+        },
+        {
+          "name": "aspect_ratio",
+          "type": "string",
+          "optional": true,
+          "json_tag": "aspect_ratio"
+        },
+        {
+          "name": "quality",
+          "type": "string",
+          "optional": true,
+          "json_tag": "quality"
+        },
+        {
+          "name": "output_format",
+          "type": "string",
+          "optional": true,
+          "json_tag": "output_format"
+        },
+        {
+          "name": "style",
+          "type": "string",
+          "optional": true,
+          "json_tag": "style"
+        },
+        {
+          "name": "background",
+          "type": "string",
+          "optional": true,
+          "json_tag": "background"
+        },
+        {
+          "name": "image_url",
+          "type": "string",
+          "optional": true,
+          "json_tag": "image_url"
+        },
+        {
+          "name": "topology",
+          "type": "string",
+          "optional": true,
+          "json_tag": "topology"
+        },
+        {
+          "name": "target_polycount",
+          "type": "number",
+          "optional": true,
+          "json_tag": "target_polycount"
+        },
+        {
+          "name": "symmetry_mode",
+          "type": "string",
+          "optional": true,
+          "json_tag": "symmetry_mode"
+        },
+        {
+          "name": "pose_mode",
+          "type": "string",
+          "optional": true,
+          "json_tag": "pose_mode"
+        },
+        {
+          "name": "enable_pbr",
+          "type": "boolean",
+          "optional": true,
+          "json_tag": "enable_pbr"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "GeneratedImage",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "url",
+          "type": "string",
+          "optional": true,
+          "json_tag": "url"
+        },
+        {
+          "name": "b64_json",
+          "type": "string",
+          "optional": true,
+          "json_tag": "b64_json"
+        },
+        {
+          "name": "base64",
+          "type": "string",
+          "optional": true,
+          "json_tag": "base64"
+        },
+        {
+          "name": "format",
+          "type": "string",
+          "optional": true,
+          "json_tag": "format"
+        },
+        {
+          "name": "index",
+          "type": "number",
+          "optional": true,
+          "json_tag": "index"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "ImageResponse",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "images",
+          "type": "GeneratedImage[]",
+          "optional": false,
+          "json_tag": "images"
+        },
+        {
+          "name": "model",
+          "type": "string",
+          "optional": false,
+          "json_tag": "model"
+        },
+        {
+          "name": "request_id",
+          "type": "string",
+          "optional": false,
+          "json_tag": "request_id"
+        },
+        {
+          "name": "cost_ticks",
+          "type": "number",
+          "optional": false,
+          "json_tag": "cost_ticks"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "ImageEditRequest",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "model",
+          "type": "string",
+          "optional": false,
+          "json_tag": "model"
+        },
+        {
+          "name": "prompt",
+          "type": "string",
+          "optional": false,
+          "json_tag": "prompt"
+        },
+        {
+          "name": "image",
+          "type": "string",
+          "optional": true,
+          "json_tag": "image"
+        },
+        {
+          "name": "input_images",
+          "type": "string[]",
+          "optional": true,
+          "json_tag": "input_images"
+        },
+        {
+          "name": "mask",
+          "type": "string",
+          "optional": true,
+          "json_tag": "mask"
+        },
+        {
+          "name": "size",
+          "type": "string",
+          "optional": true,
+          "json_tag": "size"
+        },
+        {
+          "name": "n",
+          "type": "number",
+          "optional": true,
+          "json_tag": "n"
+        },
+        {
+          "name": "count",
+          "type": "number",
+          "optional": true,
+          "json_tag": "count"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "ImageEditResponse",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "images",
+          "type": "GeneratedImage[]",
+          "optional": false,
+          "json_tag": "images"
+        },
+        {
+          "name": "model",
+          "type": "string",
+          "optional": false,
+          "json_tag": "model"
+        },
+        {
+          "name": "request_id",
+          "type": "string",
+          "optional": false,
+          "json_tag": "request_id"
+        },
+        {
+          "name": "cost_ticks",
+          "type": "number",
+          "optional": false,
+          "json_tag": "cost_ticks"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "TTSRequest",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "model",
+          "type": "string",
+          "optional": true,
+          "json_tag": "model"
+        },
+        {
+          "name": "text",
+          "type": "string",
+          "optional": false,
+          "json_tag": "text"
+        },
+        {
+          "name": "voice",
+          "type": "string",
+          "optional": true,
+          "json_tag": "voice"
+        },
+        {
+          "name": "format",
+          "type": "string",
+          "optional": true,
+          "json_tag": "format"
+        },
+        {
+          "name": "speed",
+          "type": "number",
+          "optional": true,
+          "json_tag": "speed"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "TTSResponse",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "audio_url",
+          "type": "string",
+          "optional": false,
+          "json_tag": "audio_url"
+        },
+        {
+          "name": "format",
+          "type": "string",
+          "optional": false,
+          "json_tag": "format"
+        },
+        {
+          "name": "duration_seconds",
+          "type": "number",
+          "optional": false,
+          "json_tag": "duration_seconds"
+        },
+        {
+          "name": "request_id",
+          "type": "string",
+          "optional": false,
+          "json_tag": "request_id"
+        },
+        {
+          "name": "cost_ticks",
+          "type": "number",
+          "optional": false,
+          "json_tag": "cost_ticks"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "STTRequest",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "model",
+          "type": "string",
+          "optional": true,
+          "json_tag": "model"
+        },
+        {
+          "name": "audio",
+          "type": "string",
+          "optional": false,
+          "json_tag": "audio"
+        },
+        {
+          "name": "format",
+          "type": "string",
+          "optional": true,
+          "json_tag": "format"
+        },
+        {
+          "name": "language",
+          "type": "string",
+          "optional": true,
+          "json_tag": "language"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "STTResponse",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "text",
+          "type": "string",
+          "optional": false,
+          "json_tag": "text"
+        },
+        {
+          "name": "language",
+          "type": "string",
+          "optional": false,
+          "json_tag": "language"
+        },
+        {
+          "name": "duration_seconds",
+          "type": "number",
+          "optional": false,
+          "json_tag": "duration_seconds"
+        },
+        {
+          "name": "request_id",
+          "type": "string",
+          "optional": false,
+          "json_tag": "request_id"
+        },
+        {
+          "name": "cost_ticks",
+          "type": "number",
+          "optional": false,
+          "json_tag": "cost_ticks"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "MusicRequest",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "prompt",
+          "type": "string",
+          "optional": false,
+          "json_tag": "prompt"
+        },
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": true,
+          "json_tag": "duration"
+        },
+        {
+          "name": "duration_seconds",
+          "type": "number",
+          "optional": true,
+          "json_tag": "duration_seconds"
+        },
+        {
+          "name": "model",
+          "type": "string",
+          "optional": true,
+          "json_tag": "model"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "MusicClip",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "audio_url",
+          "type": "string",
+          "optional": true,
+          "json_tag": "audio_url"
+        },
+        {
+          "name": "title",
+          "type": "string",
+          "optional": true,
+          "json_tag": "title"
+        },
+        {
+          "name": "tags",
+          "type": "string",
+          "optional": true,
+          "json_tag": "tags"
+        },
+        {
+          "name": "duration_seconds",
+          "type": "number",
+          "optional": true,
+          "json_tag": "duration_seconds"
+        },
+        {
+          "name": "base64",
+          "type": "string",
+          "optional": true,
+          "json_tag": "base64"
+        },
+        {
+          "name": "format",
+          "type": "string",
+          "optional": true,
+          "json_tag": "format"
+        },
+        {
+          "name": "size_bytes",
+          "type": "number",
+          "optional": true,
+          "json_tag": "size_bytes"
+        },
+        {
+          "name": "index",
+          "type": "number",
+          "optional": true,
+          "json_tag": "index"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "MusicResponse",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "clips",
+          "type": "MusicClip[]",
+          "optional": true,
+          "json_tag": "clips"
+        },
+        {
+          "name": "audio_clips",
+          "type": "MusicClip[]",
+          "optional": true,
+          "json_tag": "audio_clips"
+        },
+        {
+          "name": "model",
+          "type": "string",
+          "optional": true,
+          "json_tag": "model"
+        },
+        {
+          "name": "request_id",
+          "type": "string",
+          "optional": false,
+          "json_tag": "request_id"
+        },
+        {
+          "name": "cost_ticks",
+          "type": "number",
+          "optional": false,
+          "json_tag": "cost_ticks"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "SoundEffectRequest",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "text",
+          "type": "string",
+          "optional": true,
+          "json_tag": "text"
+        },
+        {
+          "name": "prompt",
+          "type": "string",
+          "optional": true,
+          "json_tag": "prompt"
+        },
+        {
+          "name": "duration_seconds",
+          "type": "number",
+          "optional": true,
+          "json_tag": "duration_seconds"
+        },
+        {
+          "name": "prompt_influence",
+          "type": "number",
+          "optional": true,
+          "json_tag": "prompt_influence"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "SoundEffectResponse",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "audio_url",
+          "type": "string",
+          "optional": true,
+          "json_tag": "audio_url"
+        },
+        {
+          "name": "audio_base64",
+          "type": "string",
+          "optional": true,
+          "json_tag": "audio_base64"
+        },
+        {
+          "name": "format",
+          "type": "string",
+          "optional": true,
+          "json_tag": "format"
+        },
+        {
+          "name": "size_bytes",
+          "type": "number",
+          "optional": true,
+          "json_tag": "size_bytes"
+        },
+        {
+          "name": "model",
+          "type": "string",
+          "optional": true,
+          "json_tag": "model"
+        },
+        {
+          "name": "request_id",
+          "type": "string",
+          "optional": false,
+          "json_tag": "request_id"
+        },
+        {
+          "name": "cost_ticks",
+          "type": "number",
+          "optional": false,
+          "json_tag": "cost_ticks"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "DialogueVoice",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "voice_id",
+          "type": "string",
+          "optional": false,
+          "json_tag": "voice_id"
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "optional": true,
+          "json_tag": "name"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "DialogueRequest",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "script",
+          "type": "string",
+          "optional": true,
+          "json_tag": "script"
+        },
+        {
+          "name": "text",
+          "type": "string",
+          "optional": true,
+          "json_tag": "text"
+        },
+        {
+          "name": "voices",
+          "type": "Record\u003cstring, string\u003e | DialogueVoice[]",
+          "optional": false,
+          "json_tag": "voices"
+        },
+        {
+          "name": "model",
+          "type": "string",
+          "optional": true,
+          "json_tag": "model"
+        },
+        {
+          "name": "output_format",
+          "type": "string",
+          "optional": true,
+          "json_tag": "output_format"
+        },
+        {
+          "name": "seed",
+          "type": "number",
+          "optional": true,
+          "json_tag": "seed"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "DialogueResponse",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "audio_url",
+          "type": "string",
+          "optional": false,
+          "json_tag": "audio_url"
+        },
+        {
+          "name": "duration_seconds",
+          "type": "number",
+          "optional": false,
+          "json_tag": "duration_seconds"
+        },
+        {
+          "name": "request_id",
+          "type": "string",
+          "optional": false,
+          "json_tag": "request_id"
+        },
+        {
+          "name": "cost_ticks",
+          "type": "number",
+          "optional": false,
+          "json_tag": "cost_ticks"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "SpeechToSpeechRequest",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "audio",
+          "type": "string",
+          "optional": true,
+          "json_tag": "audio"
+        },
+        {
+          "name": "audio_base64",
+          "type": "string",
+          "optional": true,
+          "json_tag": "audio_base64"
+        },
+        {
+          "name": "voice_id",
+          "type": "string",
+          "optional": true,
+          "json_tag": "voice_id"
+        },
+        {
+          "name": "voice",
+          "type": "string",
+          "optional": true,
+          "json_tag": "voice"
+        },
+        {
+          "name": "model",
+          "type": "string",
+          "optional": true,
+          "json_tag": "model"
+        },
+        {
+          "name": "output_format",
+          "type": "string",
+          "optional": true,
+          "json_tag": "output_format"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "SpeechToSpeechResponse",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "audio_url",
+          "type": "string",
+          "optional": false,
+          "json_tag": "audio_url"
+        },
+        {
+          "name": "duration_seconds",
+          "type": "number",
+          "optional": false,
+          "json_tag": "duration_seconds"
+        },
+        {
+          "name": "request_id",
+          "type": "string",
+          "optional": false,
+          "json_tag": "request_id"
+        },
+        {
+          "name": "cost_ticks",
+          "type": "number",
+          "optional": false,
+          "json_tag": "cost_ticks"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "IsolateVoiceRequest",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "audio",
+          "type": "string",
+          "optional": false,
+          "json_tag": "audio"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "IsolateVoiceResponse",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "audio_url",
+          "type": "string",
+          "optional": false,
+          "json_tag": "audio_url"
+        },
+        {
+          "name": "request_id",
+          "type": "string",
+          "optional": false,
+          "json_tag": "request_id"
+        },
+        {
+          "name": "cost_ticks",
+          "type": "number",
+          "optional": false,
+          "json_tag": "cost_ticks"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "RemixVoiceRequest",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "audio",
+          "type": "string",
+          "optional": false,
+          "json_tag": "audio"
+        },
+        {
+          "name": "voice_id",
+          "type": "string",
+          "optional": false,
+          "json_tag": "voice_id"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "RemixVoiceResponse",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "audio_url",
+          "type": "string",
+          "optional": false,
+          "json_tag": "audio_url"
+        },
+        {
+          "name": "request_id",
+          "type": "string",
+          "optional": false,
+          "json_tag": "request_id"
+        },
+        {
+          "name": "cost_ticks",
+          "type": "number",
+          "optional": false,
+          "json_tag": "cost_ticks"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "DubRequest",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "audio",
+          "type": "string",
+          "optional": true,
+          "json_tag": "audio"
+        },
+        {
+          "name": "audio_base64",
+          "type": "string",
+          "optional": true,
+          "json_tag": "audio_base64"
+        },
+        {
+          "name": "filename",
+          "type": "string",
+          "optional": true,
+          "json_tag": "filename"
+        },
+        {
+          "name": "target_lang",
+          "type": "string",
+          "optional": true,
+          "json_tag": "target_lang"
+        },
+        {
+          "name": "target_language",
+          "type": "string",
+          "optional": true,
+          "json_tag": "target_language"
+        },
+        {
+          "name": "source_lang",
+          "type": "string",
+          "optional": true,
+          "json_tag": "source_lang"
+        },
+        {
+          "name": "source_language",
+          "type": "string",
+          "optional": true,
+          "json_tag": "source_language"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "DubResponse",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "audio_url",
+          "type": "string",
+          "optional": false,
+          "json_tag": "audio_url"
+        },
+        {
+          "name": "request_id",
+          "type": "string",
+          "optional": false,
+          "json_tag": "request_id"
+        },
+        {
+          "name": "cost_ticks",
+          "type": "number",
+          "optional": false,
+          "json_tag": "cost_ticks"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "AlignRequest",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "audio",
+          "type": "string",
+          "optional": true,
+          "json_tag": "audio"
+        },
+        {
+          "name": "audio_base64",
+          "type": "string",
+          "optional": true,
+          "json_tag": "audio_base64"
+        },
+        {
+          "name": "text",
+          "type": "string",
+          "optional": false,
+          "json_tag": "text"
+        },
+        {
+          "name": "language",
+          "type": "string",
+          "optional": true,
+          "json_tag": "language"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "AlignedWord",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "word",
+          "type": "string",
+          "optional": false,
+          "json_tag": "word"
+        },
+        {
+          "name": "start",
+          "type": "number",
+          "optional": false,
+          "json_tag": "start"
+        },
+        {
+          "name": "end",
+          "type": "number",
+          "optional": false,
+          "json_tag": "end"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "AlignResponse",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "words",
+          "type": "AlignedWord[]",
+          "optional": true,
+          "json_tag": "words"
+        },
+        {
+          "name": "segments",
+          "type": "AlignmentSegment[]",
+          "optional": true,
+          "json_tag": "segments"
+        },
+        {
+          "name": "request_id",
+          "type": "string",
+          "optional": false,
+          "json_tag": "request_id"
+        },
+        {
+          "name": "cost_ticks",
+          "type": "number",
+          "optional": false,
+          "json_tag": "cost_ticks"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "VoiceDesignRequest",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "description",
+          "type": "string",
+          "optional": false,
+          "json_tag": "description"
+        },
+        {
+          "name": "text",
+          "type": "string",
+          "optional": true,
+          "json_tag": "text"
+        },
+        {
+          "name": "preview_text",
+          "type": "string",
+          "optional": true,
+          "json_tag": "preview_text"
+        },
+        {
+          "name": "output_format",
+          "type": "string",
+          "optional": true,
+          "json_tag": "output_format"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "VoicePreview",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "audio_url",
+          "type": "string",
+          "optional": false,
+          "json_tag": "audio_url"
+        },
+        {
+          "name": "voice_id",
+          "type": "string",
+          "optional": false,
+          "json_tag": "voice_id"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "VoiceDesignResponse",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "previews",
+          "type": "VoicePreview[]",
+          "optional": false,
+          "json_tag": "previews"
+        },
+        {
+          "name": "request_id",
+          "type": "string",
+          "optional": false,
+          "json_tag": "request_id"
+        },
+        {
+          "name": "cost_ticks",
+          "type": "number",
+          "optional": false,
+          "json_tag": "cost_ticks"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "StarfishTTSRequest",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "text",
+          "type": "string",
+          "optional": false,
+          "json_tag": "text"
+        },
+        {
+          "name": "reference_audio",
+          "type": "string",
+          "optional": true,
+          "json_tag": "reference_audio"
+        },
+        {
+          "name": "voice",
+          "type": "string",
+          "optional": true,
+          "json_tag": "voice"
+        },
+        {
+          "name": "output_format",
+          "type": "string",
+          "optional": true,
+          "json_tag": "output_format"
+        },
+        {
+          "name": "speed",
+          "type": "number",
+          "optional": true,
+          "json_tag": "speed"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "StarfishTTSResponse",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "audio_url",
+          "type": "string",
+          "optional": false,
+          "json_tag": "audio_url"
+        },
+        {
+          "name": "duration_seconds",
+          "type": "number",
+          "optional": false,
+          "json_tag": "duration_seconds"
+        },
+        {
+          "name": "request_id",
+          "type": "string",
+          "optional": false,
+          "json_tag": "request_id"
+        },
+        {
+          "name": "cost_ticks",
+          "type": "number",
+          "optional": false,
+          "json_tag": "cost_ticks"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "MusicAdvancedRequest",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "prompt",
+          "type": "string",
+          "optional": false,
+          "json_tag": "prompt"
+        },
+        {
+          "name": "duration_seconds",
+          "type": "number",
+          "optional": true,
+          "json_tag": "duration_seconds"
+        },
+        {
+          "name": "model",
+          "type": "string",
+          "optional": true,
+          "json_tag": "model"
+        },
+        {
+          "name": "finetune_id",
+          "type": "string",
+          "optional": true,
+          "json_tag": "finetune_id"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "MusicAdvancedClip",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "base64",
+          "type": "string",
+          "optional": false,
+          "json_tag": "base64"
+        },
+        {
+          "name": "format",
+          "type": "string",
+          "optional": false,
+          "json_tag": "format"
+        },
+        {
+          "name": "size",
+          "type": "number",
+          "optional": false,
+          "json_tag": "size"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "MusicAdvancedResponse",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "clips",
+          "type": "MusicAdvancedClip[]",
+          "optional": false,
+          "json_tag": "clips"
+        },
+        {
+          "name": "model",
+          "type": "string",
+          "optional": false,
+          "json_tag": "model"
+        },
+        {
+          "name": "cost_ticks",
+          "type": "number",
+          "optional": false,
+          "json_tag": "cost_ticks"
+        },
+        {
+          "name": "request_id",
+          "type": "string",
+          "optional": false,
+          "json_tag": "request_id"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "MusicFinetuneInfo",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "finetune_id",
+          "type": "string",
+          "optional": false,
+          "json_tag": "finetune_id"
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "optional": false,
+          "json_tag": "name"
+        },
+        {
+          "name": "description",
+          "type": "string",
+          "optional": true,
+          "json_tag": "description"
+        },
+        {
+          "name": "status",
+          "type": "string",
+          "optional": false,
+          "json_tag": "status"
+        },
+        {
+          "name": "model_id",
+          "type": "string",
+          "optional": true,
+          "json_tag": "model_id"
+        },
+        {
+          "name": "created_at",
+          "type": "string",
+          "optional": true,
+          "json_tag": "created_at"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "MusicFinetuneListResponse",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "finetunes",
+          "type": "MusicFinetuneInfo[]",
+          "optional": false,
+          "json_tag": "finetunes"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "MusicFinetuneCreateRequest",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "name",
+          "type": "string",
+          "optional": false,
+          "json_tag": "name"
+        },
+        {
+          "name": "description",
+          "type": "string",
+          "optional": true,
+          "json_tag": "description"
+        },
+        {
+          "name": "samples",
+          "type": "string[]",
+          "optional": false,
+          "json_tag": "samples"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "VideoRequest",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "model",
+          "type": "string",
+          "optional": false,
+          "json_tag": "model"
+        },
+        {
+          "name": "prompt",
+          "type": "string",
+          "optional": false,
+          "json_tag": "prompt"
+        },
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": true,
+          "json_tag": "duration"
+        },
+        {
+          "name": "duration_seconds",
+          "type": "number",
+          "optional": true,
+          "json_tag": "duration_seconds"
+        },
+        {
+          "name": "aspect_ratio",
+          "type": "string",
+          "optional": true,
+          "json_tag": "aspect_ratio"
+        },
+        {
+          "name": "resolution",
+          "type": "string",
+          "optional": true,
+          "json_tag": "resolution"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "GeneratedVideo",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "url",
+          "type": "string",
+          "optional": true,
+          "json_tag": "url"
+        },
+        {
+          "name": "duration_seconds",
+          "type": "number",
+          "optional": true,
+          "json_tag": "duration_seconds"
+        },
+        {
+          "name": "base64",
+          "type": "string",
+          "optional": true,
+          "json_tag": "base64"
+        },
+        {
+          "name": "format",
+          "type": "string",
+          "optional": true,
+          "json_tag": "format"
+        },
+        {
+          "name": "size_bytes",
+          "type": "number",
+          "optional": true,
+          "json_tag": "size_bytes"
+        },
+        {
+          "name": "index",
+          "type": "number",
+          "optional": true,
+          "json_tag": "index"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "VideoResponse",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "videos",
+          "type": "GeneratedVideo[]",
+          "optional": false,
+          "json_tag": "videos"
+        },
+        {
+          "name": "model",
+          "type": "string",
+          "optional": false,
+          "json_tag": "model"
+        },
+        {
+          "name": "request_id",
+          "type": "string",
+          "optional": false,
+          "json_tag": "request_id"
+        },
+        {
+          "name": "cost_ticks",
+          "type": "number",
+          "optional": false,
+          "json_tag": "cost_ticks"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "VideoStudioRequest",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "avatar_id",
+          "type": "string",
+          "optional": false,
+          "json_tag": "avatar_id"
+        },
+        {
+          "name": "script",
+          "type": "string",
+          "optional": false,
+          "json_tag": "script"
+        },
+        {
+          "name": "voice_id",
+          "type": "string",
+          "optional": true,
+          "json_tag": "voice_id"
+        },
+        {
+          "name": "clips",
+          "type": "StudioClip[]",
+          "optional": true,
+          "json_tag": "clips"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "StudioClip",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "avatar_id",
+          "type": "string",
+          "optional": false,
+          "json_tag": "avatar_id"
+        },
+        {
+          "name": "script",
+          "type": "string",
+          "optional": false,
+          "json_tag": "script"
+        },
+        {
+          "name": "voice_id",
+          "type": "string",
+          "optional": true,
+          "json_tag": "voice_id"
+        },
+        {
+          "name": "background",
+          "type": "string",
+          "optional": true,
+          "json_tag": "background"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "VideoTranslateRequest",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "video_url",
+          "type": "string",
+          "optional": false,
+          "json_tag": "video_url"
+        },
+        {
+          "name": "target_lang",
+          "type": "string",
+          "optional": false,
+          "json_tag": "target_lang"
+        },
+        {
+          "name": "source_lang",
+          "type": "string",
+          "optional": true,
+          "json_tag": "source_lang"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "PhotoAvatarRequest",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "image",
+          "type": "string",
+          "optional": true,
+          "json_tag": "image"
+        },
+        {
+          "name": "photo_base64",
+          "type": "string",
+          "optional": true,
+          "json_tag": "photo_base64"
+        },
+        {
+          "name": "script",
+          "type": "string",
+          "optional": true,
+          "json_tag": "script"
+        },
+        {
+          "name": "voice_id",
+          "type": "string",
+          "optional": true,
+          "json_tag": "voice_id"
+        },
+        {
+          "name": "aspect_ratio",
+          "type": "string",
+          "optional": true,
+          "json_tag": "aspect_ratio"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "DigitalTwinRequest",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "video",
+          "type": "string",
+          "optional": true,
+          "json_tag": "video"
+        },
+        {
+          "name": "avatar_id",
+          "type": "string",
+          "optional": true,
+          "json_tag": "avatar_id"
+        },
+        {
+          "name": "script",
+          "type": "string",
+          "optional": true,
+          "json_tag": "script"
+        },
+        {
+          "name": "voice_id",
+          "type": "string",
+          "optional": true,
+          "json_tag": "voice_id"
+        },
+        {
+          "name": "aspect_ratio",
+          "type": "string",
+          "optional": true,
+          "json_tag": "aspect_ratio"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "AsyncJobResponse",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "job_id",
+          "type": "string",
+          "optional": false,
+          "json_tag": "job_id"
+        },
+        {
+          "name": "status",
+          "type": "string",
+          "optional": false,
+          "json_tag": "status"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "HeyGenAvatar",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "avatar_id",
+          "type": "string",
+          "optional": false,
+          "json_tag": "avatar_id"
+        },
+        {
+          "name": "avatar_name",
+          "type": "string",
+          "optional": false,
+          "json_tag": "avatar_name"
+        },
+        {
+          "name": "preview_url",
+          "type": "string",
+          "optional": true,
+          "json_tag": "preview_url"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "AvatarsResponse",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "avatars",
+          "type": "HeyGenAvatar[]",
+          "optional": false,
+          "json_tag": "avatars"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "HeyGenTemplate",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "template_id",
+          "type": "string",
+          "optional": false,
+          "json_tag": "template_id"
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "optional": false,
+          "json_tag": "name"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "HeyGenTemplatesResponse",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "templates",
+          "type": "HeyGenTemplate[]",
+          "optional": false,
+          "json_tag": "templates"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "HeyGenVoice",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "voice_id",
+          "type": "string",
+          "optional": false,
+          "json_tag": "voice_id"
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "optional": false,
+          "json_tag": "name"
+        },
+        {
+          "name": "language",
+          "type": "string",
+          "optional": true,
+          "json_tag": "language"
+        },
+        {
+          "name": "gender",
+          "type": "string",
+          "optional": true,
+          "json_tag": "gender"
+        },
+        {
+          "name": "extra",
+          "type": "Record\u003cstring, unknown\u003e",
+          "optional": true,
+          "json_tag": "extra"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "HeyGenVoicesResponse",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "voices",
+          "type": "HeyGenVoice[]",
+          "optional": false,
+          "json_tag": "voices"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "EmbedRequest",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "model",
+          "type": "string",
+          "optional": true,
+          "json_tag": "model"
+        },
+        {
+          "name": "input",
+          "type": "string | string[]",
+          "optional": false,
+          "json_tag": "input"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "EmbedResponse",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "embeddings",
+          "type": "number[][]",
+          "optional": false,
+          "json_tag": "embeddings"
+        },
+        {
+          "name": "model",
+          "type": "string",
+          "optional": false,
+          "json_tag": "model"
+        },
+        {
+          "name": "request_id",
+          "type": "string",
+          "optional": false,
+          "json_tag": "request_id"
+        },
+        {
+          "name": "cost_ticks",
+          "type": "number",
+          "optional": false,
+          "json_tag": "cost_ticks"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "DocumentRequest",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "content",
+          "type": "string",
+          "optional": true,
+          "json_tag": "content"
+        },
+        {
+          "name": "file_base64",
+          "type": "string",
+          "optional": true,
+          "json_tag": "file_base64"
+        },
+        {
+          "name": "filename",
+          "type": "string",
+          "optional": true,
+          "json_tag": "filename"
+        },
+        {
+          "name": "type",
+          "type": "string",
+          "optional": true,
+          "json_tag": "type"
+        },
+        {
+          "name": "output_format",
+          "type": "string",
+          "optional": true,
+          "json_tag": "output_format"
+        },
+        {
+          "name": "model",
+          "type": "string",
+          "optional": true,
+          "json_tag": "model"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "DocumentResponse",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "text",
+          "type": "string",
+          "optional": true,
+          "json_tag": "text"
+        },
+        {
+          "name": "content",
+          "type": "string",
+          "optional": true,
+          "json_tag": "content"
+        },
+        {
+          "name": "format",
+          "type": "string",
+          "optional": true,
+          "json_tag": "format"
+        },
+        {
+          "name": "meta",
+          "type": "Record\u003cstring, unknown\u003e",
+          "optional": true,
+          "json_tag": "meta"
+        },
+        {
+          "name": "pages",
+          "type": "number",
+          "optional": true,
+          "json_tag": "pages"
+        },
+        {
+          "name": "request_id",
+          "type": "string",
+          "optional": false,
+          "json_tag": "request_id"
+        },
+        {
+          "name": "cost_ticks",
+          "type": "number",
+          "optional": false,
+          "json_tag": "cost_ticks"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "ChunkDocumentRequest",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "text",
+          "type": "string",
+          "optional": false,
+          "json_tag": "text"
+        },
+        {
+          "name": "chunk_size",
+          "type": "number",
+          "optional": true,
+          "json_tag": "chunk_size"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "DocumentChunk",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "text",
+          "type": "string",
+          "optional": false,
+          "json_tag": "text"
+        },
+        {
+          "name": "index",
+          "type": "number",
+          "optional": false,
+          "json_tag": "index"
+        },
+        {
+          "name": "tokens",
+          "type": "number",
+          "optional": true,
+          "json_tag": "tokens"
+        },
+        {
+          "name": "token_count",
+          "type": "number",
+          "optional": true,
+          "json_tag": "token_count"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "ChunkDocumentResponse",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "chunks",
+          "type": "DocumentChunk[]",
+          "optional": false,
+          "json_tag": "chunks"
+        },
+        {
+          "name": "request_id",
+          "type": "string",
+          "optional": false,
+          "json_tag": "request_id"
+        },
+        {
+          "name": "cost_ticks",
+          "type": "number",
+          "optional": false,
+          "json_tag": "cost_ticks"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "ProcessDocumentRequest",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "text",
+          "type": "string",
+          "optional": false,
+          "json_tag": "text"
+        },
+        {
+          "name": "instructions",
+          "type": "string",
+          "optional": true,
+          "json_tag": "instructions"
+        },
+        {
+          "name": "model",
+          "type": "string",
+          "optional": true,
+          "json_tag": "model"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "ProcessDocumentResponse",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "result",
+          "type": "string",
+          "optional": false,
+          "json_tag": "result"
+        },
+        {
+          "name": "request_id",
+          "type": "string",
+          "optional": false,
+          "json_tag": "request_id"
+        },
+        {
+          "name": "cost_ticks",
+          "type": "number",
+          "optional": false,
+          "json_tag": "cost_ticks"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "RAGSearchRequest",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "query",
+          "type": "string",
+          "optional": false,
+          "json_tag": "query"
+        },
+        {
+          "name": "corpus",
+          "type": "string",
+          "optional": true,
+          "json_tag": "corpus"
+        },
+        {
+          "name": "top_k",
+          "type": "number",
+          "optional": true,
+          "json_tag": "top_k"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "RAGResult",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "text",
+          "type": "string",
+          "optional": false,
+          "json_tag": "text"
+        },
+        {
+          "name": "score",
+          "type": "number",
+          "optional": false,
+          "json_tag": "score"
+        },
+        {
+          "name": "source",
+          "type": "string",
+          "optional": true,
+          "json_tag": "source"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "RAGSearchResponse",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "results",
+          "type": "RAGResult[]",
+          "optional": false,
+          "json_tag": "results"
+        },
+        {
+          "name": "request_id",
+          "type": "string",
+          "optional": false,
+          "json_tag": "request_id"
+        },
+        {
+          "name": "cost_ticks",
+          "type": "number",
+          "optional": false,
+          "json_tag": "cost_ticks"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "RAGCorpus",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "name",
+          "type": "string",
+          "optional": false,
+          "json_tag": "name"
+        },
+        {
+          "name": "displayName",
+          "type": "string",
+          "optional": false,
+          "json_tag": "displayName"
+        },
+        {
+          "name": "description",
+          "type": "string",
+          "optional": false,
+          "json_tag": "description"
+        },
+        {
+          "name": "state",
+          "type": "string",
+          "optional": false,
+          "json_tag": "state"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "SurrealRAGSearchRequest",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "query",
+          "type": "string",
+          "optional": false,
+          "json_tag": "query"
+        },
+        {
+          "name": "provider",
+          "type": "string",
+          "optional": true,
+          "json_tag": "provider"
+        },
+        {
+          "name": "limit",
+          "type": "number",
+          "optional": true,
+          "json_tag": "limit"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "SurrealRAGResult",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string",
+          "optional": false,
+          "json_tag": "id"
+        },
+        {
+          "name": "text",
+          "type": "string",
+          "optional": false,
+          "json_tag": "text"
+        },
+        {
+          "name": "score",
+          "type": "number",
+          "optional": false,
+          "json_tag": "score"
+        },
+        {
+          "name": "provider",
+          "type": "string",
+          "optional": false,
+          "json_tag": "provider"
+        },
+        {
+          "name": "source",
+          "type": "string",
+          "optional": true,
+          "json_tag": "source"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "SurrealRAGSearchResponse",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "results",
+          "type": "SurrealRAGResult[]",
+          "optional": false,
+          "json_tag": "results"
+        },
+        {
+          "name": "request_id",
+          "type": "string",
+          "optional": false,
+          "json_tag": "request_id"
+        },
+        {
+          "name": "cost_ticks",
+          "type": "number",
+          "optional": false,
+          "json_tag": "cost_ticks"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "SurrealRAGProviderInfo",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "provider",
+          "type": "string",
+          "optional": false,
+          "json_tag": "provider"
+        },
+        {
+          "name": "chunk_count",
+          "type": "number",
+          "optional": false,
+          "json_tag": "chunk_count"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "SurrealRAGProvidersResponse",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "providers",
+          "type": "SurrealRAGProviderInfo[]",
+          "optional": false,
+          "json_tag": "providers"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "ModelInfo",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string",
+          "optional": false,
+          "json_tag": "id"
+        },
+        {
+          "name": "provider",
+          "type": "string",
+          "optional": false,
+          "json_tag": "provider"
+        },
+        {
+          "name": "display_name",
+          "type": "string",
+          "optional": false,
+          "json_tag": "display_name"
+        },
+        {
+          "name": "input_per_million",
+          "type": "number",
+          "optional": false,
+          "json_tag": "input_per_million"
+        },
+        {
+          "name": "output_per_million",
+          "type": "number",
+          "optional": false,
+          "json_tag": "output_per_million"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "PricingInfo",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string",
+          "optional": false,
+          "json_tag": "id"
+        },
+        {
+          "name": "provider",
+          "type": "string",
+          "optional": false,
+          "json_tag": "provider"
+        },
+        {
+          "name": "display_name",
+          "type": "string",
+          "optional": false,
+          "json_tag": "display_name"
+        },
+        {
+          "name": "input_per_million",
+          "type": "number",
+          "optional": false,
+          "json_tag": "input_per_million"
+        },
+        {
+          "name": "output_per_million",
+          "type": "number",
+          "optional": false,
+          "json_tag": "output_per_million"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "BalanceResponse",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "user_id",
+          "type": "string",
+          "optional": false,
+          "json_tag": "user_id"
+        },
+        {
+          "name": "credit_ticks",
+          "type": "number",
+          "optional": false,
+          "json_tag": "credit_ticks"
+        },
+        {
+          "name": "credit_usd",
+          "type": "number",
+          "optional": false,
+          "json_tag": "credit_usd"
+        },
+        {
+          "name": "ticks_per_usd",
+          "type": "number",
+          "optional": false,
+          "json_tag": "ticks_per_usd"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "UsageEntry",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string",
+          "optional": false,
+          "json_tag": "id"
+        },
+        {
+          "name": "request_id",
+          "type": "string",
+          "optional": true,
+          "json_tag": "request_id"
+        },
+        {
+          "name": "model",
+          "type": "string",
+          "optional": true,
+          "json_tag": "model"
+        },
+        {
+          "name": "provider",
+          "type": "string",
+          "optional": true,
+          "json_tag": "provider"
+        },
+        {
+          "name": "endpoint",
+          "type": "string",
+          "optional": true,
+          "json_tag": "endpoint"
+        },
+        {
+          "name": "delta_ticks",
+          "type": "number",
+          "optional": true,
+          "json_tag": "delta_ticks"
+        },
+        {
+          "name": "balance_after",
+          "type": "number",
+          "optional": true,
+          "json_tag": "balance_after"
+        },
+        {
+          "name": "input_tokens",
+          "type": "number",
+          "optional": true,
+          "json_tag": "input_tokens"
+        },
+        {
+          "name": "output_tokens",
+          "type": "number",
+          "optional": true,
+          "json_tag": "output_tokens"
+        },
+        {
+          "name": "created_at",
+          "type": "string",
+          "optional": true,
+          "json_tag": "created_at"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "UsageResponse",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "entries",
+          "type": "UsageEntry[]",
+          "optional": false,
+          "json_tag": "entries"
+        },
+        {
+          "name": "has_more",
+          "type": "boolean",
+          "optional": false,
+          "json_tag": "has_more"
+        },
+        {
+          "name": "next_cursor",
+          "type": "string",
+          "optional": true,
+          "json_tag": "next_cursor"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "UsageQuery",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "limit",
+          "type": "number",
+          "optional": true,
+          "json_tag": "limit"
+        },
+        {
+          "name": "start_after",
+          "type": "string",
+          "optional": true,
+          "json_tag": "start_after"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "UsageSummaryMonth",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "month",
+          "type": "string",
+          "optional": false,
+          "json_tag": "month"
+        },
+        {
+          "name": "total_requests",
+          "type": "number",
+          "optional": false,
+          "json_tag": "total_requests"
+        },
+        {
+          "name": "total_input_tokens",
+          "type": "number",
+          "optional": false,
+          "json_tag": "total_input_tokens"
+        },
+        {
+          "name": "total_output_tokens",
+          "type": "number",
+          "optional": false,
+          "json_tag": "total_output_tokens"
+        },
+        {
+          "name": "total_cost_usd",
+          "type": "number",
+          "optional": false,
+          "json_tag": "total_cost_usd"
+        },
+        {
+          "name": "total_margin_usd",
+          "type": "number",
+          "optional": false,
+          "json_tag": "total_margin_usd"
+        },
+        {
+          "name": "by_provider",
+          "type": "unknown[]",
+          "optional": true,
+          "json_tag": "by_provider"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "UsageSummaryResponse",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "months",
+          "type": "UsageSummaryMonth[]",
+          "optional": false,
+          "json_tag": "months"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "PricingEntry",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "Provider",
+          "type": "string",
+          "optional": true,
+          "json_tag": "Provider"
+        },
+        {
+          "name": "Model",
+          "type": "string",
+          "optional": true,
+          "json_tag": "Model"
+        },
+        {
+          "name": "DisplayName",
+          "type": "string",
+          "optional": true,
+          "json_tag": "DisplayName"
+        },
+        {
+          "name": "InputPerMillion",
+          "type": "number",
+          "optional": true,
+          "json_tag": "InputPerMillion"
+        },
+        {
+          "name": "OutputPerMillion",
+          "type": "number",
+          "optional": true,
+          "json_tag": "OutputPerMillion"
+        },
+        {
+          "name": "CachedPerMillion",
+          "type": "number",
+          "optional": true,
+          "json_tag": "CachedPerMillion"
+        },
+        {
+          "name": "provider",
+          "type": "string",
+          "optional": true,
+          "json_tag": "provider"
+        },
+        {
+          "name": "model",
+          "type": "string",
+          "optional": true,
+          "json_tag": "model"
+        },
+        {
+          "name": "display_name",
+          "type": "string",
+          "optional": true,
+          "json_tag": "display_name"
+        },
+        {
+          "name": "input_per_million",
+          "type": "number",
+          "optional": true,
+          "json_tag": "input_per_million"
+        },
+        {
+          "name": "output_per_million",
+          "type": "number",
+          "optional": true,
+          "json_tag": "output_per_million"
+        },
+        {
+          "name": "cached_per_million",
+          "type": "number",
+          "optional": true,
+          "json_tag": "cached_per_million"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "AccountPricingResponse",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "pricing",
+          "type": "Record\u003cstring, PricingEntry\u003e",
+          "optional": false,
+          "json_tag": "pricing"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "JobCreateRequest",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "type",
+          "type": "string",
+          "optional": true,
+          "json_tag": "type"
+        },
+        {
+          "name": "job_type",
+          "type": "string",
+          "optional": true,
+          "json_tag": "job_type"
+        },
+        {
+          "name": "params",
+          "type": "Record\u003cstring, unknown\u003e",
+          "optional": false,
+          "json_tag": "params"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "JobCreateResponse",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "job_id",
+          "type": "string",
+          "optional": false,
+          "json_tag": "job_id"
+        },
+        {
+          "name": "status",
+          "type": "string",
+          "optional": false,
+          "json_tag": "status"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "JobStatusResponse",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "job_id",
+          "type": "string",
+          "optional": false,
+          "json_tag": "job_id"
+        },
+        {
+          "name": "status",
+          "type": "string",
+          "optional": false,
+          "json_tag": "status"
+        },
+        {
+          "name": "result",
+          "type": "unknown",
+          "optional": true,
+          "json_tag": "result"
+        },
+        {
+          "name": "error",
+          "type": "string",
+          "optional": true,
+          "json_tag": "error"
+        },
+        {
+          "name": "cost_ticks",
+          "type": "number",
+          "optional": false,
+          "json_tag": "cost_ticks"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "JobListItem",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "job_id",
+          "type": "string",
+          "optional": false,
+          "json_tag": "job_id"
+        },
+        {
+          "name": "status",
+          "type": "string",
+          "optional": false,
+          "json_tag": "status"
+        },
+        {
+          "name": "type",
+          "type": "string",
+          "optional": true,
+          "json_tag": "type"
+        },
+        {
+          "name": "created_at",
+          "type": "string",
+          "optional": true,
+          "json_tag": "created_at"
+        },
+        {
+          "name": "completed_at",
+          "type": "string",
+          "optional": true,
+          "json_tag": "completed_at"
+        },
+        {
+          "name": "cost_ticks",
+          "type": "number",
+          "optional": false,
+          "json_tag": "cost_ticks"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "JobListResponse",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "jobs",
+          "type": "JobListItem[]",
+          "optional": false,
+          "json_tag": "jobs"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "JobStreamEvent",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "type",
+          "type": "\"progress\" | \"complete\" | \"error\"",
+          "optional": false,
+          "json_tag": "type"
+        },
+        {
+          "name": "job_id",
+          "type": "string",
+          "optional": true,
+          "json_tag": "job_id"
+        },
+        {
+          "name": "status",
+          "type": "string",
+          "optional": true,
+          "json_tag": "status"
+        },
+        {
+          "name": "result",
+          "type": "unknown",
+          "optional": true,
+          "json_tag": "result"
+        },
+        {
+          "name": "error",
+          "type": "string",
+          "optional": true,
+          "json_tag": "error"
+        },
+        {
+          "name": "cost_ticks",
+          "type": "number",
+          "optional": true,
+          "json_tag": "cost_ticks"
+        },
+        {
+          "name": "completed_at",
+          "type": "string",
+          "optional": true,
+          "json_tag": "completed_at"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "WebSearchRequest",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "query",
+          "type": "string",
+          "optional": false,
+          "json_tag": "query"
+        },
+        {
+          "name": "count",
+          "type": "number",
+          "optional": true,
+          "json_tag": "count"
+        },
+        {
+          "name": "offset",
+          "type": "number",
+          "optional": true,
+          "json_tag": "offset"
+        },
+        {
+          "name": "country",
+          "type": "string",
+          "optional": true,
+          "json_tag": "country"
+        },
+        {
+          "name": "language",
+          "type": "string",
+          "optional": true,
+          "json_tag": "language"
+        },
+        {
+          "name": "freshness",
+          "type": "\"pd\" | \"pw\" | \"pm\"",
+          "optional": true,
+          "json_tag": "freshness"
+        },
+        {
+          "name": "safesearch",
+          "type": "string",
+          "optional": true,
+          "json_tag": "safesearch"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "WebSearchResult",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "title",
+          "type": "string",
+          "optional": true,
+          "json_tag": "title"
+        },
+        {
+          "name": "url",
+          "type": "string",
+          "optional": true,
+          "json_tag": "url"
+        },
+        {
+          "name": "description",
+          "type": "string",
+          "optional": true,
+          "json_tag": "description"
+        },
+        {
+          "name": "extra_snippets",
+          "type": "string[]",
+          "optional": true,
+          "json_tag": "extra_snippets"
+        },
+        {
+          "name": "age",
+          "type": "string",
+          "optional": true,
+          "json_tag": "age"
+        },
+        {
+          "name": "language",
+          "type": "string",
+          "optional": true,
+          "json_tag": "language"
+        },
+        {
+          "name": "thumbnail",
+          "type": "{ src?: string",
+          "optional": true,
+          "json_tag": "thumbnail"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "NewsResult",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "title",
+          "type": "string",
+          "optional": true,
+          "json_tag": "title"
+        },
+        {
+          "name": "url",
+          "type": "string",
+          "optional": true,
+          "json_tag": "url"
+        },
+        {
+          "name": "description",
+          "type": "string",
+          "optional": true,
+          "json_tag": "description"
+        },
+        {
+          "name": "age",
+          "type": "string",
+          "optional": true,
+          "json_tag": "age"
+        },
+        {
+          "name": "source",
+          "type": "string",
+          "optional": true,
+          "json_tag": "source"
+        },
+        {
+          "name": "thumbnail",
+          "type": "{ src?: string",
+          "optional": true,
+          "json_tag": "thumbnail"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "VideoSearchResult",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "title",
+          "type": "string",
+          "optional": true,
+          "json_tag": "title"
+        },
+        {
+          "name": "url",
+          "type": "string",
+          "optional": true,
+          "json_tag": "url"
+        },
+        {
+          "name": "description",
+          "type": "string",
+          "optional": true,
+          "json_tag": "description"
+        },
+        {
+          "name": "age",
+          "type": "string",
+          "optional": true,
+          "json_tag": "age"
+        },
+        {
+          "name": "thumbnail",
+          "type": "{ src?: string",
+          "optional": true,
+          "json_tag": "thumbnail"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "WebSearchResponse",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "query",
+          "type": "{ original?: string",
+          "optional": true,
+          "json_tag": "query"
+        },
+        {
+          "name": "web",
+          "type": "{ results: WebSearchResult[]",
+          "optional": true,
+          "json_tag": "web"
+        },
+        {
+          "name": "news",
+          "type": "{ results: NewsResult[] }",
+          "optional": true,
+          "json_tag": "news"
+        },
+        {
+          "name": "videos",
+          "type": "{ results: VideoSearchResult[] }",
+          "optional": true,
+          "json_tag": "videos"
+        },
+        {
+          "name": "infobox",
+          "type": "{ title?: string",
+          "optional": true,
+          "json_tag": "infobox"
+        },
+        {
+          "name": "discussions",
+          "type": "{ results: { title?: string",
+          "optional": true,
+          "json_tag": "discussions"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "LLMContextRequest",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "query",
+          "type": "string",
+          "optional": false,
+          "json_tag": "query"
+        },
+        {
+          "name": "count",
+          "type": "number",
+          "optional": true,
+          "json_tag": "count"
+        },
+        {
+          "name": "country",
+          "type": "string",
+          "optional": true,
+          "json_tag": "country"
+        },
+        {
+          "name": "language",
+          "type": "string",
+          "optional": true,
+          "json_tag": "language"
+        },
+        {
+          "name": "freshness",
+          "type": "\"pd\" | \"pw\" | \"pm\"",
+          "optional": true,
+          "json_tag": "freshness"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "ContentChunk",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "content",
+          "type": "string",
+          "optional": true,
+          "json_tag": "content"
+        },
+        {
+          "name": "url",
+          "type": "string",
+          "optional": true,
+          "json_tag": "url"
+        },
+        {
+          "name": "title",
+          "type": "string",
+          "optional": true,
+          "json_tag": "title"
+        },
+        {
+          "name": "score",
+          "type": "number",
+          "optional": true,
+          "json_tag": "score"
+        },
+        {
+          "name": "content_type",
+          "type": "string",
+          "optional": true,
+          "json_tag": "content_type"
+        },
+        {
+          "name": "index",
+          "type": "number",
+          "optional": true,
+          "json_tag": "index"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "ContextSource",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "url",
+          "type": "string",
+          "optional": true,
+          "json_tag": "url"
+        },
+        {
+          "name": "title",
+          "type": "string",
+          "optional": true,
+          "json_tag": "title"
+        },
+        {
+          "name": "description",
+          "type": "string",
+          "optional": true,
+          "json_tag": "description"
+        },
+        {
+          "name": "snippet",
+          "type": "string",
+          "optional": true,
+          "json_tag": "snippet"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "LLMContextResponse",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "chunks",
+          "type": "ContentChunk[]",
+          "optional": false,
+          "json_tag": "chunks"
+        },
+        {
+          "name": "sources",
+          "type": "ContextSource[]",
+          "optional": true,
+          "json_tag": "sources"
+        },
+        {
+          "name": "query",
+          "type": "string",
+          "optional": true,
+          "json_tag": "query"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "SearchAnswerRequest",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "messages",
+          "type": "{ role: string",
+          "optional": false,
+          "json_tag": "messages"
+        },
+        {
+          "name": "model",
+          "type": "string",
+          "optional": true,
+          "json_tag": "model"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "SearchAnswerChoice",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "index",
+          "type": "number",
+          "optional": true,
+          "json_tag": "index"
+        },
+        {
+          "name": "message",
+          "type": "{ role: string",
+          "optional": true,
+          "json_tag": "message"
+        },
+        {
+          "name": "finish_reason",
+          "type": "string",
+          "optional": true,
+          "json_tag": "finish_reason"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "SearchCitation",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "url",
+          "type": "string",
+          "optional": true,
+          "json_tag": "url"
+        },
+        {
+          "name": "title",
+          "type": "string",
+          "optional": true,
+          "json_tag": "title"
+        },
+        {
+          "name": "snippet",
+          "type": "string",
+          "optional": true,
+          "json_tag": "snippet"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "SearchAnswerResponse",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "choices",
+          "type": "SearchAnswerChoice[]",
+          "optional": false,
+          "json_tag": "choices"
+        },
+        {
+          "name": "model",
+          "type": "string",
+          "optional": true,
+          "json_tag": "model"
+        },
+        {
+          "name": "id",
+          "type": "string",
+          "optional": true,
+          "json_tag": "id"
+        },
+        {
+          "name": "citations",
+          "type": "SearchCitation[]",
+          "optional": true,
+          "json_tag": "citations"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "CreateKeyRequest",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "name",
+          "type": "string",
+          "optional": false,
+          "json_tag": "name"
+        },
+        {
+          "name": "scopes",
+          "type": "string[]",
+          "optional": true,
+          "json_tag": "scopes"
+        },
+        {
+          "name": "expires_at",
+          "type": "string",
+          "optional": true,
+          "json_tag": "expires_at"
+        },
+        {
+          "name": "endpoints",
+          "type": "string[]",
+          "optional": true,
+          "json_tag": "endpoints"
+        },
+        {
+          "name": "spend_cap_usd",
+          "type": "number",
+          "optional": true,
+          "json_tag": "spend_cap_usd"
+        },
+        {
+          "name": "rate_limit",
+          "type": "number",
+          "optional": true,
+          "json_tag": "rate_limit"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "CreateKeyResponse",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "key",
+          "type": "string",
+          "optional": false,
+          "json_tag": "key"
+        },
+        {
+          "name": "id",
+          "type": "string",
+          "optional": true,
+          "json_tag": "id"
+        },
+        {
+          "name": "details",
+          "type": "KeyDetails",
+          "optional": true,
+          "json_tag": "details"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "KeyDetails",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string",
+          "optional": false,
+          "json_tag": "id"
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "optional": false,
+          "json_tag": "name"
+        },
+        {
+          "name": "prefix",
+          "type": "string",
+          "optional": true,
+          "json_tag": "prefix"
+        },
+        {
+          "name": "key_prefix",
+          "type": "string",
+          "optional": true,
+          "json_tag": "key_prefix"
+        },
+        {
+          "name": "scopes",
+          "type": "string[]",
+          "optional": true,
+          "json_tag": "scopes"
+        },
+        {
+          "name": "scope",
+          "type": "unknown",
+          "optional": true,
+          "json_tag": "scope"
+        },
+        {
+          "name": "spent_ticks",
+          "type": "number",
+          "optional": true,
+          "json_tag": "spent_ticks"
+        },
+        {
+          "name": "revoked",
+          "type": "boolean",
+          "optional": true,
+          "json_tag": "revoked"
+        },
+        {
+          "name": "created_at",
+          "type": "string",
+          "optional": true,
+          "json_tag": "created_at"
+        },
+        {
+          "name": "expires_at",
+          "type": "string",
+          "optional": true,
+          "json_tag": "expires_at"
+        },
+        {
+          "name": "last_used_at",
+          "type": "string",
+          "optional": true,
+          "json_tag": "last_used_at"
+        },
+        {
+          "name": "last_used",
+          "type": "string",
+          "optional": true,
+          "json_tag": "last_used"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "ListKeysResponse",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "keys",
+          "type": "KeyDetails[]",
+          "optional": false,
+          "json_tag": "keys"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "ComputeTemplate",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string",
+          "optional": false,
+          "json_tag": "id"
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "optional": false,
+          "json_tag": "name"
+        },
+        {
+          "name": "gpu_type",
+          "type": "string",
+          "optional": true,
+          "json_tag": "gpu_type"
+        },
+        {
+          "name": "gpu",
+          "type": "string",
+          "optional": true,
+          "json_tag": "gpu"
+        },
+        {
+          "name": "gpu_count",
+          "type": "number",
+          "optional": true,
+          "json_tag": "gpu_count"
+        },
+        {
+          "name": "vram_gb",
+          "type": "number",
+          "optional": true,
+          "json_tag": "vram_gb"
+        },
+        {
+          "name": "vcpus",
+          "type": "number",
+          "optional": true,
+          "json_tag": "vcpus"
+        },
+        {
+          "name": "ram_gb",
+          "type": "number",
+          "optional": true,
+          "json_tag": "ram_gb"
+        },
+        {
+          "name": "disk_gb",
+          "type": "number",
+          "optional": true,
+          "json_tag": "disk_gb"
+        },
+        {
+          "name": "price_per_hour",
+          "type": "number",
+          "optional": true,
+          "json_tag": "price_per_hour"
+        },
+        {
+          "name": "price_per_hour_usd",
+          "type": "number",
+          "optional": true,
+          "json_tag": "price_per_hour_usd"
+        },
+        {
+          "name": "zones",
+          "type": "string[]",
+          "optional": true,
+          "json_tag": "zones"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "TemplatesResponse",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "templates",
+          "type": "ComputeTemplate[]",
+          "optional": false,
+          "json_tag": "templates"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "ProvisionRequest",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "template_id",
+          "type": "string",
+          "optional": true,
+          "json_tag": "template_id"
+        },
+        {
+          "name": "template",
+          "type": "string",
+          "optional": true,
+          "json_tag": "template"
+        },
+        {
+          "name": "region",
+          "type": "string",
+          "optional": true,
+          "json_tag": "region"
+        },
+        {
+          "name": "zone",
+          "type": "string",
+          "optional": true,
+          "json_tag": "zone"
+        },
+        {
+          "name": "spot",
+          "type": "boolean",
+          "optional": true,
+          "json_tag": "spot"
+        },
+        {
+          "name": "auto_teardown_minutes",
+          "type": "number",
+          "optional": true,
+          "json_tag": "auto_teardown_minutes"
+        },
+        {
+          "name": "ssh_public_key",
+          "type": "string",
+          "optional": true,
+          "json_tag": "ssh_public_key"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "ProvisionResponse",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "instance_id",
+          "type": "string",
+          "optional": false,
+          "json_tag": "instance_id"
+        },
+        {
+          "name": "status",
+          "type": "string",
+          "optional": false,
+          "json_tag": "status"
+        },
+        {
+          "name": "template",
+          "type": "string",
+          "optional": true,
+          "json_tag": "template"
+        },
+        {
+          "name": "zone",
+          "type": "string",
+          "optional": true,
+          "json_tag": "zone"
+        },
+        {
+          "name": "ssh_address",
+          "type": "string",
+          "optional": true,
+          "json_tag": "ssh_address"
+        },
+        {
+          "name": "price_per_hour_usd",
+          "type": "number",
+          "optional": true,
+          "json_tag": "price_per_hour_usd"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "ComputeInstanceInfo",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string",
+          "optional": false,
+          "json_tag": "id"
+        },
+        {
+          "name": "status",
+          "type": "string",
+          "optional": false,
+          "json_tag": "status"
+        },
+        {
+          "name": "template_id",
+          "type": "string",
+          "optional": false,
+          "json_tag": "template_id"
+        },
+        {
+          "name": "created_at",
+          "type": "string",
+          "optional": false,
+          "json_tag": "created_at"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "InstancesResponse",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "instances",
+          "type": "ComputeInstanceInfo[]",
+          "optional": false,
+          "json_tag": "instances"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "InstanceDetailInfo",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "ip_address",
+          "type": "string",
+          "optional": true,
+          "json_tag": "ip_address"
+        },
+        {
+          "name": "ssh_host",
+          "type": "string",
+          "optional": true,
+          "json_tag": "ssh_host"
+        },
+        {
+          "name": "ssh_port",
+          "type": "number",
+          "optional": true,
+          "json_tag": "ssh_port"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "InstanceResponse",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "instance",
+          "type": "InstanceDetailInfo",
+          "optional": false,
+          "json_tag": "instance"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "SSHKeyRequest",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "ssh_public_key",
+          "type": "string",
+          "optional": false,
+          "json_tag": "ssh_public_key"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "DeleteResponse",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "status",
+          "type": "string",
+          "optional": false,
+          "json_tag": "status"
+        },
+        {
+          "name": "cost_ticks",
+          "type": "number",
+          "optional": true,
+          "json_tag": "cost_ticks"
+        },
+        {
+          "name": "instance_id",
+          "type": "string",
+          "optional": true,
+          "json_tag": "instance_id"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "VoiceInfo",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "voice_id",
+          "type": "string",
+          "optional": false,
+          "json_tag": "voice_id"
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "optional": false,
+          "json_tag": "name"
+        },
+        {
+          "name": "provider",
+          "type": "string",
+          "optional": false,
+          "json_tag": "provider"
+        },
+        {
+          "name": "preview_url",
+          "type": "string",
+          "optional": true,
+          "json_tag": "preview_url"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "VoicesResponse",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "voices",
+          "type": "VoiceInfo[]",
+          "optional": false,
+          "json_tag": "voices"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "CloneVoiceRequest",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "name",
+          "type": "string",
+          "optional": false,
+          "json_tag": "name"
+        },
+        {
+          "name": "audio_samples",
+          "type": "string[]",
+          "optional": false,
+          "json_tag": "audio_samples"
+        },
+        {
+          "name": "description",
+          "type": "string",
+          "optional": true,
+          "json_tag": "description"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "CloneVoiceResponse",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "voice_id",
+          "type": "string",
+          "optional": false,
+          "json_tag": "voice_id"
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "optional": false,
+          "json_tag": "name"
+        },
+        {
+          "name": "status",
+          "type": "string",
+          "optional": true,
+          "json_tag": "status"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "SharedVoice",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "public_owner_id",
+          "type": "string",
+          "optional": false,
+          "json_tag": "public_owner_id"
+        },
+        {
+          "name": "voice_id",
+          "type": "string",
+          "optional": false,
+          "json_tag": "voice_id"
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "optional": false,
+          "json_tag": "name"
+        },
+        {
+          "name": "category",
+          "type": "string",
+          "optional": true,
+          "json_tag": "category"
+        },
+        {
+          "name": "description",
+          "type": "string",
+          "optional": true,
+          "json_tag": "description"
+        },
+        {
+          "name": "preview_url",
+          "type": "string",
+          "optional": true,
+          "json_tag": "preview_url"
+        },
+        {
+          "name": "gender",
+          "type": "string",
+          "optional": true,
+          "json_tag": "gender"
+        },
+        {
+          "name": "age",
+          "type": "string",
+          "optional": true,
+          "json_tag": "age"
+        },
+        {
+          "name": "accent",
+          "type": "string",
+          "optional": true,
+          "json_tag": "accent"
+        },
+        {
+          "name": "language",
+          "type": "string",
+          "optional": true,
+          "json_tag": "language"
+        },
+        {
+          "name": "use_case",
+          "type": "string",
+          "optional": true,
+          "json_tag": "use_case"
+        },
+        {
+          "name": "rate",
+          "type": "number",
+          "optional": true,
+          "json_tag": "rate"
+        },
+        {
+          "name": "cloned_by_count",
+          "type": "number",
+          "optional": true,
+          "json_tag": "cloned_by_count"
+        },
+        {
+          "name": "free_users_allowed",
+          "type": "boolean",
+          "optional": true,
+          "json_tag": "free_users_allowed"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "SharedVoicesResponse",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "voices",
+          "type": "SharedVoice[]",
+          "optional": false,
+          "json_tag": "voices"
+        },
+        {
+          "name": "next_cursor",
+          "type": "string",
+          "optional": true,
+          "json_tag": "next_cursor"
+        },
+        {
+          "name": "has_more",
+          "type": "boolean",
+          "optional": false,
+          "json_tag": "has_more"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "VoiceLibraryQuery",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "query",
+          "type": "string",
+          "optional": true,
+          "json_tag": "query"
+        },
+        {
+          "name": "page_size",
+          "type": "number",
+          "optional": true,
+          "json_tag": "page_size"
+        },
+        {
+          "name": "cursor",
+          "type": "string",
+          "optional": true,
+          "json_tag": "cursor"
+        },
+        {
+          "name": "gender",
+          "type": "string",
+          "optional": true,
+          "json_tag": "gender"
+        },
+        {
+          "name": "language",
+          "type": "string",
+          "optional": true,
+          "json_tag": "language"
+        },
+        {
+          "name": "use_case",
+          "type": "string",
+          "optional": true,
+          "json_tag": "use_case"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "AddVoiceFromLibraryRequest",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "public_owner_id",
+          "type": "string",
+          "optional": false,
+          "json_tag": "public_owner_id"
+        },
+        {
+          "name": "voice_id",
+          "type": "string",
+          "optional": false,
+          "json_tag": "voice_id"
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "optional": true,
+          "json_tag": "name"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "AddVoiceFromLibraryResponse",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "voice_id",
+          "type": "string",
+          "optional": false,
+          "json_tag": "voice_id"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "Generate3DRequest",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "model",
+          "type": "string",
+          "optional": false,
+          "json_tag": "model"
+        },
+        {
+          "name": "prompt",
+          "type": "string",
+          "optional": true,
+          "json_tag": "prompt"
+        },
+        {
+          "name": "image_url",
+          "type": "string",
+          "optional": true,
+          "json_tag": "image_url"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "ContactRequest",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "name",
+          "type": "string",
+          "optional": false,
+          "json_tag": "name"
+        },
+        {
+          "name": "email",
+          "type": "string",
+          "optional": false,
+          "json_tag": "email"
+        },
+        {
+          "name": "subject",
+          "type": "string",
+          "optional": true,
+          "json_tag": "subject"
+        },
+        {
+          "name": "message",
+          "type": "string",
+          "optional": false,
+          "json_tag": "message"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "BatchJobInput",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "model",
+          "type": "string",
+          "optional": false,
+          "json_tag": "model"
+        },
+        {
+          "name": "prompt",
+          "type": "string",
+          "optional": false,
+          "json_tag": "prompt"
+        },
+        {
+          "name": "title",
+          "type": "string",
+          "optional": true,
+          "json_tag": "title"
+        },
+        {
+          "name": "system_prompt",
+          "type": "string",
+          "optional": true,
+          "json_tag": "system_prompt"
+        },
+        {
+          "name": "max_tokens",
+          "type": "number",
+          "optional": true,
+          "json_tag": "max_tokens"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "BatchSubmitRequest",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "jobs",
+          "type": "BatchJobInput[]",
+          "optional": false,
+          "json_tag": "jobs"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "BatchSubmitResponse",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "job_ids",
+          "type": "string[]",
+          "optional": false,
+          "json_tag": "job_ids"
+        },
+        {
+          "name": "status",
+          "type": "string",
+          "optional": false,
+          "json_tag": "status"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "BatchJsonlResponse",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "job_ids",
+          "type": "string[]",
+          "optional": false,
+          "json_tag": "job_ids"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "BatchJobInfo",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "job_id",
+          "type": "string",
+          "optional": false,
+          "json_tag": "job_id"
+        },
+        {
+          "name": "status",
+          "type": "string",
+          "optional": false,
+          "json_tag": "status"
+        },
+        {
+          "name": "model",
+          "type": "string",
+          "optional": true,
+          "json_tag": "model"
+        },
+        {
+          "name": "title",
+          "type": "string",
+          "optional": true,
+          "json_tag": "title"
+        },
+        {
+          "name": "created_at",
+          "type": "string",
+          "optional": true,
+          "json_tag": "created_at"
+        },
+        {
+          "name": "completed_at",
+          "type": "string",
+          "optional": true,
+          "json_tag": "completed_at"
+        },
+        {
+          "name": "result",
+          "type": "unknown",
+          "optional": true,
+          "json_tag": "result"
+        },
+        {
+          "name": "error",
+          "type": "string",
+          "optional": true,
+          "json_tag": "error"
+        },
+        {
+          "name": "cost_ticks",
+          "type": "number",
+          "optional": false,
+          "json_tag": "cost_ticks"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "BatchJobsResponse",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "jobs",
+          "type": "BatchJobInfo[]",
+          "optional": false,
+          "json_tag": "jobs"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "CreditPack",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string",
+          "optional": false,
+          "json_tag": "id"
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "optional": true,
+          "json_tag": "name"
+        },
+        {
+          "name": "price_usd",
+          "type": "number",
+          "optional": false,
+          "json_tag": "price_usd"
+        },
+        {
+          "name": "credit_ticks",
+          "type": "number",
+          "optional": false,
+          "json_tag": "credit_ticks"
+        },
+        {
+          "name": "description",
+          "type": "string",
+          "optional": true,
+          "json_tag": "description"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "CreditPacksResponse",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "packs",
+          "type": "CreditPack[]",
+          "optional": false,
+          "json_tag": "packs"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "CreditPurchaseRequest",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "pack_id",
+          "type": "string",
+          "optional": false,
+          "json_tag": "pack_id"
+        },
+        {
+          "name": "success_url",
+          "type": "string",
+          "optional": true,
+          "json_tag": "success_url"
+        },
+        {
+          "name": "cancel_url",
+          "type": "string",
+          "optional": true,
+          "json_tag": "cancel_url"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "CreditPurchaseResponse",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "checkout_url",
+          "type": "string",
+          "optional": false,
+          "json_tag": "checkout_url"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "CreditBalanceResponse",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "balance_ticks",
+          "type": "number",
+          "optional": false,
+          "json_tag": "balance_ticks"
+        },
+        {
+          "name": "balance_usd",
+          "type": "number",
+          "optional": false,
+          "json_tag": "balance_usd"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "CreditTier",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "name",
+          "type": "string",
+          "optional": true,
+          "json_tag": "name"
+        },
+        {
+          "name": "min_balance",
+          "type": "number",
+          "optional": true,
+          "json_tag": "min_balance"
+        },
+        {
+          "name": "discount_percent",
+          "type": "number",
+          "optional": true,
+          "json_tag": "discount_percent"
+        },
+        {
+          "name": "extra",
+          "type": "unknown",
+          "optional": true,
+          "json_tag": "extra"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "CreditTiersResponse",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "tiers",
+          "type": "CreditTier[]",
+          "optional": false,
+          "json_tag": "tiers"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "DevProgramApplyRequest",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "use_case",
+          "type": "string",
+          "optional": false,
+          "json_tag": "use_case"
+        },
+        {
+          "name": "company",
+          "type": "string",
+          "optional": true,
+          "json_tag": "company"
+        },
+        {
+          "name": "expected_usd",
+          "type": "number",
+          "optional": true,
+          "json_tag": "expected_usd"
+        },
+        {
+          "name": "website",
+          "type": "string",
+          "optional": true,
+          "json_tag": "website"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "DevProgramApplyResponse",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "status",
+          "type": "string",
+          "optional": false,
+          "json_tag": "status"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "AuthUser",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string",
+          "optional": false,
+          "json_tag": "id"
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "optional": true,
+          "json_tag": "name"
+        },
+        {
+          "name": "email",
+          "type": "string",
+          "optional": true,
+          "json_tag": "email"
+        },
+        {
+          "name": "avatar_url",
+          "type": "string",
+          "optional": true,
+          "json_tag": "avatar_url"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "AuthResponse",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "token",
+          "type": "string",
+          "optional": false,
+          "json_tag": "token"
+        },
+        {
+          "name": "user",
+          "type": "AuthUser",
+          "optional": false,
+          "json_tag": "user"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "AuthAppleRequest",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "id_token",
+          "type": "string",
+          "optional": false,
+          "json_tag": "id_token"
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "optional": true,
+          "json_tag": "name"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "StatusResponse",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "status",
+          "type": "string",
+          "optional": false,
+          "json_tag": "status"
+        },
+        {
+          "name": "message",
+          "type": "string",
+          "optional": true,
+          "json_tag": "message"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "ModelsResponseBody",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "models",
+          "type": "ModelInfo[]",
+          "optional": false,
+          "json_tag": "models"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "PricingResponseBody",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "pricing",
+          "type": "PricingInfo[]",
+          "optional": false,
+          "json_tag": "pricing"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "RAGCorporaResponseBody",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "corpora",
+          "type": "RAGCorpus[]",
+          "optional": false,
+          "json_tag": "corpora"
+        },
+        {
+          "name": "request_id",
+          "type": "string",
+          "optional": false,
+          "json_tag": "request_id"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "APIErrorBody",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "message",
+          "type": "string",
+          "optional": false,
+          "json_tag": "message"
+        },
+        {
+          "name": "type",
+          "type": "string",
+          "optional": true,
+          "json_tag": "type"
+        },
+        {
+          "name": "code",
+          "type": "string",
+          "optional": true,
+          "json_tag": "code"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "RemeshRequest",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "input_task_id",
+          "type": "string",
+          "optional": true,
+          "json_tag": "input_task_id"
+        },
+        {
+          "name": "model_url",
+          "type": "string",
+          "optional": true,
+          "json_tag": "model_url"
+        },
+        {
+          "name": "target_formats",
+          "type": "string[]",
+          "optional": true,
+          "json_tag": "target_formats"
+        },
+        {
+          "name": "topology",
+          "type": "string",
+          "optional": true,
+          "json_tag": "topology"
+        },
+        {
+          "name": "target_polycount",
+          "type": "number",
+          "optional": true,
+          "json_tag": "target_polycount"
+        },
+        {
+          "name": "resize_height",
+          "type": "number",
+          "optional": true,
+          "json_tag": "resize_height"
+        },
+        {
+          "name": "origin_at",
+          "type": "string",
+          "optional": true,
+          "json_tag": "origin_at"
+        },
+        {
+          "name": "convert_format_only",
+          "type": "boolean",
+          "optional": true,
+          "json_tag": "convert_format_only"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "ModelUrls",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "glb",
+          "type": "string",
+          "optional": true,
+          "json_tag": "glb"
+        },
+        {
+          "name": "fbx",
+          "type": "string",
+          "optional": true,
+          "json_tag": "fbx"
+        },
+        {
+          "name": "obj",
+          "type": "string",
+          "optional": true,
+          "json_tag": "obj"
+        },
+        {
+          "name": "usdz",
+          "type": "string",
+          "optional": true,
+          "json_tag": "usdz"
+        },
+        {
+          "name": "stl",
+          "type": "string",
+          "optional": true,
+          "json_tag": "stl"
+        },
+        {
+          "name": "blend",
+          "type": "string",
+          "optional": true,
+          "json_tag": "blend"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "RigRequest",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "input_task_id",
+          "type": "string",
+          "optional": true,
+          "json_tag": "input_task_id"
+        },
+        {
+          "name": "model_url",
+          "type": "string",
+          "optional": true,
+          "json_tag": "model_url"
+        },
+        {
+          "name": "height_meters",
+          "type": "number",
+          "optional": true,
+          "json_tag": "height_meters"
+        },
+        {
+          "name": "texture_image_url",
+          "type": "string",
+          "optional": true,
+          "json_tag": "texture_image_url"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "BasicAnimations",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "walking_glb_url",
+          "type": "string",
+          "optional": true,
+          "json_tag": "walking_glb_url"
+        },
+        {
+          "name": "walking_fbx_url",
+          "type": "string",
+          "optional": true,
+          "json_tag": "walking_fbx_url"
+        },
+        {
+          "name": "walking_armature_glb_url",
+          "type": "string",
+          "optional": true,
+          "json_tag": "walking_armature_glb_url"
+        },
+        {
+          "name": "running_glb_url",
+          "type": "string",
+          "optional": true,
+          "json_tag": "running_glb_url"
+        },
+        {
+          "name": "running_fbx_url",
+          "type": "string",
+          "optional": true,
+          "json_tag": "running_fbx_url"
+        },
+        {
+          "name": "running_armature_glb_url",
+          "type": "string",
+          "optional": true,
+          "json_tag": "running_armature_glb_url"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "AnimateRequest",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "rig_task_id",
+          "type": "string",
+          "optional": false,
+          "json_tag": "rig_task_id"
+        },
+        {
+          "name": "action_id",
+          "type": "number",
+          "optional": false,
+          "json_tag": "action_id"
+        },
+        {
+          "name": "post_process",
+          "type": "AnimationPostProcess",
+          "optional": true,
+          "json_tag": "post_process"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "RetextureRequest",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "input_task_id",
+          "type": "string",
+          "optional": true,
+          "json_tag": "input_task_id"
+        },
+        {
+          "name": "model_url",
+          "type": "string",
+          "optional": true,
+          "json_tag": "model_url"
+        },
+        {
+          "name": "prompt",
+          "type": "string",
+          "optional": true,
+          "json_tag": "prompt"
+        },
+        {
+          "name": "text_style_prompt",
+          "type": "string",
+          "optional": true,
+          "json_tag": "text_style_prompt"
+        },
+        {
+          "name": "image_style_url",
+          "type": "string",
+          "optional": true,
+          "json_tag": "image_style_url"
+        },
+        {
+          "name": "ai_model",
+          "type": "string",
+          "optional": true,
+          "json_tag": "ai_model"
+        },
+        {
+          "name": "enable_original_uv",
+          "type": "boolean",
+          "optional": true,
+          "json_tag": "enable_original_uv"
+        },
+        {
+          "name": "enable_pbr",
+          "type": "boolean",
+          "optional": true,
+          "json_tag": "enable_pbr"
+        },
+        {
+          "name": "remove_lighting",
+          "type": "boolean",
+          "optional": true,
+          "json_tag": "remove_lighting"
+        },
+        {
+          "name": "target_formats",
+          "type": "string[]",
+          "optional": true,
+          "json_tag": "target_formats"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "AnimationPostProcess",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "operation_type",
+          "type": "string",
+          "optional": false,
+          "json_tag": "operation_type"
+        },
+        {
+          "name": "fps",
+          "type": "number",
+          "optional": true,
+          "json_tag": "fps"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "AgentStreamEvent",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "event_type",
+          "type": "string",
+          "optional": false,
+          "json_tag": "event_type"
+        },
+        {
+          "name": "data",
+          "type": "Record\u003cstring, unknown\u003e",
+          "optional": true,
+          "json_tag": "data"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "AgentWorker",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "name",
+          "type": "string",
+          "optional": false,
+          "json_tag": "name"
+        },
+        {
+          "name": "model",
+          "type": "string",
+          "optional": true,
+          "json_tag": "model"
+        },
+        {
+          "name": "tier",
+          "type": "string",
+          "optional": true,
+          "json_tag": "tier"
+        },
+        {
+          "name": "description",
+          "type": "string",
+          "optional": true,
+          "json_tag": "description"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "MissionWorker",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "model",
+          "type": "string",
+          "optional": true,
+          "json_tag": "model"
+        },
+        {
+          "name": "tier",
+          "type": "string",
+          "optional": true,
+          "json_tag": "tier"
+        },
+        {
+          "name": "description",
+          "type": "string",
+          "optional": true,
+          "json_tag": "description"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "AlignmentSegment",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "text",
+          "type": "string",
+          "optional": false,
+          "json_tag": "text"
+        },
+        {
+          "name": "start",
+          "type": "number",
+          "optional": false,
+          "json_tag": "start"
+        },
+        {
+          "name": "end",
+          "type": "number",
+          "optional": false,
+          "json_tag": "end"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "AudioResponse",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "audio_base64",
+          "type": "string",
+          "optional": true,
+          "json_tag": "audio_base64"
+        },
+        {
+          "name": "format",
+          "type": "string",
+          "optional": true,
+          "json_tag": "format"
+        },
+        {
+          "name": "size_bytes",
+          "type": "number",
+          "optional": true,
+          "json_tag": "size_bytes"
+        },
+        {
+          "name": "model",
+          "type": "string",
+          "optional": true,
+          "json_tag": "model"
+        },
+        {
+          "name": "cost_ticks",
+          "type": "number",
+          "optional": true,
+          "json_tag": "cost_ticks"
+        },
+        {
+          "name": "request_id",
+          "type": "string",
+          "optional": true,
+          "json_tag": "request_id"
+        },
+        {
+          "name": "extra",
+          "type": "Record\u003cstring, unknown\u003e",
+          "optional": true,
+          "json_tag": "extra"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "DialogueTurn",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "speaker",
+          "type": "string",
+          "optional": false,
+          "json_tag": "speaker"
+        },
+        {
+          "name": "text",
+          "type": "string",
+          "optional": false,
+          "json_tag": "text"
+        },
+        {
+          "name": "voice",
+          "type": "string",
+          "optional": true,
+          "json_tag": "voice"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "IsolateRequest",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "audio_base64",
+          "type": "string",
+          "optional": false,
+          "json_tag": "audio_base64"
+        },
+        {
+          "name": "output_format",
+          "type": "string",
+          "optional": true,
+          "json_tag": "output_format"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "RemixRequest",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "audio_base64",
+          "type": "string",
+          "optional": false,
+          "json_tag": "audio_base64"
+        },
+        {
+          "name": "voice",
+          "type": "string",
+          "optional": true,
+          "json_tag": "voice"
+        },
+        {
+          "name": "model",
+          "type": "string",
+          "optional": true,
+          "json_tag": "model"
+        },
+        {
+          "name": "output_format",
+          "type": "string",
+          "optional": true,
+          "json_tag": "output_format"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "TtsRequest",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "model",
+          "type": "string",
+          "optional": false,
+          "json_tag": "model"
+        },
+        {
+          "name": "text",
+          "type": "string",
+          "optional": false,
+          "json_tag": "text"
+        },
+        {
+          "name": "voice",
+          "type": "string",
+          "optional": true,
+          "json_tag": "voice"
+        },
+        {
+          "name": "output_format",
+          "type": "string",
+          "optional": true,
+          "json_tag": "output_format"
+        },
+        {
+          "name": "speed",
+          "type": "number",
+          "optional": true,
+          "json_tag": "speed"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "TtsResponse",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "audio_base64",
+          "type": "string",
+          "optional": false,
+          "json_tag": "audio_base64"
+        },
+        {
+          "name": "format",
+          "type": "string",
+          "optional": false,
+          "json_tag": "format"
+        },
+        {
+          "name": "size_bytes",
+          "type": "number",
+          "optional": false,
+          "json_tag": "size_bytes"
+        },
+        {
+          "name": "model",
+          "type": "string",
+          "optional": false,
+          "json_tag": "model"
+        },
+        {
+          "name": "cost_ticks",
+          "type": "number",
+          "optional": false,
+          "json_tag": "cost_ticks"
+        },
+        {
+          "name": "request_id",
+          "type": "string",
+          "optional": false,
+          "json_tag": "request_id"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "SttRequest",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "model",
+          "type": "string",
+          "optional": false,
+          "json_tag": "model"
+        },
+        {
+          "name": "audio_base64",
+          "type": "string",
+          "optional": false,
+          "json_tag": "audio_base64"
+        },
+        {
+          "name": "filename",
+          "type": "string",
+          "optional": true,
+          "json_tag": "filename"
+        },
+        {
+          "name": "language",
+          "type": "string",
+          "optional": true,
+          "json_tag": "language"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "SttResponse",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "text",
+          "type": "string",
+          "optional": false,
+          "json_tag": "text"
+        },
+        {
+          "name": "model",
+          "type": "string",
+          "optional": false,
+          "json_tag": "model"
+        },
+        {
+          "name": "cost_ticks",
+          "type": "number",
+          "optional": false,
+          "json_tag": "cost_ticks"
+        },
+        {
+          "name": "request_id",
+          "type": "string",
+          "optional": false,
+          "json_tag": "request_id"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "TranslateRequest",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "video_url",
+          "type": "string",
+          "optional": true,
+          "json_tag": "video_url"
+        },
+        {
+          "name": "video_base64",
+          "type": "string",
+          "optional": true,
+          "json_tag": "video_base64"
+        },
+        {
+          "name": "target_language",
+          "type": "string",
+          "optional": false,
+          "json_tag": "target_language"
+        },
+        {
+          "name": "source_language",
+          "type": "string",
+          "optional": true,
+          "json_tag": "source_language"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "MusicSection",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "section_type",
+          "type": "string",
+          "optional": false,
+          "json_tag": "section_type"
+        },
+        {
+          "name": "lyrics",
+          "type": "string",
+          "optional": true,
+          "json_tag": "lyrics"
+        },
+        {
+          "name": "style",
+          "type": "string",
+          "optional": true,
+          "json_tag": "style"
+        },
+        {
+          "name": "style_exclude",
+          "type": "string",
+          "optional": true,
+          "json_tag": "style_exclude"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "ElevenMusicRequest",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "model",
+          "type": "string",
+          "optional": false,
+          "json_tag": "model"
+        },
+        {
+          "name": "prompt",
+          "type": "string",
+          "optional": false,
+          "json_tag": "prompt"
+        },
+        {
+          "name": "sections",
+          "type": "MusicSection[]",
+          "optional": true,
+          "json_tag": "sections"
+        },
+        {
+          "name": "duration_seconds",
+          "type": "number",
+          "optional": true,
+          "json_tag": "duration_seconds"
+        },
+        {
+          "name": "language",
+          "type": "string",
+          "optional": true,
+          "json_tag": "language"
+        },
+        {
+          "name": "vocals",
+          "type": "boolean",
+          "optional": true,
+          "json_tag": "vocals"
+        },
+        {
+          "name": "style",
+          "type": "string",
+          "optional": true,
+          "json_tag": "style"
+        },
+        {
+          "name": "style_exclude",
+          "type": "string",
+          "optional": true,
+          "json_tag": "style_exclude"
+        },
+        {
+          "name": "finetune_id",
+          "type": "string",
+          "optional": true,
+          "json_tag": "finetune_id"
+        },
+        {
+          "name": "edit_reference_id",
+          "type": "string",
+          "optional": true,
+          "json_tag": "edit_reference_id"
+        },
+        {
+          "name": "edit_instruction",
+          "type": "string",
+          "optional": true,
+          "json_tag": "edit_instruction"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "ElevenMusicClip",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "base64",
+          "type": "string",
+          "optional": false,
+          "json_tag": "base64"
+        },
+        {
+          "name": "format",
+          "type": "string",
+          "optional": false,
+          "json_tag": "format"
+        },
+        {
+          "name": "size",
+          "type": "number",
+          "optional": false,
+          "json_tag": "size"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "ElevenMusicResponse",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "clips",
+          "type": "ElevenMusicClip[]",
+          "optional": false,
+          "json_tag": "clips"
+        },
+        {
+          "name": "model",
+          "type": "string",
+          "optional": false,
+          "json_tag": "model"
+        },
+        {
+          "name": "cost_ticks",
+          "type": "number",
+          "optional": false,
+          "json_tag": "cost_ticks"
+        },
+        {
+          "name": "request_id",
+          "type": "string",
+          "optional": false,
+          "json_tag": "request_id"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "FinetuneInfo",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "finetune_id",
+          "type": "string",
+          "optional": false,
+          "json_tag": "finetune_id"
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "optional": false,
+          "json_tag": "name"
+        },
+        {
+          "name": "status",
+          "type": "string",
+          "optional": true,
+          "json_tag": "status"
+        },
+        {
+          "name": "created_at",
+          "type": "string",
+          "optional": true,
+          "json_tag": "created_at"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "ListFinetunesResponse",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "finetunes",
+          "type": "FinetuneInfo[]",
+          "optional": false,
+          "json_tag": "finetunes"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "BatchJob",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "model",
+          "type": "string",
+          "optional": false,
+          "json_tag": "model"
+        },
+        {
+          "name": "prompt",
+          "type": "string",
+          "optional": false,
+          "json_tag": "prompt"
+        },
+        {
+          "name": "title",
+          "type": "string",
+          "optional": true,
+          "json_tag": "title"
+        },
+        {
+          "name": "system_prompt",
+          "type": "string",
+          "optional": true,
+          "json_tag": "system_prompt"
+        },
+        {
+          "name": "max_tokens",
+          "type": "number",
+          "optional": true,
+          "json_tag": "max_tokens"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "ComputeInstance",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string",
+          "optional": false,
+          "json_tag": "id"
+        },
+        {
+          "name": "status",
+          "type": "string",
+          "optional": false,
+          "json_tag": "status"
+        },
+        {
+          "name": "template",
+          "type": "string",
+          "optional": true,
+          "json_tag": "template"
+        },
+        {
+          "name": "zone",
+          "type": "string",
+          "optional": true,
+          "json_tag": "zone"
+        },
+        {
+          "name": "ssh_address",
+          "type": "string",
+          "optional": true,
+          "json_tag": "ssh_address"
+        },
+        {
+          "name": "created_at",
+          "type": "string",
+          "optional": true,
+          "json_tag": "created_at"
+        },
+        {
+          "name": "price_per_hour_usd",
+          "type": "number",
+          "optional": true,
+          "json_tag": "price_per_hour_usd"
+        },
+        {
+          "name": "auto_teardown_minutes",
+          "type": "number",
+          "optional": true,
+          "json_tag": "auto_teardown_minutes"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "ChunkRequest",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "file_base64",
+          "type": "string",
+          "optional": false,
+          "json_tag": "file_base64"
+        },
+        {
+          "name": "filename",
+          "type": "string",
+          "optional": false,
+          "json_tag": "filename"
+        },
+        {
+          "name": "max_chunk_tokens",
+          "type": "number",
+          "optional": true,
+          "json_tag": "max_chunk_tokens"
+        },
+        {
+          "name": "overlap_tokens",
+          "type": "number",
+          "optional": true,
+          "json_tag": "overlap_tokens"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "ChunkResponse",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "chunks",
+          "type": "DocumentChunk[]",
+          "optional": false,
+          "json_tag": "chunks"
+        },
+        {
+          "name": "total_chunks",
+          "type": "number",
+          "optional": true,
+          "json_tag": "total_chunks"
+        },
+        {
+          "name": "cost_ticks",
+          "type": "number",
+          "optional": false,
+          "json_tag": "cost_ticks"
+        },
+        {
+          "name": "request_id",
+          "type": "string",
+          "optional": false,
+          "json_tag": "request_id"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "ProcessRequest",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "file_base64",
+          "type": "string",
+          "optional": false,
+          "json_tag": "file_base64"
+        },
+        {
+          "name": "filename",
+          "type": "string",
+          "optional": false,
+          "json_tag": "filename"
+        },
+        {
+          "name": "prompt",
+          "type": "string",
+          "optional": true,
+          "json_tag": "prompt"
+        },
+        {
+          "name": "model",
+          "type": "string",
+          "optional": true,
+          "json_tag": "model"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "ProcessResponse",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "content",
+          "type": "string",
+          "optional": false,
+          "json_tag": "content"
+        },
+        {
+          "name": "model",
+          "type": "string",
+          "optional": true,
+          "json_tag": "model"
+        },
+        {
+          "name": "cost_ticks",
+          "type": "number",
+          "optional": false,
+          "json_tag": "cost_ticks"
+        },
+        {
+          "name": "request_id",
+          "type": "string",
+          "optional": false,
+          "json_tag": "request_id"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "ApiError",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "status_code",
+          "type": "number",
+          "optional": false,
+          "json_tag": "status_code"
+        },
+        {
+          "name": "code",
+          "type": "string",
+          "optional": false,
+          "json_tag": "code"
+        },
+        {
+          "name": "message",
+          "type": "string",
+          "optional": false,
+          "json_tag": "message"
+        },
+        {
+          "name": "request_id",
+          "type": "string",
+          "optional": false,
+          "json_tag": "request_id"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "JobSummary",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "job_id",
+          "type": "string",
+          "optional": false,
+          "json_tag": "job_id"
+        },
+        {
+          "name": "status",
+          "type": "string",
+          "optional": false,
+          "json_tag": "status"
+        },
+        {
+          "name": "job_type",
+          "type": "string",
+          "optional": true,
+          "json_tag": "job_type"
+        },
+        {
+          "name": "created_at",
+          "type": "string",
+          "optional": true,
+          "json_tag": "created_at"
+        },
+        {
+          "name": "completed_at",
+          "type": "string",
+          "optional": true,
+          "json_tag": "completed_at"
+        },
+        {
+          "name": "cost_ticks",
+          "type": "number",
+          "optional": false,
+          "json_tag": "cost_ticks"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "ListJobsResponse",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "jobs",
+          "type": "JobSummary[]",
+          "optional": false,
+          "json_tag": "jobs"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "JobResponse",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "job_id",
+          "type": "string",
+          "optional": false,
+          "json_tag": "job_id"
+        },
+        {
+          "name": "status",
+          "type": "string",
+          "optional": true,
+          "json_tag": "status"
+        },
+        {
+          "name": "cost_ticks",
+          "type": "number",
+          "optional": true,
+          "json_tag": "cost_ticks"
+        },
+        {
+          "name": "extra",
+          "type": "Record\u003cstring, unknown\u003e",
+          "optional": true,
+          "json_tag": "extra"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "RagSearchRequest",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "query",
+          "type": "string",
+          "optional": false,
+          "json_tag": "query"
+        },
+        {
+          "name": "corpus",
+          "type": "string",
+          "optional": true,
+          "json_tag": "corpus"
+        },
+        {
+          "name": "top_k",
+          "type": "number",
+          "optional": true,
+          "json_tag": "top_k"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "RagSearchResponse",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "results",
+          "type": "RagResult[]",
+          "optional": false,
+          "json_tag": "results"
+        },
+        {
+          "name": "query",
+          "type": "string",
+          "optional": false,
+          "json_tag": "query"
+        },
+        {
+          "name": "corpora",
+          "type": "string[]",
+          "optional": true,
+          "json_tag": "corpora"
+        },
+        {
+          "name": "cost_ticks",
+          "type": "number",
+          "optional": false,
+          "json_tag": "cost_ticks"
+        },
+        {
+          "name": "request_id",
+          "type": "string",
+          "optional": false,
+          "json_tag": "request_id"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "RagResult",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "source_uri",
+          "type": "string",
+          "optional": false,
+          "json_tag": "source_uri"
+        },
+        {
+          "name": "source_name",
+          "type": "string",
+          "optional": false,
+          "json_tag": "source_name"
+        },
+        {
+          "name": "text",
+          "type": "string",
+          "optional": false,
+          "json_tag": "text"
+        },
+        {
+          "name": "score",
+          "type": "number",
+          "optional": false,
+          "json_tag": "score"
+        },
+        {
+          "name": "distance",
+          "type": "number",
+          "optional": false,
+          "json_tag": "distance"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "RagCorpus",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "name",
+          "type": "string",
+          "optional": false,
+          "json_tag": "name"
+        },
+        {
+          "name": "displayName",
+          "type": "string",
+          "optional": false,
+          "json_tag": "displayName"
+        },
+        {
+          "name": "description",
+          "type": "string",
+          "optional": false,
+          "json_tag": "description"
+        },
+        {
+          "name": "state",
+          "type": "string",
+          "optional": false,
+          "json_tag": "state"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "SurrealRagProvider",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "provider",
+          "type": "string",
+          "optional": false,
+          "json_tag": "provider"
+        },
+        {
+          "name": "chunk_count",
+          "type": "number",
+          "optional": true,
+          "json_tag": "chunk_count"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "SurrealRagProvidersResponse",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "providers",
+          "type": "SurrealRagProvider[]",
+          "optional": false,
+          "json_tag": "providers"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "SurrealRagSearchRequest",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "query",
+          "type": "string",
+          "optional": false,
+          "json_tag": "query"
+        },
+        {
+          "name": "provider",
+          "type": "string",
+          "optional": true,
+          "json_tag": "provider"
+        },
+        {
+          "name": "limit",
+          "type": "number",
+          "optional": true,
+          "json_tag": "limit"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "SurrealRagResult",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "provider",
+          "type": "string",
+          "optional": false,
+          "json_tag": "provider"
+        },
+        {
+          "name": "title",
+          "type": "string",
+          "optional": false,
+          "json_tag": "title"
+        },
+        {
+          "name": "heading",
+          "type": "string",
+          "optional": false,
+          "json_tag": "heading"
+        },
+        {
+          "name": "source_file",
+          "type": "string",
+          "optional": false,
+          "json_tag": "source_file"
+        },
+        {
+          "name": "content",
+          "type": "string",
+          "optional": false,
+          "json_tag": "content"
+        },
+        {
+          "name": "score",
+          "type": "number",
+          "optional": false,
+          "json_tag": "score"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "SurrealRagSearchResponse",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "results",
+          "type": "SurrealRagResult[]",
+          "optional": false,
+          "json_tag": "results"
+        },
+        {
+          "name": "query",
+          "type": "string",
+          "optional": false,
+          "json_tag": "query"
+        },
+        {
+          "name": "provider",
+          "type": "string",
+          "optional": true,
+          "json_tag": "provider"
+        },
+        {
+          "name": "cost_ticks",
+          "type": "number",
+          "optional": false,
+          "json_tag": "cost_ticks"
+        },
+        {
+          "name": "request_id",
+          "type": "string",
+          "optional": false,
+          "json_tag": "request_id"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "RealtimeConfig",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "voice",
+          "type": "string",
+          "optional": false,
+          "json_tag": "voice"
+        },
+        {
+          "name": "instructions",
+          "type": "string",
+          "optional": false,
+          "json_tag": "instructions"
+        },
+        {
+          "name": "sample_rate",
+          "type": "number",
+          "optional": true,
+          "json_tag": "sample_rate"
+        },
+        {
+          "name": "tools",
+          "type": "unknown[]",
+          "optional": true,
+          "json_tag": "tools"
+        },
+        {
+          "name": "model",
+          "type": "string",
+          "optional": true,
+          "json_tag": "model"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "RealtimeEvent",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "type",
+          "type": "string",
+          "optional": false,
+          "json_tag": "type"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "WebResult",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "title",
+          "type": "string",
+          "optional": false,
+          "json_tag": "title"
+        },
+        {
+          "name": "url",
+          "type": "string",
+          "optional": false,
+          "json_tag": "url"
+        },
+        {
+          "name": "description",
+          "type": "string",
+          "optional": true,
+          "json_tag": "description"
+        },
+        {
+          "name": "age",
+          "type": "string",
+          "optional": true,
+          "json_tag": "age"
+        },
+        {
+          "name": "favicon",
+          "type": "string",
+          "optional": true,
+          "json_tag": "favicon"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "VideoResult",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "title",
+          "type": "string",
+          "optional": false,
+          "json_tag": "title"
+        },
+        {
+          "name": "url",
+          "type": "string",
+          "optional": false,
+          "json_tag": "url"
+        },
+        {
+          "name": "description",
+          "type": "string",
+          "optional": true,
+          "json_tag": "description"
+        },
+        {
+          "name": "thumbnail",
+          "type": "string",
+          "optional": true,
+          "json_tag": "thumbnail"
+        },
+        {
+          "name": "age",
+          "type": "string",
+          "optional": true,
+          "json_tag": "age"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "InfoboxResult",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "title",
+          "type": "string",
+          "optional": false,
+          "json_tag": "title"
+        },
+        {
+          "name": "description",
+          "type": "string",
+          "optional": true,
+          "json_tag": "description"
+        },
+        {
+          "name": "url",
+          "type": "string",
+          "optional": true,
+          "json_tag": "url"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "DiscussionResult",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "title",
+          "type": "string",
+          "optional": false,
+          "json_tag": "title"
+        },
+        {
+          "name": "url",
+          "type": "string",
+          "optional": false,
+          "json_tag": "url"
+        },
+        {
+          "name": "description",
+          "type": "string",
+          "optional": true,
+          "json_tag": "description"
+        },
+        {
+          "name": "age",
+          "type": "string",
+          "optional": true,
+          "json_tag": "age"
+        },
+        {
+          "name": "forum",
+          "type": "string",
+          "optional": true,
+          "json_tag": "forum"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "SearchContextRequest",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "query",
+          "type": "string",
+          "optional": false,
+          "json_tag": "query"
+        },
+        {
+          "name": "count",
+          "type": "number",
+          "optional": true,
+          "json_tag": "count"
+        },
+        {
+          "name": "country",
+          "type": "string",
+          "optional": true,
+          "json_tag": "country"
+        },
+        {
+          "name": "language",
+          "type": "string",
+          "optional": true,
+          "json_tag": "language"
+        },
+        {
+          "name": "freshness",
+          "type": "string",
+          "optional": true,
+          "json_tag": "freshness"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "SearchContextChunk",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "content",
+          "type": "string",
+          "optional": false,
+          "json_tag": "content"
+        },
+        {
+          "name": "url",
+          "type": "string",
+          "optional": false,
+          "json_tag": "url"
+        },
+        {
+          "name": "title",
+          "type": "string",
+          "optional": true,
+          "json_tag": "title"
+        },
+        {
+          "name": "score",
+          "type": "number",
+          "optional": true,
+          "json_tag": "score"
+        },
+        {
+          "name": "content_type",
+          "type": "string",
+          "optional": true,
+          "json_tag": "content_type"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "SearchContextSource",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "url",
+          "type": "string",
+          "optional": false,
+          "json_tag": "url"
+        },
+        {
+          "name": "title",
+          "type": "string",
+          "optional": true,
+          "json_tag": "title"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "SearchContextResponse",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "chunks",
+          "type": "SearchContextChunk[]",
+          "optional": false,
+          "json_tag": "chunks"
+        },
+        {
+          "name": "sources",
+          "type": "SearchContextSource[]",
+          "optional": true,
+          "json_tag": "sources"
+        },
+        {
+          "name": "query",
+          "type": "string",
+          "optional": false,
+          "json_tag": "query"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "SearchAnswerMessage",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "role",
+          "type": "string",
+          "optional": false,
+          "json_tag": "role"
+        },
+        {
+          "name": "content",
+          "type": "string",
+          "optional": false,
+          "json_tag": "content"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "SearchAnswerCitation",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "url",
+          "type": "string",
+          "optional": false,
+          "json_tag": "url"
+        },
+        {
+          "name": "title",
+          "type": "string",
+          "optional": true,
+          "json_tag": "title"
+        },
+        {
+          "name": "snippet",
+          "type": "string",
+          "optional": true,
+          "json_tag": "snippet"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "SessionContext",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "turn_count",
+          "type": "number",
+          "optional": false,
+          "json_tag": "turn_count"
+        },
+        {
+          "name": "estimated_tokens",
+          "type": "number",
+          "optional": false,
+          "json_tag": "estimated_tokens"
+        },
+        {
+          "name": "compacted",
+          "type": "boolean",
+          "optional": true,
+          "json_tag": "compacted"
+        },
+        {
+          "name": "compaction_note",
+          "type": "string",
+          "optional": true,
+          "json_tag": "compaction_note"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "ToolResult",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "tool_call_id",
+          "type": "string",
+          "optional": false,
+          "json_tag": "tool_call_id"
+        },
+        {
+          "name": "content",
+          "type": "string",
+          "optional": false,
+          "json_tag": "content"
+        },
+        {
+          "name": "is_error",
+          "type": "boolean",
+          "optional": true,
+          "json_tag": "is_error"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "Avatar",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "avatar_id",
+          "type": "string",
+          "optional": false,
+          "json_tag": "avatar_id"
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "optional": true,
+          "json_tag": "name"
+        },
+        {
+          "name": "gender",
+          "type": "string",
+          "optional": true,
+          "json_tag": "gender"
+        },
+        {
+          "name": "preview_url",
+          "type": "string",
+          "optional": true,
+          "json_tag": "preview_url"
+        },
+        {
+          "name": "extra",
+          "type": "Record\u003cstring, unknown\u003e",
+          "optional": true,
+          "json_tag": "extra"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "StudioVideoRequest",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "title",
+          "type": "string",
+          "optional": true,
+          "json_tag": "title"
+        },
+        {
+          "name": "clips",
+          "type": "StudioClip[]",
+          "optional": false,
+          "json_tag": "clips"
+        },
+        {
+          "name": "dimension",
+          "type": "string",
+          "optional": true,
+          "json_tag": "dimension"
+        },
+        {
+          "name": "aspect_ratio",
+          "type": "string",
+          "optional": true,
+          "json_tag": "aspect_ratio"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "VideoTemplate",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "template_id",
+          "type": "string",
+          "optional": false,
+          "json_tag": "template_id"
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "optional": true,
+          "json_tag": "name"
+        },
+        {
+          "name": "preview_url",
+          "type": "string",
+          "optional": true,
+          "json_tag": "preview_url"
+        },
+        {
+          "name": "extra",
+          "type": "Record\u003cstring, unknown\u003e",
+          "optional": true,
+          "json_tag": "extra"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "VideoTemplatesResponse",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "templates",
+          "type": "VideoTemplate[]",
+          "optional": false,
+          "json_tag": "templates"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "Voice",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "voice_id",
+          "type": "string",
+          "optional": false,
+          "json_tag": "voice_id"
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "optional": false,
+          "json_tag": "name"
+        },
+        {
+          "name": "provider",
+          "type": "string",
+          "optional": true,
+          "json_tag": "provider"
+        },
+        {
+          "name": "languages",
+          "type": "string[]",
+          "optional": true,
+          "json_tag": "languages"
+        },
+        {
+          "name": "gender",
+          "type": "string",
+          "optional": true,
+          "json_tag": "gender"
+        },
+        {
+          "name": "is_cloned",
+          "type": "boolean",
+          "optional": true,
+          "json_tag": "is_cloned"
+        },
+        {
+          "name": "preview_url",
+          "type": "string",
+          "optional": true,
+          "json_tag": "preview_url"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "CloneVoiceFile",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "filename",
+          "type": "string",
+          "optional": false,
+          "json_tag": "filename"
+        },
+        {
+          "name": "data",
+          "type": "Uint8Array | number[]",
+          "optional": false,
+          "json_tag": "data"
+        },
+        {
+          "name": "mime_type",
+          "type": "string",
+          "optional": false,
+          "json_tag": "mime_type"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "PricingResponse",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "pricing",
+          "type": "Record\u003cstring, PricingEntry\u003e",
+          "optional": false,
+          "json_tag": "pricing"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "values",
+      "kind": "enum",
+      "file": "types.ts",
+      "fields": null
+    }
+  ],
+  "updated_at": "2026-03-23T20:44:45.872655+01:00"
+}

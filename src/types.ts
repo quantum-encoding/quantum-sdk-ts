@@ -22,6 +22,8 @@ export interface ClientOptions {
 export interface ResponseMeta {
   costTicks: number;
   requestId: string;
+  cost_ticks?: number;
+  request_id?: string;
   model: string;
 }
 
@@ -72,10 +74,14 @@ export interface ChatTool {
 
 export interface ContentBlock {
   type: string;
+  /** Canonical block type (e.g. "text", "thinking", "tool_use"). */
+  block_type?: string;
   text?: string;
   id?: string;
   name?: string;
   input?: Record<string, unknown>;
+  /** Gemini thought signature — must be echoed back with tool results. */
+  thought_signature?: string;
   [key: string]: unknown;
 }
 
@@ -109,6 +115,8 @@ export interface StreamToolUse {
 
 export interface StreamEvent {
   type: string;
+  /** Event type (e.g. "content_delta", "thinking_delta", "tool_use", "usage", "error", "done"). */
+  event_type?: string;
   delta?: StreamDelta;
   tool_use?: StreamToolUse;
   usage?: ChatUsage;
@@ -298,16 +306,55 @@ export interface ImageRequest {
   /** Number of images to generate. */
   n?: number;
 
+  /** Number of images to generate (alias). */
+  count?: number;
+
   /** Image size (e.g. "1024x1024"). */
   size?: string;
 
+  /** Aspect ratio (e.g. "16:9", "1:1"). */
+  aspect_ratio?: string;
+
   /** Quality level (e.g. "standard", "hd"). */
   quality?: string;
+
+  /** Image format (e.g. "png", "jpeg", "webp"). */
+  output_format?: string;
+
+  /** Style preset (e.g. "vivid", "natural"). */
+  style?: string;
+
+  /** Background mode (e.g. "auto", "transparent", "opaque"). */
+  background?: string;
+
+  /** Image URL or data URI for image-to-3D conversion (Meshy). */
+  image_url?: string;
+
+  /** Mesh topology: "triangle" or "quad". */
+  topology?: string;
+
+  /** Target polygon count (100-300,000). */
+  target_polycount?: number;
+
+  /** Symmetry mode: "auto", "on", or "off". */
+  symmetry_mode?: string;
+
+  /** Pose mode: "", "a-pose", or "t-pose". */
+  pose_mode?: string;
+
+  /** Generate PBR texture maps. */
+  enable_pbr?: boolean;
 }
 
 export interface GeneratedImage {
   url?: string;
   b64_json?: string;
+  /** Base64-encoded image data. */
+  base64?: string;
+  /** Image format (e.g. "png", "jpeg"). */
+  format?: string;
+  /** Image index within the batch. */
+  index?: number;
 }
 
 export interface ImageResponse {
@@ -325,7 +372,10 @@ export interface ImageEditRequest {
   prompt: string;
 
   /** Base64-encoded source image. */
-  image: string;
+  image?: string;
+
+  /** Base64-encoded input images. */
+  input_images?: string[];
 
   /** Optional mask image for inpainting. */
   mask?: string;
@@ -335,6 +385,9 @@ export interface ImageEditRequest {
 
   /** Number of images. */
   n?: number;
+
+  /** Number of edited images to generate. */
+  count?: number;
 }
 
 export interface ImageEditResponse {
@@ -400,26 +453,44 @@ export interface MusicRequest {
   /** Duration in seconds. */
   duration?: number;
 
+  /** Target duration in seconds. */
+  duration_seconds?: number;
+
   /** Model to use for music generation. */
   model?: string;
 }
 
 export interface MusicClip {
-  audio_url: string;
+  audio_url?: string;
   title?: string;
   tags?: string;
-  duration_seconds: number;
+  duration_seconds?: number;
+  /** Base64-encoded audio data. */
+  base64?: string;
+  /** Audio format (e.g. "mp3", "wav"). */
+  format?: string;
+  /** Audio file size. */
+  size_bytes?: number;
+  /** Clip index within the batch. */
+  index?: number;
 }
 
 export interface MusicResponse {
-  clips: MusicClip[];
+  clips?: MusicClip[];
+  /** Generated music clips. */
+  audio_clips?: MusicClip[];
+  /** Model that generated the music. */
+  model?: string;
   request_id: string;
   cost_ticks: number;
 }
 
 export interface SoundEffectRequest {
   /** Text prompt describing the sound effect. */
-  text: string;
+  text?: string;
+
+  /** Text prompt describing the sound effect (alias). */
+  prompt?: string;
 
   /** Duration in seconds. */
   duration_seconds?: number;
@@ -429,7 +500,15 @@ export interface SoundEffectRequest {
 }
 
 export interface SoundEffectResponse {
-  audio_url: string;
+  audio_url?: string;
+  /** Base64-encoded audio data. */
+  audio_base64?: string;
+  /** Audio format (e.g. "mp3"). */
+  format?: string;
+  /** File size in bytes. */
+  size_bytes?: number;
+  /** Model used. */
+  model?: string;
   request_id: string;
   cost_ticks: number;
 }
@@ -443,13 +522,22 @@ export interface DialogueVoice {
 
 export interface DialogueRequest {
   /** Script with speaker names and lines. */
-  script: string;
+  script?: string;
+
+  /** Full dialogue script text. */
+  text?: string;
 
   /** Voice mapping (speaker name -> voice ID). */
-  voices: Record<string, string>;
+  voices: Record<string, string> | DialogueVoice[];
 
   /** Model for dialogue generation. */
   model?: string;
+
+  /** Output audio format. */
+  output_format?: string;
+
+  /** Seed for reproducible generation. */
+  seed?: number;
 }
 
 export interface DialogueResponse {
@@ -461,13 +549,22 @@ export interface DialogueResponse {
 
 export interface SpeechToSpeechRequest {
   /** Base64-encoded source audio. */
-  audio: string;
+  audio?: string;
+
+  /** Base64-encoded source audio (canonical). */
+  audio_base64?: string;
 
   /** Target voice ID. */
-  voice_id: string;
+  voice_id?: string;
+
+  /** Target voice. */
+  voice?: string;
 
   /** Model for voice conversion. */
   model?: string;
+
+  /** Output audio format. */
+  output_format?: string;
 }
 
 export interface SpeechToSpeechResponse {
@@ -504,13 +601,25 @@ export interface RemixVoiceResponse {
 
 export interface DubRequest {
   /** Base64-encoded audio/video to dub. */
-  audio: string;
+  audio?: string;
+
+  /** Base64-encoded source audio or video (canonical). */
+  audio_base64?: string;
+
+  /** Original filename (helps detect format). */
+  filename?: string;
 
   /** Target language code. */
-  target_lang: string;
+  target_lang?: string;
+
+  /** Target language (canonical). */
+  target_language?: string;
 
   /** Source language code. */
   source_lang?: string;
+
+  /** Source language (auto-detected if omitted). */
+  source_language?: string;
 }
 
 export interface DubResponse {
@@ -521,10 +630,16 @@ export interface DubResponse {
 
 export interface AlignRequest {
   /** Base64-encoded audio. */
-  audio: string;
+  audio?: string;
+
+  /** Base64-encoded audio data (canonical). */
+  audio_base64?: string;
 
   /** Text to align against the audio. */
   text: string;
+
+  /** Language code. */
+  language?: string;
 }
 
 export interface AlignedWord {
@@ -534,7 +649,9 @@ export interface AlignedWord {
 }
 
 export interface AlignResponse {
-  words: AlignedWord[];
+  words?: AlignedWord[];
+  /** Aligned segments. */
+  segments?: AlignmentSegment[];
   request_id: string;
   cost_ticks: number;
 }
@@ -543,8 +660,14 @@ export interface VoiceDesignRequest {
   /** Text description of the desired voice. */
   description: string;
 
+  /** Sample text to speak with the designed voice. */
+  text?: string;
+
   /** Text to preview the voice with. */
   preview_text?: string;
+
+  /** Output audio format. */
+  output_format?: string;
 }
 
 export interface VoicePreview {
@@ -564,6 +687,15 @@ export interface StarfishTTSRequest {
 
   /** Base64-encoded reference audio for voice cloning. */
   reference_audio?: string;
+
+  /** Voice identifier. */
+  voice?: string;
+
+  /** Output audio format. */
+  output_format?: string;
+
+  /** Speech speed multiplier. */
+  speed?: number;
 }
 
 export interface StarfishTTSResponse {
@@ -631,13 +763,27 @@ export interface VideoRequest {
   /** Duration in seconds. */
   duration?: number;
 
+  /** Target video duration in seconds. */
+  duration_seconds?: number;
+
+  /** Video aspect ratio (e.g. "16:9", "9:16"). */
+  aspect_ratio?: string;
+
   /** Resolution (e.g. "720p", "1080p"). */
   resolution?: string;
 }
 
 export interface GeneratedVideo {
-  url: string;
-  duration_seconds: number;
+  url?: string;
+  duration_seconds?: number;
+  /** Base64-encoded video data (or a URL). */
+  base64?: string;
+  /** Video format (e.g. "mp4"). */
+  format?: string;
+  /** Video file size. */
+  size_bytes?: number;
+  /** Video index within the batch. */
+  index?: number;
 }
 
 export interface VideoResponse {
@@ -683,12 +829,36 @@ export interface VideoTranslateRequest {
 
 export interface PhotoAvatarRequest {
   /** Base64-encoded photo image. */
-  image: string;
+  image?: string;
+
+  /** Base64-encoded photo (canonical). */
+  photo_base64?: string;
+
+  /** Script text for the avatar to speak. */
+  script?: string;
+
+  /** Voice ID. */
+  voice_id?: string;
+
+  /** Aspect ratio. */
+  aspect_ratio?: string;
 }
 
 export interface DigitalTwinRequest {
   /** Base64-encoded training video. */
-  video: string;
+  video?: string;
+
+  /** Digital twin / avatar ID. */
+  avatar_id?: string;
+
+  /** Script text. */
+  script?: string;
+
+  /** Voice ID. */
+  voice_id?: string;
+
+  /** Aspect ratio. */
+  aspect_ratio?: string;
 }
 
 export interface AsyncJobResponse {
@@ -721,6 +891,10 @@ export interface HeyGenVoice {
   voice_id: string;
   name: string;
   language?: string;
+  /** Gender. */
+  gender?: string;
+  /** Additional fields. */
+  extra?: Record<string, unknown>;
   [key: string]: unknown;
 }
 
@@ -749,17 +923,32 @@ export interface EmbedResponse {
 
 export interface DocumentRequest {
   /** Document content (base64 or URL). */
-  content: string;
+  content?: string;
+
+  /** Base64-encoded file content. */
+  file_base64?: string;
+
+  /** Original filename (helps determine the file type). */
+  filename?: string;
 
   /** Content type (e.g. "pdf", "image", "url"). */
   type?: string;
+
+  /** Desired output format (e.g. "markdown", "text"). */
+  output_format?: string;
 
   /** Model for extraction. */
   model?: string;
 }
 
 export interface DocumentResponse {
-  text: string;
+  text?: string;
+  /** Extracted text content. */
+  content?: string;
+  /** Format of the extracted content (e.g. "markdown"). */
+  format?: string;
+  /** Provider-specific metadata about the document. */
+  meta?: Record<string, unknown>;
   pages?: number;
   request_id: string;
   cost_ticks: number;
@@ -776,7 +965,9 @@ export interface ChunkDocumentRequest {
 export interface DocumentChunk {
   text: string;
   index: number;
-  tokens: number;
+  tokens?: number;
+  /** Estimated token count. */
+  token_count?: number;
 }
 
 export interface ChunkDocumentResponse {
@@ -935,12 +1126,24 @@ export interface UsageSummaryResponse {
 }
 
 export interface PricingEntry {
-  Provider: string;
-  Model: string;
-  DisplayName: string;
-  InputPerMillion: number;
-  OutputPerMillion: number;
+  Provider?: string;
+  Model?: string;
+  DisplayName?: string;
+  InputPerMillion?: number;
+  OutputPerMillion?: number;
   CachedPerMillion?: number;
+  /** Upstream provider. */
+  provider?: string;
+  /** Model identifier. */
+  model?: string;
+  /** Human-readable model name. */
+  display_name?: string;
+  /** Cost per million input tokens in USD. */
+  input_per_million?: number;
+  /** Cost per million output tokens in USD. */
+  output_per_million?: number;
+  /** Cost per million cached tokens in USD. */
+  cached_per_million?: number;
 }
 
 export interface AccountPricingResponse {
@@ -950,7 +1153,9 @@ export interface AccountPricingResponse {
 // ── Jobs ──────────────────────────────────────────────────────────
 
 export interface JobCreateRequest {
-  type: string;
+  type?: string;
+  /** Job type (e.g. "video/generate", "audio/music"). */
+  job_type?: string;
   params: Record<string, unknown>;
 }
 
@@ -1099,21 +1304,39 @@ export interface CreateKeyRequest {
   name: string;
   scopes?: string[];
   expires_at?: string;
+  /** Restrict to specific endpoints (e.g. ["chat", "images"]). */
+  endpoints?: string[];
+  /** Maximum spend in USD before the key is disabled. */
+  spend_cap_usd?: number;
+  /** Rate limit in requests per minute. */
+  rate_limit?: number;
 }
 
 export interface CreateKeyResponse {
   key: string;
-  id: string;
+  id?: string;
+  /** Key metadata. */
+  details?: KeyDetails;
 }
 
 export interface KeyDetails {
   id: string;
   name: string;
-  prefix: string;
+  prefix?: string;
+  /** First characters of the key for identification. */
+  key_prefix?: string;
   scopes?: string[];
-  created_at: string;
+  /** Scope restrictions. */
+  scope?: unknown;
+  /** Amount spent by this key in ticks. */
+  spent_ticks?: number;
+  /** Whether the key has been revoked. */
+  revoked?: boolean;
+  created_at?: string;
   expires_at?: string;
   last_used_at?: string;
+  /** Last usage timestamp. */
+  last_used?: string;
 }
 
 export interface ListKeysResponse {
@@ -1125,12 +1348,20 @@ export interface ListKeysResponse {
 export interface ComputeTemplate {
   id: string;
   name: string;
-  gpu_type: string;
-  gpu_count: number;
-  vcpus: number;
-  ram_gb: number;
-  disk_gb: number;
-  price_per_hour: number;
+  gpu_type?: string;
+  /** GPU type description. */
+  gpu?: string;
+  gpu_count?: number;
+  /** VRAM per GPU in GB. */
+  vram_gb?: number;
+  vcpus?: number;
+  ram_gb?: number;
+  disk_gb?: number;
+  price_per_hour?: number;
+  /** Price per hour in USD. */
+  price_per_hour_usd?: number;
+  /** Available zones. */
+  zones?: string[];
   [key: string]: unknown;
 }
 
@@ -1139,14 +1370,30 @@ export interface TemplatesResponse {
 }
 
 export interface ProvisionRequest {
-  template_id: string;
+  template_id?: string;
+  /** Template ID to provision. */
+  template?: string;
   region?: string;
+  /** Preferred zone (e.g. "us-central1-a"). */
+  zone?: string;
+  /** Use spot/preemptible pricing. */
+  spot?: boolean;
+  /** Auto-teardown after N minutes of inactivity. */
+  auto_teardown_minutes?: number;
   ssh_public_key?: string;
 }
 
 export interface ProvisionResponse {
   instance_id: string;
   status: string;
+  /** Template that was provisioned. */
+  template?: string;
+  /** Zone the instance was placed in. */
+  zone?: string;
+  /** SSH connection address. */
+  ssh_address?: string;
+  /** Estimated price per hour. */
+  price_per_hour_usd?: number;
 }
 
 export interface ComputeInstanceInfo {
@@ -1178,6 +1425,8 @@ export interface SSHKeyRequest {
 export interface DeleteResponse {
   status: string;
   cost_ticks?: number;
+  /** Instance that was deleted. */
+  instance_id?: string;
 }
 
 // ── Voice Management ──────────────────────────────────────────────
@@ -1204,6 +1453,8 @@ export interface CloneVoiceRequest {
 export interface CloneVoiceResponse {
   voice_id: string;
   name: string;
+  /** Status message. */
+  status?: string;
 }
 
 // ── Voice Library ─────────────────────────────────────────────────
@@ -1266,6 +1517,9 @@ export interface ContactRequest {
 
   /** Sender email address. */
   email: string;
+
+  /** Message subject. */
+  subject?: string;
 
   /** Message body. */
   message: string;
@@ -1369,6 +1623,8 @@ export interface CreditTier {
   name?: string;
   min_balance?: number;
   discount_percent?: number;
+  /** Additional tier data. */
+  extra?: unknown;
   [key: string]: unknown;
 }
 
@@ -1421,6 +1677,9 @@ export interface AuthAppleRequest {
 export interface StatusResponse {
   /** Status string (e.g. "revoked", "deleted", "alive", "sent"). */
   status: string;
+
+  /** Optional human-readable message. */
+  message?: string;
 
   /** Additional fields. */
   [key: string]: unknown;
@@ -1494,15 +1753,15 @@ export interface BasicAnimations {
 export interface AnimateRequest {
   rig_task_id: string;
   action_id: number;
-  post_process?: {
-    operation_type: string;
-    fps?: number;
-  };
+  /** Optional post-processing. */
+  post_process?: AnimationPostProcess;
 }
 
 export interface RetextureRequest {
   input_task_id?: string;
   model_url?: string;
+  /** Text prompt describing the desired texture. */
+  prompt?: string;
   text_style_prompt?: string;
   image_style_url?: string;
   ai_model?: string;
@@ -1511,3 +1770,723 @@ export interface RetextureRequest {
   remove_lighting?: boolean;
   target_formats?: string[];
 }
+
+// ── Animation Post-Processing ────────────────────────────────────
+
+/** Post-processing options for animation export. */
+export interface AnimationPostProcess {
+  /** Operation: "change_fps", "fbx2usdz", "extract_armature". */
+  operation_type: string;
+  /** Target FPS (for "change_fps"): 24, 25, 30, 60. */
+  fps?: number;
+}
+
+// ── Agent Stream ─────────────────────────────────────────────────
+
+/** A single event from an agent or mission SSE stream. */
+export interface AgentStreamEvent {
+  /** Event type (e.g. "step", "thought", "tool_call", "tool_result", "message", "error", "done"). */
+  event_type: string;
+  /** Raw JSON payload. */
+  data?: Record<string, unknown>;
+  [key: string]: unknown;
+}
+
+/** Describes a worker agent in a multi-agent run. */
+export interface AgentWorker {
+  /** Worker name. */
+  name: string;
+  /** Model ID for this worker. */
+  model?: string;
+  /** Worker tier (e.g. "fast", "thinking"). */
+  tier?: string;
+  /** Description of this worker's role. */
+  description?: string;
+}
+
+/** Describes a named worker for a mission. */
+export interface MissionWorker {
+  /** Model ID for this worker. */
+  model?: string;
+  /** Worker tier. */
+  tier?: string;
+  /** Description of this worker's purpose. */
+  description?: string;
+}
+
+// ── Audio Types ──────────────────────────────────────────────────
+
+/** A single alignment segment. */
+export interface AlignmentSegment {
+  /** Aligned text. */
+  text: string;
+  /** Start time in seconds. */
+  start: number;
+  /** End time in seconds. */
+  end: number;
+}
+
+/** Generic audio response used by multiple advanced audio endpoints. */
+export interface AudioResponse {
+  /** Base64-encoded audio data. */
+  audio_base64?: string;
+  /** Audio format (e.g. "mp3", "wav"). */
+  format?: string;
+  /** File size in bytes. */
+  size_bytes?: number;
+  /** Model used. */
+  model?: string;
+  /** Total cost in ticks. */
+  cost_ticks?: number;
+  /** Unique request identifier. */
+  request_id?: string;
+  /** Additional response fields. */
+  extra?: Record<string, unknown>;
+  [key: string]: unknown;
+}
+
+/** A single dialogue turn. */
+export interface DialogueTurn {
+  /** Speaker name or identifier. */
+  speaker: string;
+  /** Text for this speaker to say. */
+  text: string;
+  /** Voice ID to use for this speaker. */
+  voice?: string;
+}
+
+/** Request body for voice isolation. */
+export interface IsolateRequest {
+  /** Base64-encoded audio to isolate voice from. */
+  audio_base64: string;
+  /** Output audio format. */
+  output_format?: string;
+}
+
+/** Request body for voice remixing. */
+export interface RemixRequest {
+  /** Base64-encoded source audio. */
+  audio_base64: string;
+  /** Target voice for the remix. */
+  voice?: string;
+  /** Model for remixing. */
+  model?: string;
+  /** Output audio format. */
+  output_format?: string;
+}
+
+/** Request body for text-to-speech (canonical). */
+export interface TtsRequest {
+  /** TTS model. */
+  model: string;
+  /** Text to synthesise into speech. */
+  text: string;
+  /** Voice to use. */
+  voice?: string;
+  /** Audio format (e.g. "mp3", "wav", "opus"). */
+  output_format?: string;
+  /** Speech rate. */
+  speed?: number;
+}
+
+/** Response from text-to-speech (canonical). */
+export interface TtsResponse {
+  /** Base64-encoded audio data. */
+  audio_base64: string;
+  /** Audio format (e.g. "mp3"). */
+  format: string;
+  /** Audio file size. */
+  size_bytes: number;
+  /** Model that generated the audio. */
+  model: string;
+  /** Total cost in ticks. */
+  cost_ticks: number;
+  /** Unique request identifier. */
+  request_id: string;
+}
+
+/** Request body for speech-to-text (canonical). */
+export interface SttRequest {
+  /** STT model. */
+  model: string;
+  /** Base64-encoded audio data. */
+  audio_base64: string;
+  /** Original filename. */
+  filename?: string;
+  /** BCP-47 language code hint. */
+  language?: string;
+}
+
+/** Response from speech-to-text (canonical). */
+export interface SttResponse {
+  /** Transcribed text. */
+  text: string;
+  /** Model that performed transcription. */
+  model: string;
+  /** Total cost in ticks. */
+  cost_ticks: number;
+  /** Unique request identifier. */
+  request_id: string;
+}
+
+/** Request body for audio translation. */
+export interface TranslateRequest {
+  /** URL of the video to translate. */
+  video_url?: string;
+  /** Base64-encoded video. */
+  video_base64?: string;
+  /** Target language code. */
+  target_language: string;
+  /** Source language code (auto-detected if omitted). */
+  source_language?: string;
+}
+
+// ── Eleven Music (advanced) ──────────────────────────────────────
+
+/** A section within an Eleven Music generation request. */
+export interface MusicSection {
+  section_type: string;
+  lyrics?: string;
+  style?: string;
+  style_exclude?: string;
+}
+
+/** Request body for advanced music generation (ElevenLabs Eleven Music). */
+export interface ElevenMusicRequest {
+  model: string;
+  prompt: string;
+  sections?: MusicSection[];
+  duration_seconds?: number;
+  language?: string;
+  vocals?: boolean;
+  style?: string;
+  style_exclude?: string;
+  finetune_id?: string;
+  edit_reference_id?: string;
+  edit_instruction?: string;
+}
+
+/** A single music clip from advanced generation. */
+export interface ElevenMusicClip {
+  /** Base64-encoded audio data. */
+  base64: string;
+  /** Audio format (e.g. "mp3"). */
+  format: string;
+  /** File size in bytes. */
+  size: number;
+}
+
+/** Response from advanced music generation. */
+export interface ElevenMusicResponse {
+  /** Generated music clips. */
+  clips: ElevenMusicClip[];
+  /** Model used. */
+  model: string;
+  /** Total cost in ticks. */
+  cost_ticks: number;
+  /** Unique request identifier. */
+  request_id: string;
+}
+
+/** Info about a music finetune. */
+export interface FinetuneInfo {
+  finetune_id: string;
+  name: string;
+  status?: string;
+  created_at?: string;
+}
+
+/** Response from listing finetunes. */
+export interface ListFinetunesResponse {
+  finetunes: FinetuneInfo[];
+}
+
+// ── Batch Types ──────────────────────────────────────────────────
+
+/** A single job in a batch submission (Rust canonical). */
+export interface BatchJob {
+  /** Model to use for this job. */
+  model: string;
+  /** The prompt text. */
+  prompt: string;
+  /** Optional title for this job. */
+  title?: string;
+  /** Optional system prompt. */
+  system_prompt?: string;
+  /** Optional maximum tokens to generate. */
+  max_tokens?: number;
+}
+
+// ── Compute Types ────────────────────────────────────────────────
+
+/** A running compute instance. */
+export interface ComputeInstance {
+  /** Instance identifier. */
+  id: string;
+  /** Current status. */
+  status: string;
+  /** Template used. */
+  template?: string;
+  /** Zone. */
+  zone?: string;
+  /** SSH connection address. */
+  ssh_address?: string;
+  /** Creation timestamp. */
+  created_at?: string;
+  /** Price per hour. */
+  price_per_hour_usd?: number;
+  /** Auto-teardown setting in minutes. */
+  auto_teardown_minutes?: number;
+}
+
+// ── Document Types ───────────────────────────────────────────────
+
+/** Request body for document chunking (canonical). */
+export interface ChunkRequest {
+  /** Base64-encoded file content. */
+  file_base64: string;
+  /** Original filename. */
+  filename: string;
+  /** Maximum chunk size in tokens. */
+  max_chunk_tokens?: number;
+  /** Overlap between chunks in tokens. */
+  overlap_tokens?: number;
+}
+
+/** Response from document chunking (canonical). */
+export interface ChunkResponse {
+  /** Document chunks. */
+  chunks: DocumentChunk[];
+  /** Total number of chunks. */
+  total_chunks?: number;
+  /** Total cost in ticks. */
+  cost_ticks: number;
+  /** Unique request identifier. */
+  request_id: string;
+}
+
+/** Request body for document processing (canonical). */
+export interface ProcessRequest {
+  /** Base64-encoded file content. */
+  file_base64: string;
+  /** Original filename. */
+  filename: string;
+  /** Processing instructions or prompt. */
+  prompt?: string;
+  /** Model to use for processing. */
+  model?: string;
+}
+
+/** Response from document processing (canonical). */
+export interface ProcessResponse {
+  /** Processed content / analysis result. */
+  content: string;
+  /** Model used for processing. */
+  model?: string;
+  /** Total cost in ticks. */
+  cost_ticks: number;
+  /** Unique request identifier. */
+  request_id: string;
+}
+
+// ── Error Types ──────────────────────────────────────────────────
+
+/** Error types returned by the Quantum AI SDK. */
+export interface ApiError {
+  /** The HTTP status code from the response. */
+  status_code: number;
+  /** The error type from the API. */
+  code: string;
+  /** The human-readable error description. */
+  message: string;
+  /** The unique request identifier. */
+  request_id: string;
+}
+
+// ── Jobs Types ───────────────────────────────────────────────────
+
+/** Summary of a job in the list response. */
+export interface JobSummary {
+  job_id: string;
+  status: string;
+  job_type?: string;
+  created_at?: string;
+  completed_at?: string;
+  cost_ticks: number;
+}
+
+/** Response from listing jobs. */
+export interface ListJobsResponse {
+  jobs: JobSummary[];
+}
+
+/** Response from async video job submission. */
+export interface JobResponse {
+  /** Job identifier for polling status. */
+  job_id: string;
+  /** Current status. */
+  status?: string;
+  /** Total cost in ticks. */
+  cost_ticks?: number;
+  /** Additional response fields. */
+  extra?: Record<string, unknown>;
+  [key: string]: unknown;
+}
+
+// ── RAG Types ────────────────────────────────────────────────────
+
+/** Request body for Vertex AI RAG search (canonical). */
+export interface RagSearchRequest {
+  /** Search query. */
+  query: string;
+  /** Filter by corpus name or ID. */
+  corpus?: string;
+  /** Maximum number of results. */
+  top_k?: number;
+}
+
+/** Response from RAG search (canonical). */
+export interface RagSearchResponse {
+  /** Matching document chunks. */
+  results: RagResult[];
+  /** Original search query. */
+  query: string;
+  /** Corpora that were searched. */
+  corpora?: string[];
+  /** Total cost in ticks. */
+  cost_ticks: number;
+  /** Unique request identifier. */
+  request_id: string;
+}
+
+/** A single result from RAG search (canonical). */
+export interface RagResult {
+  /** Source document URI. */
+  source_uri: string;
+  /** Display name of the source. */
+  source_name: string;
+  /** Matching text chunk. */
+  text: string;
+  /** Relevance score. */
+  score: number;
+  /** Vector distance. */
+  distance: number;
+}
+
+/** Describes an available RAG corpus (canonical). */
+export interface RagCorpus {
+  /** Full resource name. */
+  name: string;
+  /** Human-readable name. */
+  displayName: string;
+  /** Describes the corpus contents. */
+  description: string;
+  /** Corpus state (e.g. "ACTIVE"). */
+  state: string;
+}
+
+/** A SurrealDB RAG provider (canonical). */
+export interface SurrealRagProvider {
+  /** Provider identifier. */
+  provider: string;
+  /** Number of document chunks for this provider. */
+  chunk_count?: number;
+}
+
+/** Response from listing SurrealDB RAG providers (canonical). */
+export interface SurrealRagProvidersResponse {
+  providers: SurrealRagProvider[];
+}
+
+/** Request body for SurrealDB-backed RAG search (canonical). */
+export interface SurrealRagSearchRequest {
+  /** Search query. */
+  query: string;
+  /** Filter by documentation provider. */
+  provider?: string;
+  /** Maximum number of results. */
+  limit?: number;
+}
+
+/** A single result from SurrealDB RAG search (canonical). */
+export interface SurrealRagResult {
+  /** Documentation provider. */
+  provider: string;
+  /** Document title. */
+  title: string;
+  /** Section heading. */
+  heading: string;
+  /** Original source file path. */
+  source_file: string;
+  /** Matching text chunk. */
+  content: string;
+  /** Cosine similarity score. */
+  score: number;
+}
+
+/** Response from SurrealDB RAG search (canonical). */
+export interface SurrealRagSearchResponse {
+  /** Matching documentation chunks. */
+  results: SurrealRagResult[];
+  /** Original search query. */
+  query: string;
+  /** Provider filter that was applied. */
+  provider?: string;
+  /** Total cost in ticks. */
+  cost_ticks: number;
+  /** Unique request identifier. */
+  request_id: string;
+}
+
+// ── Realtime Types ───────────────────────────────────────────────
+
+/** Configuration for a realtime voice session (canonical). */
+export interface RealtimeConfig {
+  /** Voice to use. */
+  voice: string;
+  /** System instructions for the AI. */
+  instructions: string;
+  /** PCM sample rate in Hz. */
+  sample_rate?: number;
+  /** Tool definitions. */
+  tools?: unknown[];
+  /** Model to use for the realtime session. */
+  model?: string;
+}
+
+/** Parsed incoming event from the realtime API. */
+export interface RealtimeEvent {
+  /** Event type. */
+  type: string;
+  /** Event-specific data. */
+  [key: string]: unknown;
+}
+
+// ── Search Types ─────────────────────────────────────────────────
+
+/** A single web search result (canonical). */
+export interface WebResult {
+  /** Page title. */
+  title: string;
+  /** Page URL. */
+  url: string;
+  /** Result description / snippet. */
+  description?: string;
+  /** Age of the result. */
+  age?: string;
+  /** Favicon URL. */
+  favicon?: string;
+}
+
+/** A video search result (canonical). */
+export interface VideoResult {
+  /** Video title. */
+  title: string;
+  /** Video page URL. */
+  url: string;
+  /** Short description. */
+  description?: string;
+  /** Thumbnail URL. */
+  thumbnail?: string;
+  /** Age of the video. */
+  age?: string;
+}
+
+/** An infobox (knowledge panel) result. */
+export interface InfoboxResult {
+  /** Infobox title. */
+  title: string;
+  /** Long description. */
+  description?: string;
+  /** Source URL. */
+  url?: string;
+}
+
+/** A discussion / forum result. */
+export interface DiscussionResult {
+  /** Discussion title. */
+  title: string;
+  /** Discussion URL. */
+  url: string;
+  /** Short description. */
+  description?: string;
+  /** Age of the discussion. */
+  age?: string;
+  /** Forum name. */
+  forum?: string;
+}
+
+/** Request body for search context (returns chunked page content). */
+export interface SearchContextRequest {
+  /** Search query string. */
+  query: string;
+  /** Number of results to fetch context from. */
+  count?: number;
+  /** Country code filter. */
+  country?: string;
+  /** Language code filter. */
+  language?: string;
+  /** Freshness filter. */
+  freshness?: string;
+}
+
+/** A content chunk from search context (canonical). */
+export interface SearchContextChunk {
+  /** Extracted page content. */
+  content: string;
+  /** Source URL. */
+  url: string;
+  /** Page title. */
+  title?: string;
+  /** Relevance score. */
+  score?: number;
+  /** Content type. */
+  content_type?: string;
+}
+
+/** A source reference from search context (canonical). */
+export interface SearchContextSource {
+  /** Source URL. */
+  url: string;
+  /** Source title. */
+  title?: string;
+}
+
+/** Response from the search context endpoint. */
+export interface SearchContextResponse {
+  /** Content chunks extracted from search results. */
+  chunks: SearchContextChunk[];
+  /** Source references. */
+  sources?: SearchContextSource[];
+  /** Original query. */
+  query: string;
+}
+
+/** A chat message for the search answer endpoint (canonical). */
+export interface SearchAnswerMessage {
+  /** Message role. */
+  role: string;
+  /** Message text content. */
+  content: string;
+}
+
+/** A citation reference in a search answer (canonical). */
+export interface SearchAnswerCitation {
+  /** Source URL. */
+  url: string;
+  /** Source title. */
+  title?: string;
+  /** Snippet from the source. */
+  snippet?: string;
+}
+
+// ── Session Types ────────────────────────────────────────────────
+
+/** Context metadata returned with session responses (canonical). */
+export interface SessionContext {
+  /** Number of conversation turns in the session. */
+  turn_count: number;
+  /** Estimated total tokens in the session context. */
+  estimated_tokens: number;
+  /** Whether context was compacted during this turn. */
+  compacted?: boolean;
+  /** Note about the compaction. */
+  compaction_note?: string;
+}
+
+/** A tool result to feed back into the session (canonical). */
+export interface ToolResult {
+  /** The tool_use ID this result corresponds to. */
+  tool_call_id: string;
+  /** The result content. */
+  content: string;
+  /** Whether this result is an error. */
+  is_error?: boolean;
+}
+
+// ── Video Types ──────────────────────────────────────────────────
+
+/** A HeyGen avatar (canonical). */
+export interface Avatar {
+  /** Avatar identifier. */
+  avatar_id: string;
+  /** Avatar name. */
+  name?: string;
+  /** Avatar gender. */
+  gender?: string;
+  /** Preview image URL. */
+  preview_url?: string;
+  /** Additional fields. */
+  extra?: Record<string, unknown>;
+}
+
+/** Request body for HeyGen studio video creation. */
+export interface StudioVideoRequest {
+  /** Video title. */
+  title?: string;
+  /** Video clips. */
+  clips: StudioClip[];
+  /** Video dimensions. */
+  dimension?: string;
+  /** Aspect ratio. */
+  aspect_ratio?: string;
+}
+
+/** A HeyGen video template (canonical). */
+export interface VideoTemplate {
+  /** Template identifier. */
+  template_id: string;
+  /** Template name. */
+  name?: string;
+  /** Preview image URL. */
+  preview_url?: string;
+  /** Additional fields. */
+  extra?: Record<string, unknown>;
+}
+
+/** Response from listing HeyGen video templates. */
+export interface VideoTemplatesResponse {
+  templates: VideoTemplate[];
+}
+
+// ── Voice Types ──────────────────────────────────────────────────
+
+/** A voice available for TTS (canonical). */
+export interface Voice {
+  /** Voice identifier. */
+  voice_id: string;
+  /** Human-readable voice name. */
+  name: string;
+  /** Provider (e.g. "elevenlabs", "openai"). */
+  provider?: string;
+  /** Language/locale codes supported. */
+  languages?: string[];
+  /** Voice gender. */
+  gender?: string;
+  /** Whether this is a cloned voice. */
+  is_cloned?: boolean;
+  /** Preview audio URL. */
+  preview_url?: string;
+}
+
+/** A file to include in a voice clone request. */
+export interface CloneVoiceFile {
+  /** Original filename (e.g. "sample.mp3"). */
+  filename: string;
+  /** Raw file bytes. */
+  data: Uint8Array | number[];
+  /** MIME type (e.g. "audio/mpeg"). */
+  mime_type: string;
+}
+
+// ── Pricing Types ────────────────────────────────────────────────
+
+/** Pricing response (map of model_id to entry). */
+export interface PricingResponse {
+  pricing: Record<string, PricingEntry>;
+}
+
+// ── Error Enum (for reference) ───────────────────────────────────
+
+/** Error type enum values matching Rust SDK. */
+export type Error = ApiError | { type: "http"; message: string } | { type: "json"; message: string } | { type: "websocket"; message: string };

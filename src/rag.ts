@@ -7,6 +7,11 @@ import type {
   SurrealRAGProvidersResponse,
   SurrealRAGSearchRequest,
   SurrealRAGSearchResponse,
+  Collection,
+  CollectionDocument,
+  CollectionSearchRequest,
+  CollectionSearchResult,
+  CollectionUploadResult,
 } from "./types.js";
 
 /**
@@ -87,4 +92,35 @@ export async function surrealRagProviders(
   );
 
   return data;
+}
+
+// ── RAG Collections (user-scoped xAI proxy) ─────────────────────
+
+export async function collectionsList(client: QuantumClient): Promise<Collection[]> {
+  const { data } = await client._doJSON<{ collections: Collection[] }>("GET", "/qai/v1/rag/collections", undefined);
+  return data.collections;
+}
+
+export async function collectionsCreate(client: QuantumClient, name: string): Promise<Collection> {
+  const { data } = await client._doJSON<Collection>("POST", "/qai/v1/rag/collections", { name });
+  return data;
+}
+
+export async function collectionsGet(client: QuantumClient, id: string): Promise<Collection> {
+  const { data } = await client._doJSON<Collection>("GET", `/qai/v1/rag/collections/${id}`, undefined);
+  return data;
+}
+
+export async function collectionsDelete(client: QuantumClient, id: string): Promise<void> {
+  await client._doJSON("DELETE", `/qai/v1/rag/collections/${id}`, undefined);
+}
+
+export async function collectionsDocuments(client: QuantumClient, collectionId: string): Promise<CollectionDocument[]> {
+  const { data } = await client._doJSON<{ documents: CollectionDocument[] }>("GET", `/qai/v1/rag/collections/${collectionId}/documents`, undefined);
+  return data.documents;
+}
+
+export async function collectionsSearch(client: QuantumClient, req: CollectionSearchRequest): Promise<CollectionSearchResult[]> {
+  const { data } = await client._doJSON<{ results: CollectionSearchResult[] }>("POST", "/qai/v1/rag/collections/search", req);
+  return data.results;
 }

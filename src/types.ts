@@ -1059,6 +1059,50 @@ export interface SurrealRAGProvidersResponse {
   providers: SurrealRAGProviderInfo[];
 }
 
+// ── RAG Collections (user-scoped xAI proxy) ─────────────────────
+
+export interface Collection {
+  id: string;
+  name: string;
+  description?: string;
+  document_count?: number;
+  owner?: string;
+  provider?: string;
+  created_at?: string;
+}
+
+export interface CollectionDocument {
+  file_id: string;
+  name: string;
+  size_bytes?: number;
+  content_type?: string;
+  processing_status?: string;
+  document_status?: string;
+  indexed?: boolean;
+  created_at?: string;
+}
+
+export interface CollectionSearchResult {
+  content: string;
+  score?: number;
+  file_id?: string;
+  collection_id?: string;
+  metadata?: Record<string, unknown>;
+}
+
+export interface CollectionSearchRequest {
+  query: string;
+  collection_ids: string[];
+  mode?: string;
+  max_results?: number;
+}
+
+export interface CollectionUploadResult {
+  file_id: string;
+  filename: string;
+  bytes?: number;
+}
+
 // ── Models ────────────────────────────────────────────────────────
 
 export interface ModelInfo {

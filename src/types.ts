@@ -2534,3 +2534,62 @@ export interface PricingResponse {
 
 /** Error type enum values matching Rust SDK. */
 export type Error = ApiError | { type: "http"; message: string } | { type: "json"; message: string } | { type: "websocket"; message: string };
+
+// ── Cross-SDK Parity Types ──────────────────────────────────────
+
+/** A citation returned with search-grounded chat responses. */
+export interface Citation {
+  url: string;
+  title: string;
+  text?: string;
+  index?: number;
+}
+
+/** Response from listing RAG collections. */
+export interface CollectionsListResponse {
+  collections: Collection[];
+}
+
+/** Response from listing documents in a collection. */
+export interface CollectionDocumentsResponse {
+  documents: CollectionDocument[];
+}
+
+/** Response from searching a collection. */
+export interface CollectionSearchResponse {
+  results: CollectionSearchResult[];
+}
+
+/** Request to create a new RAG collection. */
+export interface CreateCollectionRequest {
+  name: string;
+  description?: string;
+  provider?: string;
+}
+
+/** Response from deleting a collection. */
+export interface DeleteCollectionResponse {
+  deleted: boolean;
+}
+
+/** Response from listing available models. */
+export interface ModelsResponse {
+  models: ModelInfo[];
+}
+
+/** Response from listing Vertex AI RAG corpora. */
+export interface RagCorporaResponse {
+  corpora: RagCorpus[];
+}
+
+/** Canonical alias for InfoboxResult. */
+export type Infobox = InfoboxResult;
+
+/** Canonical alias for DiscussionResult. */
+export type Discussion = DiscussionResult;
+
+/** Canonical aliases for TTS/STT types. */
+export type TextToSpeechRequest = TTSRequest;
+export type TextToSpeechResponse = TTSResponse;
+export type SpeechToTextRequest = STTRequest;
+export type SpeechToTextResponse = STTResponse;

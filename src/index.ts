@@ -202,6 +202,21 @@ export type {
   SearchCitation,
   // Common
   StatusResponse,
+  // Cross-SDK parity
+  Citation,
+  CollectionsListResponse,
+  CollectionDocumentsResponse,
+  CollectionSearchResponse,
+  CreateCollectionRequest,
+  DeleteCollectionResponse,
+  ModelsResponse,
+  RagCorporaResponse,
+  Infobox,
+  Discussion,
+  TextToSpeechRequest,
+  TextToSpeechResponse,
+  SpeechToTextRequest,
+  SpeechToTextResponse,
 } from "./types.js";
 
 // ── Constants ───────────────────────────────────────────────────────

@@ -217,6 +217,16 @@ export type {
   TextToSpeechResponse,
   SpeechToTextRequest,
   SpeechToTextResponse,
+  ContactResponse,
+  ContextChunk,
+  ContextOptions,
+  HeyGenAvatarsResponse,
+  JobAcceptedResponse,
+  JobListEntry,
+  PostProcess,
+  RealtimeSessionResponse,
+  SearchMessage,
+  SearchOptions,
 } from "./types.js";
 
 // ── Constants ───────────────────────────────────────────────────────

@@ -2593,3 +2593,75 @@ export type TextToSpeechRequest = TTSRequest;
 export type TextToSpeechResponse = TTSResponse;
 export type SpeechToTextRequest = STTRequest;
 export type SpeechToTextResponse = STTResponse;
+
+/** Response from the contact form endpoint. */
+export interface ContactResponse {
+  status: string;
+  message?: string;
+}
+
+/** Canonical alias for SearchContextChunk. */
+export type ContextChunk = SearchContextChunk;
+
+/** Options for configuring LLM context search requests. */
+export interface ContextOptions {
+  count?: number;
+  country?: string;
+  language?: string;
+  freshness?: string;
+}
+
+/** Response from listing HeyGen avatars. */
+export interface HeyGenAvatarsResponse {
+  avatars: Avatar[];
+  request_id?: string;
+}
+
+/** Response from async job submission. */
+export interface JobAcceptedResponse {
+  job_id: string;
+  status: string;
+  job_type?: string;
+  request_id?: string;
+}
+
+/** A single job entry in the detailed job list response. */
+export interface JobListEntry {
+  job_id: string;
+  status: string;
+  job_type?: string;
+  result?: unknown;
+  error?: string;
+  cost_ticks: number;
+  created_at?: string;
+  completed_at?: string;
+  request_id?: string;
+}
+
+/** Post-processing options for animation export. */
+export interface PostProcess {
+  operation_type: string;
+  fps?: number;
+}
+
+/** Response from creating a realtime voice session. */
+export interface RealtimeSessionResponse {
+  ephemeral_token?: string;
+  url?: string;
+  signed_url?: string;
+  session_id?: string;
+  provider?: string;
+}
+
+/** Canonical alias for SearchAnswerMessage. */
+export type SearchMessage = SearchAnswerMessage;
+
+/** Options for configuring web search requests. */
+export interface SearchOptions {
+  count?: number;
+  offset?: number;
+  country?: string;
+  language?: string;
+  freshness?: string;
+  safe_search?: string;
+}

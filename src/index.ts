@@ -227,6 +227,14 @@ export type {
   RealtimeSessionResponse,
   SearchMessage,
   SearchOptions,
+  // Scraper
+  ScrapeTarget,
+  ScrapeRequest,
+  ScrapeResponse,
+  ScreenshotURL,
+  ScreenshotRequest,
+  ScreenshotResult,
+  ScreenshotResponse,
 } from "./types.js";
 
 // ── Constants ───────────────────────────────────────────────────────

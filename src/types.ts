@@ -2665,3 +2665,62 @@ export interface SearchOptions {
   freshness?: string;
   safe_search?: string;
 }
+
+// ── Scraper Types ────────────────────────────────────────────────
+
+/** A single scrape target. */
+export interface ScrapeTarget {
+  name: string;
+  url: string;
+  type?: string;
+  selector?: string;
+  content?: string;
+  notebook?: string;
+  recursive?: boolean;
+  max_pages?: number;
+  delay_ms?: number;
+  ingest?: string;
+}
+
+/** Request body for submitting a scrape job. */
+export interface ScrapeRequest {
+  targets: ScrapeTarget[];
+}
+
+/** Response from submitting a scrape job. */
+export interface ScrapeResponse {
+  job_id: string;
+  status: string;
+  targets: number;
+  request_id: string;
+}
+
+/** A single URL to screenshot. */
+export interface ScreenshotURL {
+  url: string;
+  width?: number;
+  height?: number;
+  full_page?: boolean;
+  delay_ms?: number;
+}
+
+/** Request body for taking screenshots. */
+export interface ScreenshotRequest {
+  urls: ScreenshotURL[];
+}
+
+/** A single screenshot result. */
+export interface ScreenshotResult {
+  url: string;
+  base64: string;
+  format: string;
+  width: number;
+  height: number;
+  error?: string;
+}
+
+/** Response from the screenshot endpoint. */
+export interface ScreenshotResponse {
+  screenshots: ScreenshotResult[];
+  count: number;
+}

@@ -237,6 +237,30 @@ export type {
   ScreenshotResponse,
 } from "./types.js";
 
+// ── Vision ──────────────────────────────────────────────────────────
+export type {
+  VisionRequest, VisionContext, VisionResponse, DetectedObject,
+  QualityAssessment, RelevanceCheck, OcrResult, TextOverlay,
+} from "./vision.js";
+
+// ── Missions ────────────────────────────────────────────────────────
+export type {
+  MissionCreateRequest, MissionWorkerConfig, MissionChatRequest,
+  MissionPlanUpdate, MissionConfirmStructure, MissionApproveRequest,
+  MissionImportRequest, MissionCreateResponse, MissionDetail,
+  MissionTask, MissionListResponse, MissionChatResponse,
+  MissionChatUsage, MissionCheckpoint, MissionCheckpointsResponse,
+  MissionStatusResponse,
+} from "./missions.js";
+
+// ── Security ────────────────────────────────────────────────────────
+export type {
+  SecurityScanUrlRequest, SecurityScanHtmlRequest, SecurityReportRequest,
+  SecurityScanResponse, SecurityAssessment, SecurityFinding,
+  SecurityCheckResponse, SecurityBlocklistResponse, SecurityBlocklistEntry,
+  SecurityReportResponse,
+} from "./security.js";
+
 // ── Constants ───────────────────────────────────────────────────────
 export { DEFAULT_BASE_URL, TICKS_PER_USD } from "./types.js";
 

@@ -7,7 +7,6 @@ import type {
   RawStreamEvent,
   StreamDelta,
   StreamEvent,
-  StreamToolUse,
 } from "./types.js";
 
 /**
@@ -137,7 +136,31 @@ export async function* chatStream(
             break;
 
           case "tool_use":
+            // Legacy atomic event — kept for back-compat with backends
+            // that haven't yet shipped the triplet (v0.6+).
             event.tool_use = {
+              id: String(raw.id ?? ""),
+              name: String(raw.name ?? ""),
+              input: (raw.input as Record<string, unknown>) ?? {},
+            };
+            break;
+
+          case "tool_use_start":
+            event.tool_use_start = {
+              id: String(raw.id ?? ""),
+              name: String(raw.name ?? ""),
+            };
+            break;
+
+          case "tool_use_input_delta":
+            event.tool_use_input_delta = {
+              id: String(raw.id ?? ""),
+              partial_json: String(raw.partial_json ?? ""),
+            };
+            break;
+
+          case "tool_use_complete":
+            event.tool_use_complete = {
               id: String(raw.id ?? ""),
               name: String(raw.name ?? ""),
               input: (raw.input as Record<string, unknown>) ?? {},

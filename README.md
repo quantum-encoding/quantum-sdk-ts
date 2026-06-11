@@ -37,7 +37,7 @@ import { QuantumClient } from "@quantum-encoding/quantum-sdk";
 const client = new QuantumClient("qai_k_your_key_here");
 
 const response = await client.chat({
-  model: "claude-sonnet-4-6",
+  model: "claude-opus-4-8",
   messages: [
     { role: "system", content: "You are a helpful assistant." },
     { role: "user", content: "Explain closures in JavaScript" },
@@ -53,7 +53,7 @@ console.log(response.text);
 
 ```typescript
 const stream = client.chatStream({
-  model: "claude-sonnet-4-6",
+  model: "claude-opus-4-8",
   messages: [{ role: "user", content: "Write a haiku about TypeScript" }],
 });
 

@@ -49,6 +49,32 @@ export interface ChatRequest {
   max_tokens?: number;
 
   /**
+   * Controls tool calling: "auto" (default), "any" (force a tool call),
+   * "none", or a specific tool name.
+   */
+  tool_choice?: string;
+
+  /**
+   * JSON Schema constraining the response to valid JSON matching it.
+   * Supported by Anthropic, OpenAI, xAI, Gemini, and Vertex AI.
+   */
+  output_schema?: Record<string, unknown>;
+
+  /**
+   * How much chain-of-thought a reasoning model runs before answering:
+   * "none", "low", "medium", "high", "xhigh". Omit for the provider default
+   * (medium on GPT-5.5+). An unknown value is rejected with 400.
+   */
+  reasoning_effort?: string;
+
+  /**
+   * Vertex resource name of a previously created context cache (e.g.
+   * "cachedContents/abc123"). Cached content is billed at the cached-read
+   * rate and need not be re-sent. Gemini-only; the cache's model must match.
+   */
+  cached_content?: string;
+
+  /**
    * Provider-specific settings (e.g. Anthropic thinking, xAI search).
    * Example: { anthropic: { thinking: { budget_tokens: 10000 } } }
    */
@@ -61,6 +87,12 @@ export interface ChatMessage {
   content_blocks?: ContentBlock[];
   tool_call_id?: string;
   is_error?: boolean;
+  /**
+   * Provider-side reasoning state (OpenAI Responses API). Echo back the
+   * `phase` from the previous turn's ChatResponse so reasoning state
+   * round-trips across replay. Omit for providers without phase.
+   */
+  phase?: string;
 }
 
 export interface ChatTool {
@@ -82,14 +114,53 @@ export interface ContentBlock {
   input?: Record<string, unknown>;
   /** Gemini thought signature — must be echoed back with tool results. */
   thought_signature?: string;
+  /** Base64-encoded content for "image" and "file" blocks. */
+  data?: string;
+  /** MIME type for "image"/"file" blocks (e.g. "image/png", "application/pdf"). */
+  mime_type?: string;
+  /** Original filename for "file" blocks. */
+  file_name?: string;
+  /** Remote resource URL for "file_uri" blocks (YouTube, gs://, etc.). */
+  file_uri?: string;
   [key: string]: unknown;
 }
 
 export interface ChatUsage {
   input_tokens: number;
+  /** Portion of input_tokens served from a prompt cache (cheaper rate). */
+  cached_tokens?: number;
   output_tokens: number;
+  /** Chain-of-thought tokens billed on top of output_tokens (Gemini/Vertex). */
+  reasoning_tokens?: number;
   cost_ticks: number;
 }
+
+/**
+ * Canonical `stop_reason` values emitted by the gateway. Every provider's
+ * native finish reason is normalized into this Anthropic-flavored space, so
+ * comparing `ChatResponse.stop_reason` against these works regardless of
+ * which model served the request. A provider-specific reason the gateway
+ * cannot map passes through lowercased — treat any other value as terminal.
+ */
+export const StopReason = {
+  /** Natural completion. */
+  EndTurn: "end_turn",
+  /** Model is requesting tool execution (tool_use blocks present). */
+  ToolUse: "tool_use",
+  /** Output token cap reached — the response is truncated. */
+  MaxTokens: "max_tokens",
+  /** A requested stop sequence matched. */
+  StopSequence: "stop_sequence",
+  /** Provider-side safety/policy stop. */
+  ContentFilter: "content_filter",
+  /** A safety classifier declined the request; discard any partial output. */
+  Refusal: "refusal",
+  /** Provider reported a terminal failure. */
+  Error: "error",
+} as const;
+
+/** Union of the canonical {@link StopReason} values. */
+export type StopReasonValue = (typeof StopReason)[keyof typeof StopReason];
 
 export interface ChatResponse {
   id: string;
@@ -97,6 +168,14 @@ export interface ChatResponse {
   content: ContentBlock[];
   usage: ChatUsage;
   stop_reason: string;
+  /** Citations from web search grounding (when search is enabled). */
+  citations?: Citation[];
+  /**
+   * Provider-side reasoning-state tag (OpenAI Responses API). Echo it back on
+   * the next turn's assistant ChatMessage.phase to preserve reasoning state.
+   * Absent when the provider doesn't surface phase.
+   */
+  phase?: string;
   request_id: string;
   cost_ticks: number;
 }
@@ -113,12 +192,40 @@ export interface StreamToolUse {
   input: Record<string, unknown>;
 }
 
+/** New since v0.6: tool-use streaming triplet. */
+export interface StreamToolUseStart {
+  id: string;
+  name: string;
+}
+export interface StreamToolUseInputDelta {
+  id: string;
+  /** Raw JSON fragment — may not parse on its own; accumulate until tool_use_complete. */
+  partial_json: string;
+}
+export interface StreamToolUseComplete {
+  id: string;
+  name: string;
+  /** Server-accumulated, fully-parsed tool arguments. */
+  input: Record<string, unknown>;
+}
+
 export interface StreamEvent {
   type: string;
-  /** Event type (e.g. "content_delta", "thinking_delta", "tool_use", "usage", "error", "done"). */
+  /** Event type (e.g. "content_delta", "thinking_delta", "tool_use_start",
+   *  "tool_use_input_delta", "tool_use_complete", "tool_use" (legacy),
+   *  "usage", "error", "done"). */
   event_type?: string;
   delta?: StreamDelta;
+  /** Populated for the legacy atomic "tool_use" event. New code should
+   *  prefer the triplet (tool_use_start / tool_use_input_delta /
+   *  tool_use_complete). */
   tool_use?: StreamToolUse;
+  /** Populated for "tool_use_start" events. */
+  tool_use_start?: StreamToolUseStart;
+  /** Populated for "tool_use_input_delta" events. */
+  tool_use_input_delta?: StreamToolUseInputDelta;
+  /** Populated for "tool_use_complete" events. */
+  tool_use_complete?: StreamToolUseComplete;
   usage?: ChatUsage;
   error?: string;
   done?: boolean;
@@ -129,6 +236,11 @@ export interface RawStreamEvent {
   type?: string;
   delta?: StreamDelta;
   tool_use?: StreamToolUse;
+  /** Fields shared by the triplet — flattened in the wire format. */
+  id?: string;
+  name?: string;
+  input?: Record<string, unknown>;
+  partial_json?: string;
   usage?: ChatUsage;
   message?: string;
   input_tokens?: number;
@@ -163,6 +275,12 @@ export interface SessionChatRequest {
 
   /** Context management configuration. */
   context_config?: ContextConfig;
+
+  /**
+   * Reasoning depth: "none", "low", "medium", "high", "xhigh". Omit for the
+   * provider default. Mirrors ChatRequest.reasoning_effort.
+   */
+  reasoning_effort?: string;
 
   /** Provider-specific settings. */
   provider_options?: Record<string, Record<string, unknown>>;

@@ -33,6 +33,7 @@ export type {
   ContentBlock,
   ChatUsage,
   ChatResponse,
+  StopReasonValue,
   StreamEvent,
   StreamDelta,
   StreamToolUse,
@@ -245,7 +246,7 @@ export type {
 
 // ── Missions ────────────────────────────────────────────────────────
 export type {
-  MissionCreateRequest, MissionWorkerConfig, MissionChatRequest,
+  MissionCreateRequest, MissionChatRequest,
   MissionPlanUpdate, MissionConfirmStructure, MissionApproveRequest,
   MissionImportRequest, MissionCreateResponse, MissionDetail,
   MissionTask, MissionListResponse, MissionChatResponse,
@@ -262,7 +263,7 @@ export type {
 } from "./security.js";
 
 // ── Constants ───────────────────────────────────────────────────────
-export { DEFAULT_BASE_URL, TICKS_PER_USD } from "./types.js";
+export { DEFAULT_BASE_URL, TICKS_PER_USD, StopReason } from "./types.js";
 
 // ── Convenience message builders ────────────────────────────────────
 import type { ChatMessage } from "./types.js";

@@ -171,7 +171,7 @@ import type {
   VoiceDesignResponse,
   VoicesResponse,
 } from "./types.js";
-import { DEFAULT_BASE_URL } from "./types.js";
+import { DEFAULT_BASE_URL, DEFAULT_TIMEOUT_MS } from "./types.js";
 
 /**
  * QuantumClient is the Quantum AI API client.
@@ -190,11 +190,13 @@ export class QuantumClient {
   private readonly apiKey: string;
   private readonly baseUrl: string;
   private readonly _fetch: typeof globalThis.fetch;
+  private readonly timeoutMs: number;
 
   constructor(apiKey: string, options?: ClientOptions) {
     this.apiKey = apiKey;
     this.baseUrl = options?.baseUrl ?? DEFAULT_BASE_URL;
     this._fetch = options?.fetch ?? globalThis.fetch.bind(globalThis);
+    this.timeoutMs = options?.timeoutMs ?? DEFAULT_TIMEOUT_MS;
   }
 
   /** @internal — used by realtime module to build WebSocket URL. */
@@ -800,6 +802,13 @@ export class QuantumClient {
     };
 
     const init: RequestInit = { method, headers };
+
+    // Buffered calls (image/video gen) get a long timeout so the request
+    // outlives the whole generation; without this they relied on the runtime's
+    // fetch default. Streaming (_doStream) is intentionally never timed out.
+    if (typeof AbortSignal !== "undefined" && AbortSignal.timeout) {
+      init.signal = AbortSignal.timeout(this.timeoutMs);
+    }
 
     if (body !== undefined) {
       headers["Content-Type"] = "application/json";

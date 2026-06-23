@@ -14,7 +14,19 @@ export interface ClientOptions {
 
   /** Custom fetch implementation (defaults to global fetch). */
   fetch?: typeof globalThis.fetch;
+
+  /**
+   * Per-request timeout in milliseconds for non-streaming (buffered) calls.
+   * Image/video generation returns a single JSON blob only when the provider
+   * finishes, so the request must outlive the whole generation. Defaults to
+   * 600_000 (10 min), above the backend's 5-minute media deadline so the server
+   * errors first. Streaming requests are never timed out by the client.
+   */
+  timeoutMs?: number;
 }
+
+/** Default per-request timeout (ms) for buffered calls. @see ClientOptions.timeoutMs */
+export const DEFAULT_TIMEOUT_MS = 600_000;
 
 // ── Response Metadata ──────────────────────────────────────────────
 

@@ -59,6 +59,8 @@ import { authApple } from "./auth.js";
 import type {
   AccountPricingResponse,
   AgentEvent,
+  AgentPassthroughRequest,
+  AgentPassthroughResponse,
   AgentRequest,
   AlignRequest,
   AlignResponse,
@@ -173,6 +175,16 @@ import type {
 } from "./types.js";
 import { DEFAULT_BASE_URL, DEFAULT_TIMEOUT_MS } from "./types.js";
 
+/** Options for {@link QuantumClient._doJSON}. @internal */
+export interface DoJSONOptions {
+  /** Override the auto-generated idempotency key. Reused across retries. */
+  idempotencyKey?: string;
+  /** Caller AbortSignal; combined with the internal timeout. */
+  signal?: AbortSignal;
+  /** Max retries on 5xx/network errors (default 2). Never retries 4xx. */
+  retries?: number;
+}
+
 /**
  * QuantumClient is the Quantum AI API client.
  *
@@ -191,12 +203,17 @@ export class QuantumClient {
   private readonly baseUrl: string;
   private readonly _fetch: typeof globalThis.fetch;
   private readonly timeoutMs: number;
+  private readonly idempotencyEnabled: boolean;
 
   constructor(apiKey: string, options?: ClientOptions) {
     this.apiKey = apiKey;
     this.baseUrl = options?.baseUrl ?? DEFAULT_BASE_URL;
     this._fetch = options?.fetch ?? globalThis.fetch.bind(globalThis);
     this.timeoutMs = options?.timeoutMs ?? DEFAULT_TIMEOUT_MS;
+    // Default true: auto-generate an Idempotency-Key per mutating request so a
+    // network-flake retry is safe against double-billing. Callers can still
+    // pass their own key to override.
+    this.idempotencyEnabled = options?.idempotencyKey ?? true;
   }
 
   /** @internal — used by realtime module to build WebSocket URL. */
@@ -280,6 +297,40 @@ export class QuantumClient {
     signal?: AbortSignal,
   ): AsyncIterableIterator<AgentEvent> {
     yield* agentRun(this, req, signal);
+  }
+
+  /**
+   * Non-streaming agent tool-call passthrough (POST /qai/v1/agent).
+   *
+   * The server does NOT execute tools. It runs the model once and returns
+   * any tool_use blocks for the caller to execute locally; the caller then
+   * sends the next request with the tool results in the message history.
+   * This is the actual contract at /qai/v1/agent — distinct from
+   * {@link agentRun}, which streams the /qai/v1/missions orchestration.
+   */
+  async agent(
+    req: AgentPassthroughRequest,
+  ): Promise<AgentPassthroughResponse> {
+    const body: Record<string, unknown> = {
+      model: req.model,
+      messages: req.messages,
+    };
+    if (req.tools !== undefined) body.tools = req.tools;
+    if (req.capabilities !== undefined) body.capabilities = req.capabilities;
+    if (req.system_prompt !== undefined) body.system_prompt = req.system_prompt;
+    if (req.max_tokens !== undefined) body.max_tokens = req.max_tokens;
+    if (req.temperature !== undefined) body.temperature = req.temperature;
+
+    const { data, meta } = await this._doJSON<AgentPassthroughResponse>(
+      "POST",
+      "/qai/v1/agent",
+      body,
+    );
+
+    data.request_id = data.request_id || meta.requestId;
+    data.cost_ticks = data.cost_ticks || meta.costTicks;
+    if (!data.model) data.model = meta.model;
+    return data;
   }
 
   /**
@@ -789,56 +840,164 @@ export class QuantumClient {
   // ── Internal HTTP helpers ─────────────────────────────────────────
 
   /**
+   * Generate a v4 UUID. Prefers crypto.randomUUID(); falls back to a
+   * RFC4122-v4-shaped string when the runtime lacks it (older Node).
+   * @internal
+   */
+  private _uuid(): string {
+    const c =
+      (globalThis as { crypto?: { randomUUID?: () => string } }).crypto;
+    if (c && typeof c.randomUUID === "function") return c.randomUUID();
+    // Best-effort fallback — not cryptographically strong, but unique enough
+    // for an idempotency key on a single client.
+    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (ch) => {
+      const r = (Math.random() * 16) | 0;
+      const v = ch === "x" ? r : (r & 0x3) | 0x8;
+      return v.toString(16);
+    });
+  }
+
+  /**
+   * Combine an internal timeout signal with an optional caller signal.
+   * Returns the caller signal unchanged when no timeout is in play.
+   * @internal
+   */
+  private _combinedSignal(
+    timeoutMs: number | undefined,
+    callerSignal?: AbortSignal,
+  ): AbortSignal | undefined {
+    const timeoutSig =
+      timeoutMs !== undefined &&
+      typeof AbortSignal !== "undefined" &&
+      typeof (AbortSignal as { timeout?: unknown }).timeout === "function"
+        ? AbortSignal.timeout(timeoutMs)
+        : undefined;
+
+    if (timeoutSig && callerSignal) {
+      // AbortSignal.any is available in Node 20+ and modern browsers.
+      const anyFn = (AbortSignal as { any?: (s: AbortSignal[]) => AbortSignal })
+        .any;
+      if (typeof anyFn === "function") return anyFn([timeoutSig, callerSignal]);
+      // Fallback: chain caller abort into the timeout controller.
+      if (callerSignal.aborted) return callerSignal;
+      const ctrl = new AbortController();
+      callerSignal.addEventListener("abort", () => ctrl.abort(), {
+        once: true,
+      });
+      timeoutSig.addEventListener("abort", () => ctrl.abort(), { once: true });
+      return ctrl.signal;
+    }
+    return timeoutSig ?? callerSignal;
+  }
+
+  /** Options for {@link QuantumClient._doJSON}. */
+  // DoJSONOptions is declared as a top-level interface above the class.
+
+  /**
    * Send a JSON request and decode the JSON response.
+   *
+   * Sets an auto-generated `Idempotency-Key` header on every non-GET request
+   * (override with {@link DoJSONOptions.idempotencyKey}); the same key is
+   * reused across the 5xx/network retry loop so the gateway dedupes a flaked
+   * retry instead of double-billing. 4xx errors are never retried.
+   *
+   * Parses `X-QAI-Balance-After` (wallet balance after this request, in
+   * ticks) and `X-Semantic-Cache` ("hit" → cached=true) into the returned
+   * {@link ResponseMeta}.
+   *
    * @internal
    */
   async _doJSON<T>(
     method: string,
     path: string,
     body: unknown,
+    opts?: DoJSONOptions,
   ): Promise<{ data: T; meta: ResponseMeta }> {
-    const headers: Record<string, string> = {
-      Authorization: `Bearer ${this.apiKey}`,
-    };
+    const isMutation = method !== "GET" && method !== "HEAD";
+    const idempotencyKey =
+      isMutation && this.idempotencyEnabled
+        ? (opts?.idempotencyKey ?? this._uuid())
+        : opts?.idempotencyKey;
 
-    const init: RequestInit = { method, headers };
+    const maxRetries = opts?.retries ?? 2;
+    let attempt = 0;
+    // Don't time out streaming callers — only buffered calls use the timeout.
+    const signal = this._combinedSignal(this.timeoutMs, opts?.signal);
 
-    // Buffered calls (image/video gen) get a long timeout so the request
-    // outlives the whole generation; without this they relied on the runtime's
-    // fetch default. Streaming (_doStream) is intentionally never timed out.
-    if (typeof AbortSignal !== "undefined" && AbortSignal.timeout) {
-      init.signal = AbortSignal.timeout(this.timeoutMs);
+    let lastErr: unknown;
+    while (attempt <= maxRetries) {
+      const headers: Record<string, string> = {
+        Authorization: `Bearer ${this.apiKey}`,
+      };
+      if (idempotencyKey) headers["Idempotency-Key"] = idempotencyKey;
+
+      const init: RequestInit = { method, headers, signal };
+      if (body !== undefined) {
+        headers["Content-Type"] = "application/json";
+        init.body = JSON.stringify(body);
+      }
+
+      let response: Response;
+      try {
+        response = await this._fetch(`${this.baseUrl}${path}`, init);
+      } catch (err) {
+        // Network flake / abort — retry unless the caller aborted.
+        if (signal?.aborted) throw err;
+        lastErr = err;
+        attempt++;
+        if (attempt > maxRetries) throw err;
+        // Brief backoff before retry (50ms, 100ms, …).
+        await new Promise((r) => setTimeout(r, 50 * 2 ** (attempt - 1)));
+        continue;
+      }
+
+      const meta: ResponseMeta = {
+        requestId: response.headers.get("X-QAI-Request-Id") ?? "",
+        model: response.headers.get("X-QAI-Model") ?? "",
+        costTicks: 0,
+      };
+
+      const costHeader = response.headers.get("X-QAI-Cost-Ticks");
+      if (costHeader) {
+        meta.costTicks = parseInt(costHeader, 10) || 0;
+      }
+      const balanceHeader = response.headers.get("X-QAI-Balance-After");
+      if (balanceHeader) {
+        const n = Number(balanceHeader);
+        if (Number.isFinite(n)) meta.balanceAfter = n;
+      }
+      const cacheHeader = response.headers.get("X-Semantic-Cache");
+      if (cacheHeader && cacheHeader.toLowerCase() === "hit") {
+        meta.cached = true;
+      }
+
+      if (!response.ok) {
+        // Retry only 5xx (and only when not caller-aborted). Never 4xx.
+        if (response.status >= 500 && !signal?.aborted && attempt < maxRetries) {
+          lastErr = await parseAPIError(response, meta.requestId);
+          attempt++;
+          await new Promise((r) => setTimeout(r, 50 * 2 ** (attempt - 1)));
+          continue;
+        }
+        throw await parseAPIError(response, meta.requestId);
+      }
+
+      const data = (await response.json()) as T;
+      return { data, meta };
     }
 
-    if (body !== undefined) {
-      headers["Content-Type"] = "application/json";
-      init.body = JSON.stringify(body);
-    }
-
-    const response = await this._fetch(`${this.baseUrl}${path}`, init);
-
-    const meta: ResponseMeta = {
-      requestId: response.headers.get("X-QAI-Request-Id") ?? "",
-      model: response.headers.get("X-QAI-Model") ?? "",
-      costTicks: 0,
-    };
-
-    const costHeader = response.headers.get("X-QAI-Cost-Ticks");
-    if (costHeader) {
-      meta.costTicks = parseInt(costHeader, 10) || 0;
-    }
-
-    if (!response.ok) {
-      throw await parseAPIError(response, meta.requestId);
-    }
-
-    const data = (await response.json()) as T;
-    return { data, meta };
+    // Exhausted retries on network errors.
+    throw lastErr instanceof Error
+      ? lastErr
+      : new Error("qai: request failed after retries");
   }
 
   /**
    * Send a JSON request expecting an SSE (text/event-stream) response.
    * Returns the raw Response for the caller to read SSE events from.
+   * Streaming requests are NOT timed out by the client (the server keeps
+   * the connection open for the whole generation); the caller's `signal`
+   * is forwarded so a caller abort still cancels the upstream fetch.
    * @internal
    */
   async _doStreamRaw(
@@ -851,6 +1010,12 @@ export class QuantumClient {
       "Content-Type": "application/json",
       Accept: "text/event-stream",
     };
+    // Idempotency-Key on the streaming POST too — harmless on /missions
+    // (no billing side-effect dedup needed) and useful if a caller retries
+    // a dropped connection.
+    if (this.idempotencyEnabled) {
+      headers["Idempotency-Key"] = this._uuid();
+    }
 
     const response = await this._fetch(`${this.baseUrl}${path}`, {
       method: "POST",

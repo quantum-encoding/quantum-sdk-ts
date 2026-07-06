@@ -44,6 +44,28 @@ export class APIError extends Error {
   isNotFound(): boolean {
     return this.statusCode === 404;
   }
+
+  /**
+   * True if the error is a 402 INSUFFICIENT_BALANCE — the user's wallet
+   * cannot cover the (pessimistic next-step) cost. Match on both the HTTP
+   * status and the stable machine code so callers don't need to know which
+   * surface the gateway used.
+   */
+  isInsufficientBalance(): boolean {
+    return (
+      this.statusCode === 402 || this.code === "INSUFFICIENT_BALANCE"
+    );
+  }
+
+  /** True if the error is a SPEND_CAP_EXCEEDED (key spend cap fired). */
+  isSpendCap(): boolean {
+    return this.code === "SPEND_CAP_EXCEEDED";
+  }
+
+  /** True if the error is a BUDGET_FROZEN (partner budget kill-switch). */
+  isBudgetFrozen(): boolean {
+    return this.code === "BUDGET_FROZEN";
+  }
 }
 
 /** Check whether an error is a rate limit APIError. */
@@ -59,6 +81,21 @@ export function isAuthError(err: unknown): err is APIError {
 /** Check whether an error is a not found APIError. */
 export function isNotFoundError(err: unknown): err is APIError {
   return err instanceof APIError && err.isNotFound();
+}
+
+/** Check whether an error is an insufficient-balance (402) APIError. */
+export function isInsufficientBalanceError(err: unknown): err is APIError {
+  return err instanceof APIError && err.isInsufficientBalance();
+}
+
+/** Check whether an error is a spend-cap APIError. */
+export function isSpendCapError(err: unknown): err is APIError {
+  return err instanceof APIError && err.isSpendCap();
+}
+
+/** Check whether an error is a budget-frozen APIError. */
+export function isBudgetFrozenError(err: unknown): err is APIError {
+  return err instanceof APIError && err.isBudgetFrozen();
 }
 
 /**

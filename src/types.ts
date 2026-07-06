@@ -23,6 +23,15 @@ export interface ClientOptions {
    * errors first. Streaming requests are never timed out by the client.
    */
   timeoutMs?: number;
+
+  /**
+   * Default idempotency key strategy. When true (default), every mutating
+   * request auto-generates a UUID v4 idempotency key via crypto.randomUUID()
+   * so a network-flake retry is safe against double-billing. Set to false to
+   * disable auto-generation (callers must pass their own key to be protected).
+   * Has no effect on GET requests.
+   */
+  idempotencyKey?: boolean;
 }
 
 /** Default per-request timeout (ms) for buffered calls. @see ClientOptions.timeoutMs */
@@ -37,6 +46,10 @@ export interface ResponseMeta {
   cost_ticks?: number;
   request_id?: string;
   model: string;
+  /** Wallet balance after this request, in ticks (X-QAI-Balance-After). */
+  balanceAfter?: number;
+  /** True when served from the semantic cache (X-Semantic-Cache: hit). */
+  cached?: boolean;
 }
 
 // ── Chat ───────────────────────────────────────────────────────────
@@ -74,8 +87,9 @@ export interface ChatRequest {
 
   /**
    * How much chain-of-thought a reasoning model runs before answering:
-   * "none", "low", "medium", "high", "xhigh". Omit for the provider default
-   * (medium on GPT-5.5+). An unknown value is rejected with 400.
+   * "none", "low", "medium", "high", "xhigh", "max". Omit for the provider
+   * default (medium on GPT-5.5+). "max" is Anthropic Opus 4.7+ only and will
+   * 400 on OpenAI. An unknown value is rejected with 400.
    */
   reasoning_effort?: string;
 
@@ -107,13 +121,23 @@ export interface ChatMessage {
   phase?: string;
 }
 
+/**
+ * Tool definition the model can call. Wire shape is FLAT — the gateway
+ * (convert.go ChatTool) decodes {name, description, parameters, strict}
+ * directly with no custom unmarshaler. The nested OpenAI-style
+ * {type:"function", function:{...}} shape is NOT accepted and silently
+ * drops the whole tool list.
+ */
 export interface ChatTool {
-  type: "function";
-  function: {
-    name: string;
-    description?: string;
-    parameters?: Record<string, unknown>;
-  };
+  /** Tool name the model emits to invoke this tool. */
+  name: string;
+  /** Human-readable description of what the tool does. */
+  description?: string;
+  /** JSON Schema describing the tool's arguments. */
+  parameters?: Record<string, unknown>;
+  /** When true, the provider guarantees schema-strict argument validation
+   *  (Anthropic + OpenAI). Other providers ignore it. */
+  strict?: boolean;
 }
 
 export interface ContentBlock {
@@ -182,6 +206,12 @@ export interface ChatResponse {
   stop_reason: string;
   /** Citations from web search grounding (when search is enabled). */
   citations?: Citation[];
+  /**
+   * True when this response was served from the gateway semantic cache
+   * (mirrors the X-Semantic-Cache header). Omitted/false on fresh provider
+   * responses.
+   */
+  cached?: boolean;
   /**
    * Provider-side reasoning-state tag (OpenAI Responses API). Echo it back on
    * the next turn's assistant ChatMessage.phase to preserve reasoning state.
@@ -322,105 +352,262 @@ export interface SessionChatResponse {
   context: ContextMetadata;
 }
 
-// ── Agent ──────────────────────────────────────────────────────────
+// ── Agent (orchestration via /qai/v1/missions) ─────────────────────
 
+/**
+ * Request for {@link QuantumClient.agentRun} — a server-side multi-worker
+ * agent orchestration streamed over SSE.
+ *
+ * agentRun targets POST /qai/v1/missions (the SSE conductor endpoint). The
+ * earlier shape — {task, conductor_model, workers[], max_steps} streamed at
+ * POST /qai/v1/agent — could not work: /qai/v1/agent is a NON-STREAMING
+ * single-shot tool-call passthrough that 400s with "model is required" on
+ * this orchestration body. The orchestration shape belongs on /missions,
+ * where Workers is a MAP keyed by worker name (not a list).
+ */
 export interface AgentRequest {
-  /** The task or goal for the agent to accomplish. */
-  task: string;
-
-  /** Model for the conductor (default: server picks). */
-  conductor_model?: string;
-
-  /** Worker configurations. */
-  workers?: AgentWorkerConfig[];
-
-  /** Maximum number of orchestration steps. */
-  max_steps?: number;
-
-  /** System prompt for the conductor. */
-  system_prompt?: string;
-
-  /** Conversation session ID. */
-  session_id?: string;
-
-  /** Session context management. */
-  context_config?: ContextConfig;
-}
-
-export interface AgentWorkerConfig {
-  name: string;
-  model?: string;
-  tools?: ChatTool[];
-  system_prompt?: string;
-}
-
-export interface AgentEvent {
-  type: string;
-  done: boolean;
-  worker?: string;
-  content?: string;
-  tool_use?: StreamToolUse;
-  error?: string;
-  [key: string]: unknown;
-}
-
-// ── Mission ────────────────────────────────────────────────────────
-
-export interface MissionRequest {
-  /** The goal for the mission. */
+  /** High-level task/goal for the agent to accomplish (required). */
   goal: string;
 
-  /** Model for the conductor. */
+  /** Conductor model that plans + reviews (default: claude-sonnet-4-6). */
   conductor_model?: string;
 
-  /** Worker configurations. */
-  workers?: MissionWorkerConfig[];
+  /** Override the conductor's cost tier: "cheap", "mid", "expensive". */
+  conductor_tier?: string;
 
-  /** Maximum orchestration steps. */
-  max_steps?: number;
-
-  /** Execution strategy ("wave", "dag", "codegen", etc.). */
+  /** Execution strategy: "wave" (default), "dag", "mapreduce", "refinement",
+   *  "branch", "codegen", "coding_team", "security_team", "pipeline". */
   strategy?: string;
+
+  /** Worker team, keyed by worker name. Empty = cost-optimized defaults. */
+  workers?: Record<string, AgentWorkerConfig>;
+
+  /** Maximum orchestration steps (default 25, hard ceiling 50). */
+  max_steps?: number;
 
   /** Conductor system prompt. */
   system_prompt?: string;
 
-  /** Conversation session ID. */
+  /** Existing session ID for context continuity. */
   session_id?: string;
 
-  /** Auto-plan before executing. */
+  /** Conductor auto-plans before executing when true (default true). */
   auto_plan?: boolean;
 
   /** Session context management. */
   context_config?: ContextConfig;
 
+  // ── Codegen-specific (strategy: "codegen") ──
+
+  /** Where to write generated files (codegen). */
+  workspace_path?: string;
+  /** Build command for codegen verification (e.g. "npm run build"). */
+  build_command?: string;
+  /** Route workers through a deployed Vertex endpoint (codegen). */
+  deployment_id?: string;
+
+  // ── Context material ──
+
+  /** User-supplied reference material prepended to the goal when
+   *  use_context is true. */
+  context?: string;
+  /** When true, prepend {@link context} to the goal. */
+  use_context?: boolean;
+}
+
+/**
+ * Worker in an agent orchestration. Mirrors the backend MissionWorkerConfig
+ * (routes_missions.go): workers are keyed by name in a map, and each carries
+ * its own model + tier + escalation policy — NOT tools or a system_prompt
+ * (those belong on the non-streaming /qai/v1/agent passthrough).
+ */
+export interface AgentWorkerConfig {
+  /** Model ID this worker runs (e.g. "grok-4-1-fast-non-reasoning"). */
+  model: string;
+  /** Cost tier: "cheap", "mid", "expensive". */
+  tier: string;
+  /** What this worker does. */
+  description?: string;
+  /** Worker to fall back to when this one fails after max_retries. */
+  escalate_to?: string;
+  /** Failures before escalating (default 1 = escalate on first failure). */
+  max_retries?: number;
+}
+
+/**
+ * A single event from an agent SSE stream. Field set matches the gateway's
+ * mission events ({type, mission_id, task_id, message, …}) plus the
+ * agentruntime.Event fields ({role, content, data, timestamp, index}).
+ * `done` is SDK-derived: true on terminal events (done, mission_completed,
+ * mission_failed, error) and the [DONE] sentinel.
+ */
+export interface AgentEvent {
+  type: string;
+  /** SDK-derived terminal flag. */
+  done: boolean;
+  /** Agent runtime role (e.g. "conductor", "worker"). */
+  role?: string;
+  /** Assistant/content payload. */
+  content?: string;
+  /** Structured data from the agent runtime (flattened into the SSE event). */
+  data?: Record<string, unknown>;
+  /** Event timestamp (RFC3339). */
+  timestamp?: string;
+  /** Event index in the orchestration. */
+  index?: number;
+  /** Mission ID (mission events). */
+  mission_id?: string;
+  /** Task ID within a mission (mission events). */
+  task_id?: string;
+  /** Human-readable message (mission events). */
+  message?: string;
+  /** Worker name that emitted this event. */
+  worker?: string;
+  /** Legacy atomic tool-use event payload. */
+  tool_use?: StreamToolUse;
+  /** Error message on "error" events. */
+  error?: string;
+  /** Parsed token/cost usage (present on "usage" events). */
+  usage?: ChatUsage;
+  [key: string]: unknown;
+}
+
+// ── Non-streaming agent passthrough (/qai/v1/agent) ────────────────
+
+/**
+ * Request for {@link QuantumClient.agent} — a stateless, non-streaming
+ * tool-call passthrough. The server does NOT execute tools; it returns
+ * {id, model, stop_reason, content, tool_use, usage} and the caller runs
+ * tool_use locally and replays the result on the next request.
+ *
+ * This is the actual contract at POST /qai/v1/agent (routes_agent.go):
+ * {model, messages, tools, capabilities, system_prompt}. The `stream`
+ * field is accepted-but-ignored.
+ */
+export interface AgentPassthroughRequest {
+  /** Model ID (required). */
+  model: string;
+  /** Conversation history. */
+  messages: ChatMessage[];
+  /** Flat tool definitions the model may call. */
+  tools?: ChatTool[];
+  /** Capability allowlist filtering which tools the model sees:
+   *  omit = all tools, [] = no tools (Safe Mode), non-empty = allowlist. */
+  capabilities?: string[];
+  /** System prompt. */
+  system_prompt?: string;
+  max_tokens?: number;
+  temperature?: number;
+}
+
+/** Response from the non-streaming /qai/v1/agent passthrough. */
+export interface AgentPassthroughResponse {
+  id: string;
+  model: string;
+  stop_reason: string;
+  content: ContentBlock[];
+  /** tool_use blocks the caller must execute locally. */
+  tool_use?: ContentBlock[];
+  usage?: ChatUsage;
+  request_id: string;
+  cost_ticks: number;
+}
+
+// ── Mission ────────────────────────────────────────────────────────
+
+/**
+ * Request for {@link QuantumClient.missionRun} — the full-project SSE
+ * orchestration endpoint (POST /qai/v1/missions). Workers is a MAP keyed by
+ * worker name, matching the backend MissionRequest (routes_missions.go).
+ */
+export interface MissionRequest {
+  /** High-level goal for the mission (required). */
+  goal: string;
+
+  /** Strategy: "wave" (default), "dag", "mapreduce", "refinement", "branch",
+   *  "codegen", "coding_team", "security_team", "pipeline". */
+  strategy?: string;
+
+  /** Conductor model (default: claude-sonnet-4-6). */
+  conductor_model?: string;
+
+  /** Conductor cost tier: "cheap", "mid", "expensive" (default "expensive"). */
+  conductor_tier?: string;
+
+  /** Worker team keyed by worker name. Empty = cost-optimized defaults. */
+  workers?: Record<string, MissionWorkerConfig>;
+
+  /** Maximum orchestration steps (default 25, hard ceiling 50). */
+  max_steps?: number;
+
+  /** Conductor system prompt. */
+  system_prompt?: string;
+
+  /** Existing session ID for context continuity. */
+  session_id?: string;
+
+  /** Conductor auto-plans before executing when true (default true). */
+  auto_plan?: boolean;
+
+  /** Session context management. */
+  context_config?: ContextConfig;
+
+  // ── Codegen-specific (strategy: "codegen") ──
+  /** Where to write generated files. */
+  workspace_path?: string;
+  /** Build command for codegen verification (e.g. "npm run build"). */
+  build_command?: string;
   /** Route workers through a deployed Vertex endpoint. */
   deployment_id?: string;
 
-  /** Model for codegen worker nodes. */
-  worker_model?: string;
-
-  /** Build command for codegen verification. */
-  build_command?: string;
-
-  /** Workspace directory for generated files. */
-  workspace_path?: string;
+  // ── Context material ──
+  /** Reference material prepended to the goal when use_context is true. */
+  context?: string;
+  /** When true, prepend {@link context} to the goal. */
+  use_context?: boolean;
 }
 
+/**
+ * Worker in a mission. Same shape as {@link AgentWorkerConfig} — kept as a
+ * distinct type for call-site clarity. No tools/system_prompt: those belong
+ * on the non-streaming /qai/v1/agent passthrough.
+ */
 export interface MissionWorkerConfig {
-  name: string;
-  model?: string;
-  tools?: ChatTool[];
-  system_prompt?: string;
+  /** Model ID this worker runs. */
+  model: string;
+  /** Cost tier: "cheap", "mid", "expensive". */
+  tier: string;
+  /** What this worker does. */
+  description?: string;
+  /** Worker to fall back to when this one fails after max_retries. */
+  escalate_to?: string;
+  /** Failures before escalating (default 1). */
+  max_retries?: number;
 }
 
+/**
+ * A single event from a mission SSE stream. Same field set as
+ * {@link AgentEvent}; `done` is SDK-derived on terminal events.
+ */
 export interface MissionEvent {
   type: string;
+  /** SDK-derived terminal flag. */
   done: boolean;
-  worker?: string;
+  role?: string;
   content?: string;
+  data?: Record<string, unknown>;
+  timestamp?: string;
+  index?: number;
+  /** Mission ID. */
+  mission_id?: string;
+  /** Task ID within the mission. */
+  task_id?: string;
+  /** Human-readable message. */
+  message?: string;
+  worker?: string;
   tool_use?: StreamToolUse;
   error?: string;
+  usage?: ChatUsage;
   [key: string]: unknown;
 }
 

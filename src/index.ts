@@ -7,6 +7,9 @@ export {
   isRateLimitError,
   isAuthError,
   isNotFoundError,
+  isInsufficientBalanceError,
+  isSpendCapError,
+  isBudgetFrozenError,
 } from "./errors.js";
 
 // ── Chat helpers ────────────────────────────────────────────────────
@@ -47,6 +50,8 @@ export type {
   AgentRequest,
   AgentWorkerConfig,
   AgentEvent,
+  AgentPassthroughRequest,
+  AgentPassthroughResponse,
   // Missions
   MissionRequest,
   MissionWorkerConfig,

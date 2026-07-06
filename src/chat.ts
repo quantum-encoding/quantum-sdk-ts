@@ -59,6 +59,11 @@ export async function chat(
   if (!data.model) {
     data.model = meta.model;
   }
+  // Mirror the X-Semantic-Cache header into the body field when the body
+  // didn't carry it (the gateway sets both; prefer the body's own signal).
+  if (data.cached === undefined && meta.cached) {
+    data.cached = meta.cached;
+  }
 
   return data;
 }
@@ -77,10 +82,19 @@ export async function* chatStream(
 ): AsyncIterableIterator<StreamEvent> {
   const body: ChatRequest = { ...req, stream: true };
 
-  const response = await client._doStreamRaw("/qai/v1/chat", body, signal);
+  // Internal abort controller so that when this generator returns early
+  // (consumer breaks out of the for-await, or [DONE] arrives), we abort the
+  // upstream fetch and the server stops emitting — instead of orphan-running
+  // the provider call to completion. Combined with any caller-supplied signal
+  // via AbortSignal.any so a caller abort still propagates upstream.
+  const internal = new AbortController();
+  const upstreamSignal = combineSignals(internal.signal, signal);
+
+  const response = await client._doStreamRaw("/qai/v1/chat", body, upstreamSignal);
   const reader = response.body;
 
   if (!reader) {
+    internal.abort();
     throw new Error("qai: response body is null");
   }
 
@@ -170,7 +184,17 @@ export async function* chatStream(
           case "usage":
             event.usage = {
               input_tokens: raw.input_tokens ?? 0,
+              // cached_tokens/reasoning_tokens are optional on the wire; the
+              // gateway's Usage SSE event carries reasoning_tokens and the
+              // body ChatUsage also carries cached_tokens. Surface both so
+              // multi-turn billing audits reconcile against the body.
+              cached_tokens:
+                (raw as RawStreamEvent & { cached_tokens?: number })
+                  .cached_tokens ?? 0,
               output_tokens: raw.output_tokens ?? 0,
+              reasoning_tokens:
+                (raw as RawStreamEvent & { reasoning_tokens?: number })
+                  .reasoning_tokens ?? 0,
               cost_ticks: raw.cost_ticks ?? 0,
             } satisfies ChatUsage;
             break;
@@ -188,6 +212,31 @@ export async function* chatStream(
       }
     }
   } finally {
+    // Abort the upstream fetch on every exit path (normal completion, early
+    // return, consumer break, thrown error). Without this the server keeps
+    // the SSE connection — and the underlying provider call — alive after
+    // the consumer stops reading, leaking tokens and goroutines.
+    internal.abort();
     streamReader.releaseLock();
   }
+}
+
+/**
+ * Combine an internal abort signal with an optional caller signal. Prefers
+ * AbortSignal.any when available (Node 20+, modern browsers); falls back to
+ * a manual controller that fires when either source aborts.
+ * @internal
+ */
+function combineSignals(
+  internal: AbortSignal,
+  caller?: AbortSignal,
+): AbortSignal | undefined {
+  if (!caller) return internal;
+  const anyFn = (AbortSignal as { any?: (s: AbortSignal[]) => AbortSignal }).any;
+  if (typeof anyFn === "function") return anyFn([internal, caller]);
+  const ctrl = new AbortController();
+  const forward = () => ctrl.abort();
+  internal.addEventListener("abort", forward, { once: true });
+  caller.addEventListener("abort", forward, { once: true });
+  return ctrl.signal;
 }

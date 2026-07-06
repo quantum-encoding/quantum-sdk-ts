@@ -128,6 +128,18 @@ export async function chatJob(
  * If the job is already terminal, yields one event and returns.
  * @internal
  */
+/** Combine an internal abort signal with an optional caller signal. */
+function combineSignals(internal: AbortSignal, caller?: AbortSignal): AbortSignal {
+  if (!caller) return internal;
+  const anyFn = (AbortSignal as { any?: (s: AbortSignal[]) => AbortSignal }).any;
+  if (typeof anyFn === "function") return anyFn([internal, caller]);
+  const ctrl = new AbortController();
+  const forward = () => ctrl.abort();
+  internal.addEventListener("abort", forward, { once: true });
+  caller.addEventListener("abort", forward, { once: true });
+  return ctrl.signal;
+}
+
 export async function* streamJob(
   client: QuantumClient,
   jobId: string,
@@ -138,16 +150,27 @@ export async function* streamJob(
     Authorization: `Bearer ${client._apiKey}`,
     Accept: "text/event-stream",
   };
+
+  // Internal abort controller: abort the upstream fetch on every exit path
+  // (consumer break, error, completion) so the server stops emitting and
+  // the job stops running against a vanished consumer. Combined with any
+  // caller-supplied signal via AbortSignal.any so a caller abort still
+  // propagates upstream.
+  const internal = new AbortController();
+  const upstreamSignal = combineSignals(internal.signal, signal);
+
   const response = await (client as any)._fetch(
     `${client._baseUrl}/qai/v1/jobs/${jobId}/stream`,
-    { method: "GET", headers, signal },
+    { method: "GET", headers, signal: upstreamSignal },
   );
   if (!response.ok) {
+    internal.abort();
     throw new Error(`Job stream error (${response.status})`);
   }
 
   const reader = response.body;
   if (!reader) {
+    internal.abort();
     throw new Error("qai: response body is null");
   }
 
@@ -185,6 +208,9 @@ export async function* streamJob(
       }
     }
   } finally {
+    // Abort the upstream fetch on every exit path so a vanished consumer
+    // cancels the job stream instead of orphan-running it server-side.
+    internal.abort();
     streamReader.releaseLock();
   }
 }

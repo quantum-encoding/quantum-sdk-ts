@@ -20,7 +20,7 @@ console.log(response.text);
 
 - 110+ endpoints across 10 AI providers and 45+ models
 - TypeScript-first with full type definitions
-- ESM + CommonJS dual package
+- ESM package (Node 20+; `package.json` is `"type": "module"`, tsc emits ESM only — no CommonJS build)
 - Streaming via async iterators
 - Agent orchestration with SSE event streams
 - GPU/CPU compute rental

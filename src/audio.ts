@@ -2,6 +2,8 @@ import type { QuantumClient } from "./client.js";
 import type {
   AlignRequest,
   AlignResponse,
+  AudioSoundsQuery,
+  AudioSoundsResponse,
   DialogueRequest,
   DialogueResponse,
   DubRequest,
@@ -297,6 +299,39 @@ export async function createFinetune(
     "POST",
     "/qai/v1/audio/finetunes",
     req,
+  );
+
+  return data;
+}
+
+/**
+ * Search HeyGen's background-music and sound-effects catalogs (semantic
+ * ranking, best score first). Unbilled catalog route.
+ *
+ * `audio_url` values are pre-signed WAV URLs with a limited lifetime —
+ * download promptly, do not cache.
+ *
+ * @internal — called by QuantumClient.searchAudioSounds()
+ */
+export async function searchAudioSounds(
+  client: QuantumClient,
+  query: AudioSoundsQuery,
+): Promise<AudioSoundsResponse> {
+  const params = new URLSearchParams();
+  params.set("query", query.query);
+  if (query.type !== undefined) params.set("type", query.type);
+  if (query.limit !== undefined) params.set("limit", String(query.limit));
+  if (query.min_score !== undefined) {
+    params.set("min_score", String(query.min_score));
+  }
+  if (query.token !== undefined && query.token !== "") {
+    params.set("token", query.token);
+  }
+
+  const { data } = await client._doJSON<AudioSoundsResponse>(
+    "GET",
+    `/qai/v1/audio/sounds?${params.toString()}`,
+    undefined,
   );
 
   return data;

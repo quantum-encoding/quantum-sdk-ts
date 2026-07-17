@@ -92,6 +92,10 @@ export type {
   VoicePreview,
   StarfishTTSRequest,
   StarfishTTSResponse,
+  // HeyGen Sounds Search
+  AudioSoundsQuery,
+  AudioSound,
+  AudioSoundsResponse,
   // Video
   VideoRequest,
   VideoResponse,
@@ -108,6 +112,30 @@ export type {
   HeyGenTemplate,
   HeyGenVoicesResponse,
   HeyGenVoice,
+  // HeyGen Avatar Realtime
+  AvatarAudioInput,
+  AvatarRealtimeRequest,
+  AvatarRealtimeCreateResponse,
+  AvatarRealtimeStatusResponse,
+  AvatarRealtimeTextRequest,
+  AvatarRealtimeTextResponse,
+  AvatarRealtimeCancelResponse,
+  // HeyGen Template v3
+  VideoTemplateSceneVariable,
+  VideoTemplateScene,
+  VideoTemplateDetail,
+  VideoTemplateDetailResponse,
+  VideoTemplateDimension,
+  VideoSubtitlePosition,
+  VideoTemplateSubtitles,
+  VideoTemplateGenerateRequest,
+  // HeyGen Batch Videos
+  VideoBatchSubmitRequest,
+  VideoBatchSubmitResponse,
+  VideoBatchStatusQuery,
+  VideoBatchItemError,
+  VideoBatchItem,
+  VideoBatchStatusResponse,
   // Embeddings
   EmbedRequest,
   EmbedResponse,

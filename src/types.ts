@@ -1202,6 +1202,7 @@ export interface HeyGenTemplate {
 
 export interface HeyGenTemplatesResponse {
   templates: HeyGenTemplate[];
+  request_id?: string;
 }
 
 export interface HeyGenVoice {
@@ -1217,6 +1218,459 @@ export interface HeyGenVoice {
 
 export interface HeyGenVoicesResponse {
   voices: HeyGenVoice[];
+}
+
+// ── HeyGen Avatar Realtime (Broadcast) ────────────────────────────
+//
+// A realtime session makes an avatar speak live and publishes a plain HLS
+// stream (720p). Sessions are PREPAID: the entire max_duration_seconds block
+// is charged at create time and is NOT refunded on early cancel (cancelling
+// only stops the upstream meter).
+
+/**
+ * Audio input union for "audio"-type realtime sessions, discriminated by
+ * `type` ("url" | "asset_id" | "base64"). Also the shape of the template
+ * variable `asset` field.
+ */
+export interface AvatarAudioInput {
+  /** Input kind: "url" | "asset_id" | "base64". */
+  type: string;
+
+  /** Publicly accessible HTTPS URL (when type == "url"). */
+  url?: string;
+
+  /** HeyGen asset id from an asset upload (when type == "asset_id"). */
+  asset_id?: string;
+
+  /** MIME type, e.g. "audio/mpeg" (when type == "base64"). */
+  media_type?: string;
+
+  /** Base64-encoded audio bytes (when type == "base64"). */
+  data?: string;
+}
+
+/** Request body for creating a live avatar session (prepaid). */
+export interface AvatarRealtimeRequest {
+  /** Session kind: "tts" | "audio" | "text_stream". */
+  type: string;
+
+  /** HeyGen photo-avatar / motion-avatar look id (required for all kinds). */
+  avatar_id: string;
+
+  /** Voice id — required for "tts" and "text_stream", must be omitted for "audio". */
+  voice_id?: string;
+
+  /** The fixed script ("tts") or the initial non-empty seed ("text_stream"). */
+  text?: string;
+
+  /** Audio input — required for "audio", must be omitted for "tts"/"text_stream". */
+  audio?: AvatarAudioInput;
+
+  /**
+   * Prepaid block in seconds (1–3600). The whole block is charged at create
+   * time; early cancel does NOT refund.
+   */
+  max_duration_seconds: number;
+}
+
+/** Response from creating a live avatar session. */
+export interface AvatarRealtimeCreateResponse {
+  /** Session id — use in the status/text/cancel calls. */
+  stream_id: string;
+
+  /** Always "pending" at create. */
+  status: string;
+
+  /** Echo of max_duration_seconds. */
+  prepaid_seconds: number;
+
+  /** Ticks charged for the prepaid block. */
+  cost_ticks: number;
+
+  /**
+   * Post-deduction credit balance in ticks (from the X-QAI-Balance-After
+   * header; Receipt Pattern).
+   */
+  balance_after?: number;
+
+  /** Unique request identifier. */
+  request_id: string;
+}
+
+/** Response from a session status check. */
+export interface AvatarRealtimeStatusResponse {
+  /** Session id. */
+  stream_id: string;
+
+  /** "pending" | "streaming" | "completed" | "error". */
+  status: string;
+
+  /** HLS .m3u8 playback URL (720p); present once streaming. */
+  hls_url?: string;
+
+  /** Failure detail when status == "error". */
+  error_message?: string;
+
+  /** On completed text_stream sessions: "final_marker" | "idle_timeout". */
+  end_reason?: string;
+
+  /** Unique request identifier. */
+  request_id: string;
+}
+
+/** Request body for appending a text delta to a text_stream session. */
+export interface AvatarRealtimeTextRequest {
+  /**
+   * Text fragment to append (a token or coalesced batch). Required unless
+   * `final` is true, in which case it may be empty/omitted.
+   */
+  delta?: string;
+
+  /**
+   * True closes the text input (appending afterwards fails upstream with a
+   * 410 provider_error). Default false.
+   */
+  final?: boolean;
+}
+
+/** Response from appending a text delta. */
+export interface AvatarRealtimeTextResponse {
+  /** Always true on success. */
+  ok: boolean;
+
+  /** Total text bytes buffered for the session so far. */
+  buffered_bytes: number;
+
+  /** Echo of the request's `final` flag. */
+  final: boolean;
+
+  /** Unique request identifier. */
+  request_id: string;
+}
+
+/** Response from cancelling a session early. */
+export interface AvatarRealtimeCancelResponse {
+  /** Session id. */
+  stream_id: string;
+
+  /**
+   * True = this call initiated cancellation; false = the session was already
+   * terminal (cancel is idempotent).
+   */
+  cancelled: boolean;
+
+  /** Unique request identifier. */
+  request_id: string;
+}
+
+// ── HeyGen Sounds Search ──────────────────────────────────────────
+
+/** Query parameters for searching the sounds catalog. */
+export interface AudioSoundsQuery {
+  /** Natural-language description of the sound wanted (required). */
+  query: string;
+
+  /** Catalog to search: "music" | "sound_effects" (API default: "music"). */
+  type?: string;
+
+  /** Max results, 1–50 (API default 10). */
+  limit?: number;
+
+  /** Minimum similarity score, 0–1 (API default 0.7). */
+  min_score?: number;
+
+  /** Opaque cursor from a previous response's next_token. */
+  token?: string;
+}
+
+/** A track from the sounds catalog. */
+export interface AudioSound {
+  /** Track identifier. */
+  id: string;
+
+  /** Track name. */
+  name: string;
+
+  /** Track description. */
+  description: string;
+
+  /**
+   * Pre-signed WAV URL with a limited lifetime — download promptly, do not
+   * cache.
+   */
+  audio_url: string;
+
+  /** Duration in seconds. */
+  duration: number;
+
+  /** Similarity score 0–1 (best first). */
+  score: number;
+
+  /** "music" | "sound_effects". */
+  type: string;
+}
+
+/** Response from searching the sounds catalog (unbilled). */
+export interface AudioSoundsResponse {
+  /** Matching tracks, best score first (empty page → []). */
+  sounds: AudioSound[];
+
+  /** More pages exist. */
+  has_more: boolean;
+
+  /** Pass as `token` for the next page (may be empty). */
+  next_token: string;
+
+  /** Unique request identifier. */
+  request_id: string;
+}
+
+// ── HeyGen Template v3 (variable schema + render) ─────────────────
+
+/** A variable slot referenced by a template scene. */
+export interface VideoTemplateSceneVariable {
+  /** Variable name (key into the template's `variables` map). */
+  name: string;
+
+  /** Variable kind (e.g. "text", "image", "character", "voice"). */
+  variable_type: string;
+}
+
+/** A scene in a template, in template order. */
+export interface VideoTemplateScene {
+  /** Scene identifier (usable in a generate request's scene_ids). */
+  scene_id: string;
+
+  /** Scene script with placeholders unreplaced (e.g. "Introducing {{headline}}..."). */
+  script: string;
+
+  /** Variables referenced by this scene. */
+  variables: VideoTemplateSceneVariable[];
+}
+
+/**
+ * Detailed template info: variable schema + scenes.
+ *
+ * Each `variables[name]` value is a discriminated union on its `"type"` field
+ * ("text" | "image" | "video" | "audio" | "voice" | "character"; unknown
+ * future types round-trip verbatim), returned in the exact shape a generate
+ * request accepts — replace defaults and submit back.
+ */
+export interface VideoTemplateDetail {
+  /** Template identifier. */
+  id: string;
+
+  /** Template name. */
+  name: string;
+
+  /** Aspect ratio (e.g. "16:9"). */
+  aspect_ratio: string;
+
+  /**
+   * Variable schema keyed by variable name (union values kept as raw JSON so
+   * unknown future variable types round-trip verbatim).
+   */
+  variables: Record<string, unknown>;
+
+  /** Scenes in template order. */
+  scenes: VideoTemplateScene[];
+}
+
+/** Response from inspecting a template's variable schema (unbilled). */
+export interface VideoTemplateDetailResponse {
+  /** The template detail. */
+  template: VideoTemplateDetail;
+
+  /** Unique request identifier. */
+  request_id: string;
+}
+
+/**
+ * Output dimension for a template render. Both values must be even, each
+ * 128–4096, and keep the template aspect ratio.
+ */
+export interface VideoTemplateDimension {
+  width: number;
+  height: number;
+}
+
+/** Subtitle position for burned-in captions. */
+export interface VideoSubtitlePosition {
+  x: number;
+  y: number;
+}
+
+/** Subtitle options for a template render (implies captions). */
+export interface VideoTemplateSubtitles {
+  /** Subtitle preset (e.g. "classic", "bold", "bright"). Required. */
+  preset_name: string;
+
+  /** Alignment (default 2). */
+  alignment?: number;
+
+  /** Disable word highlighting. */
+  disable_highlight?: boolean;
+
+  /** Font size. */
+  font_size?: number;
+
+  /** Subtitle position. */
+  position?: VideoSubtitlePosition;
+}
+
+/** Request body for rendering a video from a template (async job). */
+export interface VideoTemplateGenerateRequest {
+  /**
+   * Variable overrides keyed by name (at least one required). Values use the
+   * same union shapes returned by the template detail route; omitted
+   * variables keep the template defaults.
+   */
+  variables: Record<string, unknown>;
+
+  /** Names the generated video. */
+  title?: string;
+
+  /** Restrict the render to these scenes, in order (repeats allowed). */
+  scene_ids?: string[];
+
+  /** Output dimension (must keep the template aspect ratio). */
+  dimension?: VideoTemplateDimension;
+
+  /** Frames per second: 25 (default), 30, or 60. */
+  fps?: number;
+
+  /** Burn captions (default false). */
+  caption?: boolean;
+
+  /** Subtitle options (implies captions). */
+  subtitles?: VideoTemplateSubtitles;
+
+  /** Background audio moves with scenes (default true). */
+  reorder_music?: boolean;
+
+  /** Keep text vertically centered (default false). */
+  keep_text_vertically_centered?: boolean;
+
+  /** Include a GIF preview in the webhook payload. */
+  include_gif?: boolean;
+
+  /** Enable a public share page. */
+  enable_sharing?: boolean;
+
+  /** HeyGen folder id. */
+  folder_id?: string;
+
+  /** Brand voice id. */
+  brand_voice_id?: string;
+}
+
+// ── HeyGen Batch Videos ───────────────────────────────────────────
+
+/** Request body for submitting a batch of videos. */
+export interface VideoBatchSubmitRequest {
+  /**
+   * 1–100 raw HeyGen `POST /v3/videos` request bodies, passed through
+   * verbatim. Each is polymorphic, discriminated by its `"type"` field
+   * ("avatar" | "image" | "cinematic_avatar"), so items are kept as opaque
+   * JSON objects.
+   */
+  videos: Record<string, unknown>[];
+
+  /** Display name for the batch in the HeyGen app. */
+  title?: string;
+}
+
+/** Response from submitting a video batch (202 Accepted). */
+export interface VideoBatchSubmitResponse {
+  /** Batch id — poll videoBatchStatus() with it. */
+  batch_id: string;
+
+  /** Always "processing" at submit. */
+  status: string;
+
+  /** Count of submitted items. */
+  total_items: number;
+
+  /** Unique request identifier. */
+  request_id: string;
+}
+
+/** Query parameters for the batch status page. */
+export interface VideoBatchStatusQuery {
+  /** Page size (1–100; upstream default 100). */
+  limit?: number;
+
+  /** Opaque cursor from a previous response's next_token. */
+  token?: string;
+}
+
+/** Per-item error detail in a batch status page. */
+export interface VideoBatchItemError {
+  code: string;
+  message: string;
+}
+
+/** One item of a batch status page, ordered by item_index. */
+export interface VideoBatchItem {
+  /** Zero-based position in the submitted `videos` array. */
+  item_index: number;
+
+  /** "queued" | "processing" | "completed" | "failed". */
+  status: string;
+
+  /** Present once the item's video exists. */
+  video_id?: string;
+
+  /** Present only when billing_status == "settled" and the item completed. */
+  video_url?: string;
+
+  /** Present only when the item failed. */
+  error?: VideoBatchItemError;
+}
+
+/**
+ * Response from a batch status check (one cursor-paginated page of items).
+ *
+ * Billing settles the first time a GET observes a terminal batch status;
+ * `video_url` values are withheld until `billing_status == "settled"` —
+ * keep polling until then to obtain URLs.
+ */
+export interface VideoBatchStatusResponse {
+  /** Batch id. */
+  batch_id: string;
+
+  /** Batch display name (may be empty). */
+  title: string;
+
+  /** Batch-level status: "processing" | "completed" | "failed". */
+  status: string;
+
+  /** Count of submitted items. */
+  total_items: number;
+
+  /** Per-item-status counts across the whole batch. */
+  counts_by_status: Record<string, number>;
+
+  /** Batch creation time in unix seconds (upstream HeyGen timestamp). */
+  created_at: number;
+
+  /** One page of items, ordered by item_index. */
+  items: VideoBatchItem[];
+
+  /** More item pages exist. */
+  has_more: boolean;
+
+  /** Pass as `token` for the next page (may be empty). */
+  next_token: string;
+
+  /** "unsettled" | "settlement_pending" | "settled". */
+  billing_status: string;
+
+  /** Total ticks charged for the batch; 0 until settled. */
+  cost_ticks: number;
+
+  /** Unique request identifier. */
+  request_id: string;
 }
 
 // ── Embeddings ────────────────────────────────────────────────────
@@ -2938,6 +3392,8 @@ export interface HeyGenAvatarsResponse {
 export interface JobAcceptedResponse {
   job_id: string;
   status: string;
+  /** Job type as sent on the wire (e.g. "video/template-v3"). */
+  type?: string;
   job_type?: string;
   request_id?: string;
 }

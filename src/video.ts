@@ -5,10 +5,17 @@ import type {
   DigitalTwinRequest,
   HeyGenTemplatesResponse,
   HeyGenVoicesResponse,
+  JobAcceptedResponse,
   PhotoAvatarRequest,
+  VideoBatchStatusQuery,
+  VideoBatchStatusResponse,
+  VideoBatchSubmitRequest,
+  VideoBatchSubmitResponse,
   VideoRequest,
   VideoResponse,
   VideoStudioRequest,
+  VideoTemplateDetailResponse,
+  VideoTemplateGenerateRequest,
   VideoTranslateRequest,
 } from "./types.js";
 
@@ -150,6 +157,104 @@ export async function videoHeygenVoices(
   const { data } = await client._doJSON<HeyGenVoicesResponse>(
     "GET",
     "/qai/v1/video/heygen-voices",
+    undefined,
+  );
+
+  return data;
+}
+
+/**
+ * Inspect a HeyGen template's variable schema and scenes (unbilled).
+ *
+ * Only draft-v4 templates with variables are supported upstream; an unknown
+ * template id surfaces as a provider_error.
+ *
+ * @internal — called by QuantumClient.videoTemplateDetail()
+ */
+export async function videoTemplateDetail(
+  client: QuantumClient,
+  templateId: string,
+): Promise<VideoTemplateDetailResponse> {
+  const { data } = await client._doJSON<VideoTemplateDetailResponse>(
+    "GET",
+    `/qai/v1/video/template/${encodeURIComponent(templateId)}`,
+    undefined,
+  );
+
+  return data;
+}
+
+/**
+ * Render a video from a HeyGen template (async job type "video/template-v3").
+ *
+ * Returns the accepted-job envelope — poll with getJob()/pollJob() (or SSE
+ * via streamJob()) until "completed"/"failed", then read result.video_url.
+ * Deep validation happens at execution time, so violations surface as a
+ * failed job rather than a 4xx at submit.
+ *
+ * @internal — called by QuantumClient.videoTemplateGenerate()
+ */
+export async function videoTemplateGenerate(
+  client: QuantumClient,
+  templateId: string,
+  req: VideoTemplateGenerateRequest,
+): Promise<JobAcceptedResponse> {
+  const { data } = await client._doJSON<JobAcceptedResponse>(
+    "POST",
+    `/qai/v1/video/template/${encodeURIComponent(templateId)}`,
+    req,
+  );
+
+  return data;
+}
+
+/**
+ * Submit 1–100 raw HeyGen video payloads as one batch (202 Accepted).
+ *
+ * Poll videoBatchStatus() for progress and delivery.
+ *
+ * @internal — called by QuantumClient.videoBatchSubmit()
+ */
+export async function videoBatchSubmit(
+  client: QuantumClient,
+  req: VideoBatchSubmitRequest,
+): Promise<VideoBatchSubmitResponse> {
+  const { data } = await client._doJSON<VideoBatchSubmitResponse>(
+    "POST",
+    "/qai/v1/video/batch",
+    req,
+  );
+
+  return data;
+}
+
+/**
+ * Get a batch's status plus one cursor-paginated page of items.
+ *
+ * Poll (~5s) until `status` is terminal, then keep polling until
+ * `billing_status == "settled"` — per-item `video_url` values are withheld
+ * until settlement. Collect URLs across pages via `next_token`.
+ *
+ * @internal — called by QuantumClient.videoBatchStatus()
+ */
+export async function videoBatchStatus(
+  client: QuantumClient,
+  batchId: string,
+  query?: VideoBatchStatusQuery,
+): Promise<VideoBatchStatusResponse> {
+  const params = new URLSearchParams();
+  if (query?.limit !== undefined) params.set("limit", String(query.limit));
+  if (query?.token !== undefined && query.token !== "") {
+    params.set("token", query.token);
+  }
+
+  const qs = params.toString();
+  const base = `/qai/v1/video/batch/${encodeURIComponent(batchId)}`;
+  const path = qs ? `${base}?${qs}` : base;
+
+  const { data } = await client._doJSON<VideoBatchStatusResponse>(
+    "GET",
+    path,
     undefined,
   );
 

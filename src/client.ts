@@ -16,6 +16,7 @@ import {
   align,
   voiceDesign,
   starfishTTS,
+  searchAudioSounds,
 } from "./audio.js";
 import {
   generateVideo,
@@ -26,7 +27,17 @@ import {
   videoAvatars,
   videoTemplates,
   videoHeygenVoices,
+  videoTemplateDetail,
+  videoTemplateGenerate,
+  videoBatchSubmit,
+  videoBatchStatus,
 } from "./video.js";
+import {
+  createAvatarRealtimeSession,
+  getAvatarRealtimeSession,
+  sendAvatarRealtimeText,
+  cancelAvatarRealtimeSession,
+} from "./avatar.js";
 import { embed } from "./embeddings.js";
 import { extractDocument, chunkDocument, processDocument } from "./documents.js";
 import { ragSearch, ragCorpora, surrealRagSearch, surrealRagProviders } from "./rag.js";
@@ -65,8 +76,16 @@ import type {
   AlignRequest,
   AlignResponse,
   AsyncJobResponse,
+  AudioSoundsQuery,
+  AudioSoundsResponse,
   AuthAppleRequest,
   AuthResponse,
+  AvatarRealtimeCancelResponse,
+  AvatarRealtimeCreateResponse,
+  AvatarRealtimeRequest,
+  AvatarRealtimeStatusResponse,
+  AvatarRealtimeTextRequest,
+  AvatarRealtimeTextResponse,
   AvatarsResponse,
   BalanceResponse,
   BatchJobInfo,
@@ -102,6 +121,7 @@ import type {
   EmbedResponse,
   HeyGenTemplatesResponse,
   HeyGenVoicesResponse,
+  JobAcceptedResponse,
   ImageEditRequest,
   ImageEditResponse,
   ImageRequest,
@@ -165,9 +185,15 @@ import type {
   UsageQuery,
   UsageResponse,
   UsageSummaryResponse,
+  VideoBatchStatusQuery,
+  VideoBatchStatusResponse,
+  VideoBatchSubmitRequest,
+  VideoBatchSubmitResponse,
   VideoRequest,
   VideoResponse,
   VideoStudioRequest,
+  VideoTemplateDetailResponse,
+  VideoTemplateGenerateRequest,
   VideoTranslateRequest,
   VoiceDesignRequest,
   VoiceDesignResponse,
@@ -431,6 +457,17 @@ export class QuantumClient {
     return starfishTTS(this, req);
   }
 
+  /**
+   * Search HeyGen's background-music and sound-effects catalogs (semantic
+   * ranking, best score first). Unbilled catalog route.
+   *
+   * `audio_url` values are pre-signed WAV URLs with a limited lifetime —
+   * download promptly, do not cache.
+   */
+  async searchAudioSounds(query: AudioSoundsQuery): Promise<AudioSoundsResponse> {
+    return searchAudioSounds(this, query);
+  }
+
   // ── Video ─────────────────────────────────────────────────────────
 
   /**
@@ -482,6 +519,104 @@ export class QuantumClient {
   /** List available HeyGen voices. */
   async videoHeygenVoices(): Promise<HeyGenVoicesResponse> {
     return videoHeygenVoices(this);
+  }
+
+  /**
+   * Inspect a HeyGen template's variable schema and scenes (unbilled).
+   *
+   * Only draft-v4 templates with variables are supported upstream; an
+   * unknown template id surfaces as a provider_error.
+   */
+  async videoTemplateDetail(
+    templateId: string,
+  ): Promise<VideoTemplateDetailResponse> {
+    return videoTemplateDetail(this, templateId);
+  }
+
+  /**
+   * Render a video from a HeyGen template (async job type
+   * "video/template-v3").
+   *
+   * Returns the accepted-job envelope — poll with {@link getJob} /
+   * {@link pollJob} (or SSE via {@link streamJob}) until
+   * "completed"/"failed", then read `result.video_url`.
+   */
+  async videoTemplateGenerate(
+    templateId: string,
+    req: VideoTemplateGenerateRequest,
+  ): Promise<JobAcceptedResponse> {
+    return videoTemplateGenerate(this, templateId, req);
+  }
+
+  /**
+   * Submit 1–100 raw HeyGen video payloads as one batch (202 Accepted).
+   * Poll {@link videoBatchStatus} for progress and delivery.
+   */
+  async videoBatchSubmit(
+    req: VideoBatchSubmitRequest,
+  ): Promise<VideoBatchSubmitResponse> {
+    return videoBatchSubmit(this, req);
+  }
+
+  /**
+   * Get a batch's status plus one cursor-paginated page of items.
+   *
+   * Poll (~5s) until `status` is terminal, then keep polling until
+   * `billing_status == "settled"` — per-item `video_url` values are
+   * withheld until settlement. Collect URLs across pages via `next_token`.
+   */
+  async videoBatchStatus(
+    batchId: string,
+    query?: VideoBatchStatusQuery,
+  ): Promise<VideoBatchStatusResponse> {
+    return videoBatchStatus(this, batchId, query);
+  }
+
+  // ── Avatar Realtime (HeyGen Broadcast) ────────────────────────────
+
+  /**
+   * Create a live avatar realtime session (HeyGen Broadcast).
+   *
+   * PREPAID: the entire `max_duration_seconds` block (1–3600 s) is charged
+   * at create time; cancelling early does NOT refund.
+   */
+  async createAvatarRealtimeSession(
+    req: AvatarRealtimeRequest,
+  ): Promise<AvatarRealtimeCreateResponse> {
+    return createAvatarRealtimeSession(this, req);
+  }
+
+  /**
+   * Get the live status of an avatar realtime session.
+   *
+   * Poll (~2s) until `status == "streaming"`, then play `hls_url`.
+   * "completed" and "error" are terminal.
+   */
+  async getAvatarRealtimeSession(
+    streamId: string,
+  ): Promise<AvatarRealtimeStatusResponse> {
+    return getAvatarRealtimeSession(this, streamId);
+  }
+
+  /**
+   * Append a text delta to a `text_stream` session (or close it with
+   * `{ final: true }`).
+   */
+  async sendAvatarRealtimeText(
+    streamId: string,
+    req: AvatarRealtimeTextRequest,
+  ): Promise<AvatarRealtimeTextResponse> {
+    return sendAvatarRealtimeText(this, streamId, req);
+  }
+
+  /**
+   * Terminate an avatar realtime session early (idempotent; no refund —
+   * this only stops HeyGen's upstream meter).
+   */
+  async cancelAvatarRealtimeSession(
+    streamId: string,
+  ): Promise<AvatarRealtimeCancelResponse> {
+    return cancelAvatarRealtimeSession(this, streamId);
   }
 
   // ── Embeddings ────────────────────────────────────────────────────

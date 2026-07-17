@@ -3,11 +3,37 @@
     {
       "name": "ts",
       "language": "typescript",
-      "dir": "src",
-      "scanned_at": "2026-03-23T20:44:45.87265+01:00"
+      "dir": "/Users/director/work/poly-repo/quantum-ai-polyrepo/qe-sdk-collection/npm_projects/quantum-sdk/src",
+      "scanned_at": "2026-07-17T19:42:53.052669+02:00"
     }
   ],
   "types": [
+    {
+      "sdk": "ts",
+      "name": "DoJSONOptions",
+      "kind": "interface",
+      "file": "client.ts",
+      "fields": [
+        {
+          "name": "idempotencyKey",
+          "type": "string",
+          "optional": true,
+          "json_tag": "idempotencyKey"
+        },
+        {
+          "name": "signal",
+          "type": "AbortSignal",
+          "optional": true,
+          "json_tag": "signal"
+        },
+        {
+          "name": "retries",
+          "type": "number",
+          "optional": true,
+          "json_tag": "retries"
+        }
+      ]
+    },
     {
       "sdk": "ts",
       "name": "BillingRequest",
@@ -106,6 +132,688 @@
     },
     {
       "sdk": "ts",
+      "name": "Captured",
+      "kind": "interface",
+      "file": "heygen-v3.test.ts",
+      "fields": [
+        {
+          "name": "url",
+          "type": "string",
+          "optional": false,
+          "json_tag": "url"
+        },
+        {
+          "name": "method",
+          "type": "string",
+          "optional": false,
+          "json_tag": "method"
+        },
+        {
+          "name": "headers",
+          "type": "Record\u003cstring, string\u003e",
+          "optional": false,
+          "json_tag": "headers"
+        },
+        {
+          "name": "body",
+          "type": "unknown",
+          "optional": false,
+          "json_tag": "body"
+        },
+        {
+          "name": "calls",
+          "type": "number",
+          "optional": false,
+          "json_tag": "calls"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "MissionWorkerConfig",
+      "kind": "interface",
+      "file": "missions.ts",
+      "fields": [
+        {
+          "name": "model",
+          "type": "string",
+          "optional": false,
+          "json_tag": "model"
+        },
+        {
+          "name": "tier",
+          "type": "string",
+          "optional": false,
+          "json_tag": "tier"
+        },
+        {
+          "name": "description",
+          "type": "string",
+          "optional": true,
+          "json_tag": "description"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "MissionCreateRequest",
+      "kind": "interface",
+      "file": "missions.ts",
+      "fields": [
+        {
+          "name": "goal",
+          "type": "string",
+          "optional": false,
+          "json_tag": "goal"
+        },
+        {
+          "name": "strategy",
+          "type": "string",
+          "optional": true,
+          "json_tag": "strategy"
+        },
+        {
+          "name": "conductorModel",
+          "type": "string",
+          "optional": true,
+          "json_tag": "conductorModel"
+        },
+        {
+          "name": "workers",
+          "type": "Record\u003cstring, MissionWorkerConfig\u003e",
+          "optional": true,
+          "json_tag": "workers"
+        },
+        {
+          "name": "maxSteps",
+          "type": "number",
+          "optional": true,
+          "json_tag": "maxSteps"
+        },
+        {
+          "name": "systemPrompt",
+          "type": "string",
+          "optional": true,
+          "json_tag": "systemPrompt"
+        },
+        {
+          "name": "sessionId",
+          "type": "string",
+          "optional": true,
+          "json_tag": "sessionId"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "MissionChatRequest",
+      "kind": "interface",
+      "file": "missions.ts",
+      "fields": [
+        {
+          "name": "message",
+          "type": "string",
+          "optional": false,
+          "json_tag": "message"
+        },
+        {
+          "name": "stream",
+          "type": "boolean",
+          "optional": true,
+          "json_tag": "stream"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "MissionPlanUpdate",
+      "kind": "interface",
+      "file": "missions.ts",
+      "fields": [
+        {
+          "name": "tasks",
+          "type": "Record\u003cstring, unknown\u003e[]",
+          "optional": true,
+          "json_tag": "tasks"
+        },
+        {
+          "name": "workers",
+          "type": "Record\u003cstring, MissionWorkerConfig\u003e",
+          "optional": true,
+          "json_tag": "workers"
+        },
+        {
+          "name": "systemPrompt",
+          "type": "string",
+          "optional": true,
+          "json_tag": "systemPrompt"
+        },
+        {
+          "name": "maxSteps",
+          "type": "number",
+          "optional": true,
+          "json_tag": "maxSteps"
+        },
+        {
+          "name": "context",
+          "type": "string",
+          "optional": true,
+          "json_tag": "context"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "MissionConfirmStructure",
+      "kind": "interface",
+      "file": "missions.ts",
+      "fields": [
+        {
+          "name": "confirmed",
+          "type": "boolean",
+          "optional": false,
+          "json_tag": "confirmed"
+        },
+        {
+          "name": "feedback",
+          "type": "string",
+          "optional": true,
+          "json_tag": "feedback"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "MissionApproveRequest",
+      "kind": "interface",
+      "file": "missions.ts",
+      "fields": [
+        {
+          "name": "commitSha",
+          "type": "string",
+          "optional": true,
+          "json_tag": "commitSha"
+        },
+        {
+          "name": "comment",
+          "type": "string",
+          "optional": true,
+          "json_tag": "comment"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "MissionImportRequest",
+      "kind": "interface",
+      "file": "missions.ts",
+      "fields": [
+        {
+          "name": "goal",
+          "type": "string",
+          "optional": false,
+          "json_tag": "goal"
+        },
+        {
+          "name": "strategy",
+          "type": "string",
+          "optional": true,
+          "json_tag": "strategy"
+        },
+        {
+          "name": "conductorModel",
+          "type": "string",
+          "optional": true,
+          "json_tag": "conductorModel"
+        },
+        {
+          "name": "workers",
+          "type": "Record\u003cstring, MissionWorkerConfig\u003e",
+          "optional": true,
+          "json_tag": "workers"
+        },
+        {
+          "name": "tasks",
+          "type": "Record\u003cstring, unknown\u003e[]",
+          "optional": false,
+          "json_tag": "tasks"
+        },
+        {
+          "name": "systemPrompt",
+          "type": "string",
+          "optional": true,
+          "json_tag": "systemPrompt"
+        },
+        {
+          "name": "maxSteps",
+          "type": "number",
+          "optional": true,
+          "json_tag": "maxSteps"
+        },
+        {
+          "name": "autoExecute",
+          "type": "boolean",
+          "optional": true,
+          "json_tag": "autoExecute"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "MissionCreateResponse",
+      "kind": "interface",
+      "file": "missions.ts",
+      "fields": [
+        {
+          "name": "missionId",
+          "type": "string",
+          "optional": false,
+          "json_tag": "missionId"
+        },
+        {
+          "name": "status",
+          "type": "string",
+          "optional": false,
+          "json_tag": "status"
+        },
+        {
+          "name": "sessionId",
+          "type": "string",
+          "optional": true,
+          "json_tag": "sessionId"
+        },
+        {
+          "name": "conductorModel",
+          "type": "string",
+          "optional": true,
+          "json_tag": "conductorModel"
+        },
+        {
+          "name": "strategy",
+          "type": "string",
+          "optional": true,
+          "json_tag": "strategy"
+        },
+        {
+          "name": "workers",
+          "type": "Record\u003cstring, MissionWorkerConfig\u003e",
+          "optional": true,
+          "json_tag": "workers"
+        },
+        {
+          "name": "createdAt",
+          "type": "string",
+          "optional": true,
+          "json_tag": "createdAt"
+        },
+        {
+          "name": "requestId",
+          "type": "string",
+          "optional": true,
+          "json_tag": "requestId"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "MissionTask",
+      "kind": "interface",
+      "file": "missions.ts",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string",
+          "optional": true,
+          "json_tag": "id"
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "optional": true,
+          "json_tag": "name"
+        },
+        {
+          "name": "description",
+          "type": "string",
+          "optional": true,
+          "json_tag": "description"
+        },
+        {
+          "name": "worker",
+          "type": "string",
+          "optional": true,
+          "json_tag": "worker"
+        },
+        {
+          "name": "model",
+          "type": "string",
+          "optional": true,
+          "json_tag": "model"
+        },
+        {
+          "name": "status",
+          "type": "string",
+          "optional": true,
+          "json_tag": "status"
+        },
+        {
+          "name": "result",
+          "type": "string",
+          "optional": true,
+          "json_tag": "result"
+        },
+        {
+          "name": "error",
+          "type": "string",
+          "optional": true,
+          "json_tag": "error"
+        },
+        {
+          "name": "step",
+          "type": "number",
+          "optional": false,
+          "json_tag": "step"
+        },
+        {
+          "name": "tokensIn",
+          "type": "number",
+          "optional": false,
+          "json_tag": "tokensIn"
+        },
+        {
+          "name": "tokensOut",
+          "type": "number",
+          "optional": false,
+          "json_tag": "tokensOut"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "MissionDetail",
+      "kind": "interface",
+      "file": "missions.ts",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string",
+          "optional": true,
+          "json_tag": "id"
+        },
+        {
+          "name": "userId",
+          "type": "string",
+          "optional": true,
+          "json_tag": "userId"
+        },
+        {
+          "name": "goal",
+          "type": "string",
+          "optional": true,
+          "json_tag": "goal"
+        },
+        {
+          "name": "strategy",
+          "type": "string",
+          "optional": true,
+          "json_tag": "strategy"
+        },
+        {
+          "name": "conductorModel",
+          "type": "string",
+          "optional": true,
+          "json_tag": "conductorModel"
+        },
+        {
+          "name": "status",
+          "type": "string",
+          "optional": true,
+          "json_tag": "status"
+        },
+        {
+          "name": "createdAt",
+          "type": "string",
+          "optional": true,
+          "json_tag": "createdAt"
+        },
+        {
+          "name": "startedAt",
+          "type": "string",
+          "optional": true,
+          "json_tag": "startedAt"
+        },
+        {
+          "name": "completedAt",
+          "type": "string",
+          "optional": true,
+          "json_tag": "completedAt"
+        },
+        {
+          "name": "error",
+          "type": "string",
+          "optional": true,
+          "json_tag": "error"
+        },
+        {
+          "name": "costTicks",
+          "type": "number",
+          "optional": false,
+          "json_tag": "costTicks"
+        },
+        {
+          "name": "totalSteps",
+          "type": "number",
+          "optional": false,
+          "json_tag": "totalSteps"
+        },
+        {
+          "name": "sessionId",
+          "type": "string",
+          "optional": true,
+          "json_tag": "sessionId"
+        },
+        {
+          "name": "result",
+          "type": "string",
+          "optional": true,
+          "json_tag": "result"
+        },
+        {
+          "name": "tasks",
+          "type": "MissionTask[]",
+          "optional": false,
+          "json_tag": "tasks"
+        },
+        {
+          "name": "approved",
+          "type": "boolean",
+          "optional": false,
+          "json_tag": "approved"
+        },
+        {
+          "name": "commitSha",
+          "type": "string",
+          "optional": true,
+          "json_tag": "commitSha"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "MissionListResponse",
+      "kind": "interface",
+      "file": "missions.ts",
+      "fields": [
+        {
+          "name": "missions",
+          "type": "MissionDetail[]",
+          "optional": false,
+          "json_tag": "missions"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "MissionChatUsage",
+      "kind": "interface",
+      "file": "missions.ts",
+      "fields": [
+        {
+          "name": "inputTokens",
+          "type": "number",
+          "optional": false,
+          "json_tag": "inputTokens"
+        },
+        {
+          "name": "outputTokens",
+          "type": "number",
+          "optional": false,
+          "json_tag": "outputTokens"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "MissionChatResponse",
+      "kind": "interface",
+      "file": "missions.ts",
+      "fields": [
+        {
+          "name": "missionId",
+          "type": "string",
+          "optional": true,
+          "json_tag": "missionId"
+        },
+        {
+          "name": "content",
+          "type": "string",
+          "optional": true,
+          "json_tag": "content"
+        },
+        {
+          "name": "model",
+          "type": "string",
+          "optional": true,
+          "json_tag": "model"
+        },
+        {
+          "name": "costTicks",
+          "type": "number",
+          "optional": false,
+          "json_tag": "costTicks"
+        },
+        {
+          "name": "usage",
+          "type": "MissionChatUsage",
+          "optional": true,
+          "json_tag": "usage"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "MissionCheckpoint",
+      "kind": "interface",
+      "file": "missions.ts",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string",
+          "optional": true,
+          "json_tag": "id"
+        },
+        {
+          "name": "commitSha",
+          "type": "string",
+          "optional": true,
+          "json_tag": "commitSha"
+        },
+        {
+          "name": "message",
+          "type": "string",
+          "optional": true,
+          "json_tag": "message"
+        },
+        {
+          "name": "createdAt",
+          "type": "string",
+          "optional": true,
+          "json_tag": "createdAt"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "MissionCheckpointsResponse",
+      "kind": "interface",
+      "file": "missions.ts",
+      "fields": [
+        {
+          "name": "missionId",
+          "type": "string",
+          "optional": true,
+          "json_tag": "missionId"
+        },
+        {
+          "name": "checkpoints",
+          "type": "MissionCheckpoint[]",
+          "optional": false,
+          "json_tag": "checkpoints"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "MissionStatusResponse",
+      "kind": "interface",
+      "file": "missions.ts",
+      "fields": [
+        {
+          "name": "missionId",
+          "type": "string",
+          "optional": true,
+          "json_tag": "missionId"
+        },
+        {
+          "name": "status",
+          "type": "string",
+          "optional": true,
+          "json_tag": "status"
+        },
+        {
+          "name": "confirmed",
+          "type": "boolean",
+          "optional": true,
+          "json_tag": "confirmed"
+        },
+        {
+          "name": "approved",
+          "type": "boolean",
+          "optional": true,
+          "json_tag": "approved"
+        },
+        {
+          "name": "deleted",
+          "type": "boolean",
+          "optional": true,
+          "json_tag": "deleted"
+        },
+        {
+          "name": "updated",
+          "type": "boolean",
+          "optional": true,
+          "json_tag": "updated"
+        },
+        {
+          "name": "commitSha",
+          "type": "string",
+          "optional": true,
+          "json_tag": "commitSha"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
       "name": "RealtimeConfig",
       "kind": "interface",
       "file": "realtime.ts",
@@ -176,6 +884,392 @@
     },
     {
       "sdk": "ts",
+      "name": "SecurityScanUrlRequest",
+      "kind": "interface",
+      "file": "security.ts",
+      "fields": [
+        {
+          "name": "url",
+          "type": "string",
+          "optional": false,
+          "json_tag": "url"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "SecurityScanHtmlRequest",
+      "kind": "interface",
+      "file": "security.ts",
+      "fields": [
+        {
+          "name": "html",
+          "type": "string",
+          "optional": false,
+          "json_tag": "html"
+        },
+        {
+          "name": "visibleText",
+          "type": "string",
+          "optional": true,
+          "json_tag": "visibleText"
+        },
+        {
+          "name": "url",
+          "type": "string",
+          "optional": true,
+          "json_tag": "url"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "SecurityReportRequest",
+      "kind": "interface",
+      "file": "security.ts",
+      "fields": [
+        {
+          "name": "url",
+          "type": "string",
+          "optional": false,
+          "json_tag": "url"
+        },
+        {
+          "name": "description",
+          "type": "string",
+          "optional": true,
+          "json_tag": "description"
+        },
+        {
+          "name": "category",
+          "type": "string",
+          "optional": true,
+          "json_tag": "category"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "SecurityFinding",
+      "kind": "interface",
+      "file": "security.ts",
+      "fields": [
+        {
+          "name": "category",
+          "type": "string",
+          "optional": false,
+          "json_tag": "category"
+        },
+        {
+          "name": "pattern",
+          "type": "string",
+          "optional": false,
+          "json_tag": "pattern"
+        },
+        {
+          "name": "content",
+          "type": "string",
+          "optional": false,
+          "json_tag": "content"
+        },
+        {
+          "name": "location",
+          "type": "string",
+          "optional": false,
+          "json_tag": "location"
+        },
+        {
+          "name": "threat",
+          "type": "string",
+          "optional": false,
+          "json_tag": "threat"
+        },
+        {
+          "name": "confidence",
+          "type": "number",
+          "optional": false,
+          "json_tag": "confidence"
+        },
+        {
+          "name": "description",
+          "type": "string",
+          "optional": false,
+          "json_tag": "description"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "SecurityAssessment",
+      "kind": "interface",
+      "file": "security.ts",
+      "fields": [
+        {
+          "name": "url",
+          "type": "string",
+          "optional": false,
+          "json_tag": "url"
+        },
+        {
+          "name": "threatLevel",
+          "type": "string",
+          "optional": false,
+          "json_tag": "threatLevel"
+        },
+        {
+          "name": "threatScore",
+          "type": "number",
+          "optional": false,
+          "json_tag": "threatScore"
+        },
+        {
+          "name": "findings",
+          "type": "SecurityFinding[]",
+          "optional": false,
+          "json_tag": "findings"
+        },
+        {
+          "name": "hiddenTextLength",
+          "type": "number",
+          "optional": false,
+          "json_tag": "hiddenTextLength"
+        },
+        {
+          "name": "visibleTextLength",
+          "type": "number",
+          "optional": false,
+          "json_tag": "visibleTextLength"
+        },
+        {
+          "name": "hiddenRatio",
+          "type": "number",
+          "optional": false,
+          "json_tag": "hiddenRatio"
+        },
+        {
+          "name": "summary",
+          "type": "string",
+          "optional": false,
+          "json_tag": "summary"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "SecurityScanResponse",
+      "kind": "interface",
+      "file": "security.ts",
+      "fields": [
+        {
+          "name": "assessment",
+          "type": "SecurityAssessment",
+          "optional": false,
+          "json_tag": "assessment"
+        },
+        {
+          "name": "requestId",
+          "type": "string",
+          "optional": false,
+          "json_tag": "requestId"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "SecurityCheckResponse",
+      "kind": "interface",
+      "file": "security.ts",
+      "fields": [
+        {
+          "name": "url",
+          "type": "string",
+          "optional": false,
+          "json_tag": "url"
+        },
+        {
+          "name": "blocked",
+          "type": "boolean",
+          "optional": false,
+          "json_tag": "blocked"
+        },
+        {
+          "name": "threatLevel",
+          "type": "string",
+          "optional": true,
+          "json_tag": "threatLevel"
+        },
+        {
+          "name": "threatScore",
+          "type": "number",
+          "optional": true,
+          "json_tag": "threatScore"
+        },
+        {
+          "name": "categories",
+          "type": "string[]",
+          "optional": true,
+          "json_tag": "categories"
+        },
+        {
+          "name": "firstSeen",
+          "type": "string",
+          "optional": true,
+          "json_tag": "firstSeen"
+        },
+        {
+          "name": "lastSeen",
+          "type": "string",
+          "optional": true,
+          "json_tag": "lastSeen"
+        },
+        {
+          "name": "reportCount",
+          "type": "number",
+          "optional": true,
+          "json_tag": "reportCount"
+        },
+        {
+          "name": "status",
+          "type": "string",
+          "optional": true,
+          "json_tag": "status"
+        },
+        {
+          "name": "message",
+          "type": "string",
+          "optional": true,
+          "json_tag": "message"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "SecurityBlocklistEntry",
+      "kind": "interface",
+      "file": "security.ts",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string",
+          "optional": true,
+          "json_tag": "id"
+        },
+        {
+          "name": "url",
+          "type": "string",
+          "optional": false,
+          "json_tag": "url"
+        },
+        {
+          "name": "status",
+          "type": "string",
+          "optional": false,
+          "json_tag": "status"
+        },
+        {
+          "name": "threatLevel",
+          "type": "string",
+          "optional": false,
+          "json_tag": "threatLevel"
+        },
+        {
+          "name": "threatScore",
+          "type": "number",
+          "optional": false,
+          "json_tag": "threatScore"
+        },
+        {
+          "name": "categories",
+          "type": "string[]",
+          "optional": false,
+          "json_tag": "categories"
+        },
+        {
+          "name": "findingsCount",
+          "type": "number",
+          "optional": false,
+          "json_tag": "findingsCount"
+        },
+        {
+          "name": "hiddenRatio",
+          "type": "number",
+          "optional": false,
+          "json_tag": "hiddenRatio"
+        },
+        {
+          "name": "firstSeen",
+          "type": "string",
+          "optional": true,
+          "json_tag": "firstSeen"
+        },
+        {
+          "name": "summary",
+          "type": "string",
+          "optional": false,
+          "json_tag": "summary"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "SecurityBlocklistResponse",
+      "kind": "interface",
+      "file": "security.ts",
+      "fields": [
+        {
+          "name": "entries",
+          "type": "SecurityBlocklistEntry[]",
+          "optional": false,
+          "json_tag": "entries"
+        },
+        {
+          "name": "count",
+          "type": "number",
+          "optional": false,
+          "json_tag": "count"
+        },
+        {
+          "name": "status",
+          "type": "string",
+          "optional": false,
+          "json_tag": "status"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "SecurityReportResponse",
+      "kind": "interface",
+      "file": "security.ts",
+      "fields": [
+        {
+          "name": "url",
+          "type": "string",
+          "optional": false,
+          "json_tag": "url"
+        },
+        {
+          "name": "status",
+          "type": "string",
+          "optional": false,
+          "json_tag": "status"
+        },
+        {
+          "name": "message",
+          "type": "string",
+          "optional": false,
+          "json_tag": "message"
+        },
+        {
+          "name": "threatLevel",
+          "type": "string",
+          "optional": true,
+          "json_tag": "threatLevel"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
       "name": "ClientOptions",
       "kind": "interface",
       "file": "types.ts",
@@ -191,6 +1285,18 @@
           "type": "typeof globalThis.fetch",
           "optional": true,
           "json_tag": "fetch"
+        },
+        {
+          "name": "timeoutMs",
+          "type": "number",
+          "optional": true,
+          "json_tag": "timeoutMs"
+        },
+        {
+          "name": "idempotencyKey",
+          "type": "boolean",
+          "optional": true,
+          "json_tag": "idempotencyKey"
         }
       ]
     },
@@ -229,6 +1335,18 @@
           "type": "string",
           "optional": false,
           "json_tag": "model"
+        },
+        {
+          "name": "balanceAfter",
+          "type": "number",
+          "optional": true,
+          "json_tag": "balanceAfter"
+        },
+        {
+          "name": "cached",
+          "type": "boolean",
+          "optional": true,
+          "json_tag": "cached"
         }
       ]
     },
@@ -275,6 +1393,30 @@
           "json_tag": "max_tokens"
         },
         {
+          "name": "tool_choice",
+          "type": "string",
+          "optional": true,
+          "json_tag": "tool_choice"
+        },
+        {
+          "name": "output_schema",
+          "type": "Record\u003cstring, unknown\u003e",
+          "optional": true,
+          "json_tag": "output_schema"
+        },
+        {
+          "name": "reasoning_effort",
+          "type": "string",
+          "optional": true,
+          "json_tag": "reasoning_effort"
+        },
+        {
+          "name": "cached_content",
+          "type": "string",
+          "optional": true,
+          "json_tag": "cached_content"
+        },
+        {
           "name": "provider_options",
           "type": "Record\u003cstring, Record\u003cstring, unknown\u003e\u003e",
           "optional": true,
@@ -317,6 +1459,12 @@
           "type": "boolean",
           "optional": true,
           "json_tag": "is_error"
+        },
+        {
+          "name": "phase",
+          "type": "string",
+          "optional": true,
+          "json_tag": "phase"
         }
       ]
     },
@@ -326,12 +1474,6 @@
       "kind": "interface",
       "file": "types.ts",
       "fields": [
-        {
-          "name": "type",
-          "type": "\"function\"",
-          "optional": false,
-          "json_tag": "type"
-        },
         {
           "name": "name",
           "type": "string",
@@ -349,6 +1491,12 @@
           "type": "Record\u003cstring, unknown\u003e",
           "optional": true,
           "json_tag": "parameters"
+        },
+        {
+          "name": "strict",
+          "type": "boolean",
+          "optional": true,
+          "json_tag": "strict"
         }
       ]
     },
@@ -399,6 +1547,30 @@
           "type": "string",
           "optional": true,
           "json_tag": "thought_signature"
+        },
+        {
+          "name": "data",
+          "type": "string",
+          "optional": true,
+          "json_tag": "data"
+        },
+        {
+          "name": "mime_type",
+          "type": "string",
+          "optional": true,
+          "json_tag": "mime_type"
+        },
+        {
+          "name": "file_name",
+          "type": "string",
+          "optional": true,
+          "json_tag": "file_name"
+        },
+        {
+          "name": "file_uri",
+          "type": "string",
+          "optional": true,
+          "json_tag": "file_uri"
         }
       ]
     },
@@ -415,10 +1587,22 @@
           "json_tag": "input_tokens"
         },
         {
+          "name": "cached_tokens",
+          "type": "number",
+          "optional": true,
+          "json_tag": "cached_tokens"
+        },
+        {
           "name": "output_tokens",
           "type": "number",
           "optional": false,
           "json_tag": "output_tokens"
+        },
+        {
+          "name": "reasoning_tokens",
+          "type": "number",
+          "optional": true,
+          "json_tag": "reasoning_tokens"
         },
         {
           "name": "cost_ticks",
@@ -463,6 +1647,24 @@
           "type": "string",
           "optional": false,
           "json_tag": "stop_reason"
+        },
+        {
+          "name": "citations",
+          "type": "Citation[]",
+          "optional": true,
+          "json_tag": "citations"
+        },
+        {
+          "name": "cached",
+          "type": "boolean",
+          "optional": true,
+          "json_tag": "cached"
+        },
+        {
+          "name": "phase",
+          "type": "string",
+          "optional": true,
+          "json_tag": "phase"
         },
         {
           "name": "request_id",
@@ -520,6 +1722,72 @@
     },
     {
       "sdk": "ts",
+      "name": "StreamToolUseStart",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string",
+          "optional": false,
+          "json_tag": "id"
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "optional": false,
+          "json_tag": "name"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "StreamToolUseInputDelta",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string",
+          "optional": false,
+          "json_tag": "id"
+        },
+        {
+          "name": "partial_json",
+          "type": "string",
+          "optional": false,
+          "json_tag": "partial_json"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "StreamToolUseComplete",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string",
+          "optional": false,
+          "json_tag": "id"
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "optional": false,
+          "json_tag": "name"
+        },
+        {
+          "name": "input",
+          "type": "Record\u003cstring, unknown\u003e",
+          "optional": false,
+          "json_tag": "input"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
       "name": "StreamEvent",
       "kind": "interface",
       "file": "types.ts",
@@ -547,6 +1815,24 @@
           "type": "StreamToolUse",
           "optional": true,
           "json_tag": "tool_use"
+        },
+        {
+          "name": "tool_use_start",
+          "type": "StreamToolUseStart",
+          "optional": true,
+          "json_tag": "tool_use_start"
+        },
+        {
+          "name": "tool_use_input_delta",
+          "type": "StreamToolUseInputDelta",
+          "optional": true,
+          "json_tag": "tool_use_input_delta"
+        },
+        {
+          "name": "tool_use_complete",
+          "type": "StreamToolUseComplete",
+          "optional": true,
+          "json_tag": "tool_use_complete"
         },
         {
           "name": "usage",
@@ -591,6 +1877,30 @@
           "type": "StreamToolUse",
           "optional": true,
           "json_tag": "tool_use"
+        },
+        {
+          "name": "id",
+          "type": "string",
+          "optional": true,
+          "json_tag": "id"
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "optional": true,
+          "json_tag": "name"
+        },
+        {
+          "name": "input",
+          "type": "Record\u003cstring, unknown\u003e",
+          "optional": true,
+          "json_tag": "input"
+        },
+        {
+          "name": "partial_json",
+          "type": "string",
+          "optional": true,
+          "json_tag": "partial_json"
         },
         {
           "name": "usage",
@@ -677,6 +1987,12 @@
           "type": "ContextConfig",
           "optional": true,
           "json_tag": "context_config"
+        },
+        {
+          "name": "reasoning_effort",
+          "type": "string",
+          "optional": true,
+          "json_tag": "reasoning_effort"
         },
         {
           "name": "provider_options",
@@ -797,132 +2113,6 @@
       "file": "types.ts",
       "fields": [
         {
-          "name": "task",
-          "type": "string",
-          "optional": false,
-          "json_tag": "task"
-        },
-        {
-          "name": "conductor_model",
-          "type": "string",
-          "optional": true,
-          "json_tag": "conductor_model"
-        },
-        {
-          "name": "workers",
-          "type": "AgentWorkerConfig[]",
-          "optional": true,
-          "json_tag": "workers"
-        },
-        {
-          "name": "max_steps",
-          "type": "number",
-          "optional": true,
-          "json_tag": "max_steps"
-        },
-        {
-          "name": "system_prompt",
-          "type": "string",
-          "optional": true,
-          "json_tag": "system_prompt"
-        },
-        {
-          "name": "session_id",
-          "type": "string",
-          "optional": true,
-          "json_tag": "session_id"
-        },
-        {
-          "name": "context_config",
-          "type": "ContextConfig",
-          "optional": true,
-          "json_tag": "context_config"
-        }
-      ]
-    },
-    {
-      "sdk": "ts",
-      "name": "AgentWorkerConfig",
-      "kind": "interface",
-      "file": "types.ts",
-      "fields": [
-        {
-          "name": "name",
-          "type": "string",
-          "optional": false,
-          "json_tag": "name"
-        },
-        {
-          "name": "model",
-          "type": "string",
-          "optional": true,
-          "json_tag": "model"
-        },
-        {
-          "name": "tools",
-          "type": "ChatTool[]",
-          "optional": true,
-          "json_tag": "tools"
-        },
-        {
-          "name": "system_prompt",
-          "type": "string",
-          "optional": true,
-          "json_tag": "system_prompt"
-        }
-      ]
-    },
-    {
-      "sdk": "ts",
-      "name": "AgentEvent",
-      "kind": "interface",
-      "file": "types.ts",
-      "fields": [
-        {
-          "name": "type",
-          "type": "string",
-          "optional": false,
-          "json_tag": "type"
-        },
-        {
-          "name": "done",
-          "type": "boolean",
-          "optional": false,
-          "json_tag": "done"
-        },
-        {
-          "name": "worker",
-          "type": "string",
-          "optional": true,
-          "json_tag": "worker"
-        },
-        {
-          "name": "content",
-          "type": "string",
-          "optional": true,
-          "json_tag": "content"
-        },
-        {
-          "name": "tool_use",
-          "type": "StreamToolUse",
-          "optional": true,
-          "json_tag": "tool_use"
-        },
-        {
-          "name": "error",
-          "type": "string",
-          "optional": true,
-          "json_tag": "error"
-        }
-      ]
-    },
-    {
-      "sdk": "ts",
-      "name": "MissionRequest",
-      "kind": "interface",
-      "file": "types.ts",
-      "fields": [
-        {
           "name": "goal",
           "type": "string",
           "optional": false,
@@ -935,8 +2125,20 @@
           "json_tag": "conductor_model"
         },
         {
+          "name": "conductor_tier",
+          "type": "string",
+          "optional": true,
+          "json_tag": "conductor_tier"
+        },
+        {
+          "name": "strategy",
+          "type": "string",
+          "optional": true,
+          "json_tag": "strategy"
+        },
+        {
           "name": "workers",
-          "type": "MissionWorkerConfig[]",
+          "type": "Record\u003cstring, AgentWorkerConfig\u003e",
           "optional": true,
           "json_tag": "workers"
         },
@@ -945,12 +2147,6 @@
           "type": "number",
           "optional": true,
           "json_tag": "max_steps"
-        },
-        {
-          "name": "strategy",
-          "type": "string",
-          "optional": true,
-          "json_tag": "strategy"
         },
         {
           "name": "system_prompt",
@@ -977,16 +2173,10 @@
           "json_tag": "context_config"
         },
         {
-          "name": "deployment_id",
+          "name": "workspace_path",
           "type": "string",
           "optional": true,
-          "json_tag": "deployment_id"
-        },
-        {
-          "name": "worker_model",
-          "type": "string",
-          "optional": true,
-          "json_tag": "worker_model"
+          "json_tag": "workspace_path"
         },
         {
           "name": "build_command",
@@ -995,10 +2185,356 @@
           "json_tag": "build_command"
         },
         {
+          "name": "deployment_id",
+          "type": "string",
+          "optional": true,
+          "json_tag": "deployment_id"
+        },
+        {
+          "name": "context",
+          "type": "string",
+          "optional": true,
+          "json_tag": "context"
+        },
+        {
+          "name": "use_context",
+          "type": "boolean",
+          "optional": true,
+          "json_tag": "use_context"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "AgentWorkerConfig",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "model",
+          "type": "string",
+          "optional": false,
+          "json_tag": "model"
+        },
+        {
+          "name": "tier",
+          "type": "string",
+          "optional": false,
+          "json_tag": "tier"
+        },
+        {
+          "name": "description",
+          "type": "string",
+          "optional": true,
+          "json_tag": "description"
+        },
+        {
+          "name": "escalate_to",
+          "type": "string",
+          "optional": true,
+          "json_tag": "escalate_to"
+        },
+        {
+          "name": "max_retries",
+          "type": "number",
+          "optional": true,
+          "json_tag": "max_retries"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "AgentEvent",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "type",
+          "type": "string",
+          "optional": false,
+          "json_tag": "type"
+        },
+        {
+          "name": "done",
+          "type": "boolean",
+          "optional": false,
+          "json_tag": "done"
+        },
+        {
+          "name": "role",
+          "type": "string",
+          "optional": true,
+          "json_tag": "role"
+        },
+        {
+          "name": "content",
+          "type": "string",
+          "optional": true,
+          "json_tag": "content"
+        },
+        {
+          "name": "data",
+          "type": "Record\u003cstring, unknown\u003e",
+          "optional": true,
+          "json_tag": "data"
+        },
+        {
+          "name": "timestamp",
+          "type": "string",
+          "optional": true,
+          "json_tag": "timestamp"
+        },
+        {
+          "name": "index",
+          "type": "number",
+          "optional": true,
+          "json_tag": "index"
+        },
+        {
+          "name": "mission_id",
+          "type": "string",
+          "optional": true,
+          "json_tag": "mission_id"
+        },
+        {
+          "name": "task_id",
+          "type": "string",
+          "optional": true,
+          "json_tag": "task_id"
+        },
+        {
+          "name": "message",
+          "type": "string",
+          "optional": true,
+          "json_tag": "message"
+        },
+        {
+          "name": "worker",
+          "type": "string",
+          "optional": true,
+          "json_tag": "worker"
+        },
+        {
+          "name": "tool_use",
+          "type": "StreamToolUse",
+          "optional": true,
+          "json_tag": "tool_use"
+        },
+        {
+          "name": "error",
+          "type": "string",
+          "optional": true,
+          "json_tag": "error"
+        },
+        {
+          "name": "usage",
+          "type": "ChatUsage",
+          "optional": true,
+          "json_tag": "usage"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "AgentPassthroughRequest",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "model",
+          "type": "string",
+          "optional": false,
+          "json_tag": "model"
+        },
+        {
+          "name": "messages",
+          "type": "ChatMessage[]",
+          "optional": false,
+          "json_tag": "messages"
+        },
+        {
+          "name": "tools",
+          "type": "ChatTool[]",
+          "optional": true,
+          "json_tag": "tools"
+        },
+        {
+          "name": "capabilities",
+          "type": "string[]",
+          "optional": true,
+          "json_tag": "capabilities"
+        },
+        {
+          "name": "system_prompt",
+          "type": "string",
+          "optional": true,
+          "json_tag": "system_prompt"
+        },
+        {
+          "name": "max_tokens",
+          "type": "number",
+          "optional": true,
+          "json_tag": "max_tokens"
+        },
+        {
+          "name": "temperature",
+          "type": "number",
+          "optional": true,
+          "json_tag": "temperature"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "AgentPassthroughResponse",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string",
+          "optional": false,
+          "json_tag": "id"
+        },
+        {
+          "name": "model",
+          "type": "string",
+          "optional": false,
+          "json_tag": "model"
+        },
+        {
+          "name": "stop_reason",
+          "type": "string",
+          "optional": false,
+          "json_tag": "stop_reason"
+        },
+        {
+          "name": "content",
+          "type": "ContentBlock[]",
+          "optional": false,
+          "json_tag": "content"
+        },
+        {
+          "name": "tool_use",
+          "type": "ContentBlock[]",
+          "optional": true,
+          "json_tag": "tool_use"
+        },
+        {
+          "name": "usage",
+          "type": "ChatUsage",
+          "optional": true,
+          "json_tag": "usage"
+        },
+        {
+          "name": "request_id",
+          "type": "string",
+          "optional": false,
+          "json_tag": "request_id"
+        },
+        {
+          "name": "cost_ticks",
+          "type": "number",
+          "optional": false,
+          "json_tag": "cost_ticks"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "MissionRequest",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "goal",
+          "type": "string",
+          "optional": false,
+          "json_tag": "goal"
+        },
+        {
+          "name": "strategy",
+          "type": "string",
+          "optional": true,
+          "json_tag": "strategy"
+        },
+        {
+          "name": "conductor_model",
+          "type": "string",
+          "optional": true,
+          "json_tag": "conductor_model"
+        },
+        {
+          "name": "conductor_tier",
+          "type": "string",
+          "optional": true,
+          "json_tag": "conductor_tier"
+        },
+        {
+          "name": "workers",
+          "type": "Record\u003cstring, MissionWorkerConfig\u003e",
+          "optional": true,
+          "json_tag": "workers"
+        },
+        {
+          "name": "max_steps",
+          "type": "number",
+          "optional": true,
+          "json_tag": "max_steps"
+        },
+        {
+          "name": "system_prompt",
+          "type": "string",
+          "optional": true,
+          "json_tag": "system_prompt"
+        },
+        {
+          "name": "session_id",
+          "type": "string",
+          "optional": true,
+          "json_tag": "session_id"
+        },
+        {
+          "name": "auto_plan",
+          "type": "boolean",
+          "optional": true,
+          "json_tag": "auto_plan"
+        },
+        {
+          "name": "context_config",
+          "type": "ContextConfig",
+          "optional": true,
+          "json_tag": "context_config"
+        },
+        {
           "name": "workspace_path",
           "type": "string",
           "optional": true,
           "json_tag": "workspace_path"
+        },
+        {
+          "name": "build_command",
+          "type": "string",
+          "optional": true,
+          "json_tag": "build_command"
+        },
+        {
+          "name": "deployment_id",
+          "type": "string",
+          "optional": true,
+          "json_tag": "deployment_id"
+        },
+        {
+          "name": "context",
+          "type": "string",
+          "optional": true,
+          "json_tag": "context"
+        },
+        {
+          "name": "use_context",
+          "type": "boolean",
+          "optional": true,
+          "json_tag": "use_context"
         }
       ]
     },
@@ -1009,28 +2545,34 @@
       "file": "types.ts",
       "fields": [
         {
-          "name": "name",
-          "type": "string",
-          "optional": false,
-          "json_tag": "name"
-        },
-        {
           "name": "model",
           "type": "string",
-          "optional": true,
+          "optional": false,
           "json_tag": "model"
         },
         {
-          "name": "tools",
-          "type": "ChatTool[]",
-          "optional": true,
-          "json_tag": "tools"
+          "name": "tier",
+          "type": "string",
+          "optional": false,
+          "json_tag": "tier"
         },
         {
-          "name": "system_prompt",
+          "name": "description",
           "type": "string",
           "optional": true,
-          "json_tag": "system_prompt"
+          "json_tag": "description"
+        },
+        {
+          "name": "escalate_to",
+          "type": "string",
+          "optional": true,
+          "json_tag": "escalate_to"
+        },
+        {
+          "name": "max_retries",
+          "type": "number",
+          "optional": true,
+          "json_tag": "max_retries"
         }
       ]
     },
@@ -1053,16 +2595,58 @@
           "json_tag": "done"
         },
         {
-          "name": "worker",
+          "name": "role",
           "type": "string",
           "optional": true,
-          "json_tag": "worker"
+          "json_tag": "role"
         },
         {
           "name": "content",
           "type": "string",
           "optional": true,
           "json_tag": "content"
+        },
+        {
+          "name": "data",
+          "type": "Record\u003cstring, unknown\u003e",
+          "optional": true,
+          "json_tag": "data"
+        },
+        {
+          "name": "timestamp",
+          "type": "string",
+          "optional": true,
+          "json_tag": "timestamp"
+        },
+        {
+          "name": "index",
+          "type": "number",
+          "optional": true,
+          "json_tag": "index"
+        },
+        {
+          "name": "mission_id",
+          "type": "string",
+          "optional": true,
+          "json_tag": "mission_id"
+        },
+        {
+          "name": "task_id",
+          "type": "string",
+          "optional": true,
+          "json_tag": "task_id"
+        },
+        {
+          "name": "message",
+          "type": "string",
+          "optional": true,
+          "json_tag": "message"
+        },
+        {
+          "name": "worker",
+          "type": "string",
+          "optional": true,
+          "json_tag": "worker"
         },
         {
           "name": "tool_use",
@@ -1075,6 +2659,12 @@
           "type": "string",
           "optional": true,
           "json_tag": "error"
+        },
+        {
+          "name": "usage",
+          "type": "ChatUsage",
+          "optional": true,
+          "json_tag": "usage"
         }
       ]
     },
@@ -2874,6 +4464,852 @@
     },
     {
       "sdk": "ts",
+      "name": "AvatarAudioInput",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "type",
+          "type": "string",
+          "optional": false,
+          "json_tag": "type"
+        },
+        {
+          "name": "url",
+          "type": "string",
+          "optional": true,
+          "json_tag": "url"
+        },
+        {
+          "name": "asset_id",
+          "type": "string",
+          "optional": true,
+          "json_tag": "asset_id"
+        },
+        {
+          "name": "media_type",
+          "type": "string",
+          "optional": true,
+          "json_tag": "media_type"
+        },
+        {
+          "name": "data",
+          "type": "string",
+          "optional": true,
+          "json_tag": "data"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "AvatarRealtimeRequest",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "type",
+          "type": "string",
+          "optional": false,
+          "json_tag": "type"
+        },
+        {
+          "name": "avatar_id",
+          "type": "string",
+          "optional": false,
+          "json_tag": "avatar_id"
+        },
+        {
+          "name": "voice_id",
+          "type": "string",
+          "optional": true,
+          "json_tag": "voice_id"
+        },
+        {
+          "name": "text",
+          "type": "string",
+          "optional": true,
+          "json_tag": "text"
+        },
+        {
+          "name": "audio",
+          "type": "AvatarAudioInput",
+          "optional": true,
+          "json_tag": "audio"
+        },
+        {
+          "name": "max_duration_seconds",
+          "type": "number",
+          "optional": false,
+          "json_tag": "max_duration_seconds"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "AvatarRealtimeCreateResponse",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "stream_id",
+          "type": "string",
+          "optional": false,
+          "json_tag": "stream_id"
+        },
+        {
+          "name": "status",
+          "type": "string",
+          "optional": false,
+          "json_tag": "status"
+        },
+        {
+          "name": "prepaid_seconds",
+          "type": "number",
+          "optional": false,
+          "json_tag": "prepaid_seconds"
+        },
+        {
+          "name": "cost_ticks",
+          "type": "number",
+          "optional": false,
+          "json_tag": "cost_ticks"
+        },
+        {
+          "name": "balance_after",
+          "type": "number",
+          "optional": true,
+          "json_tag": "balance_after"
+        },
+        {
+          "name": "request_id",
+          "type": "string",
+          "optional": false,
+          "json_tag": "request_id"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "AvatarRealtimeStatusResponse",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "stream_id",
+          "type": "string",
+          "optional": false,
+          "json_tag": "stream_id"
+        },
+        {
+          "name": "status",
+          "type": "string",
+          "optional": false,
+          "json_tag": "status"
+        },
+        {
+          "name": "hls_url",
+          "type": "string",
+          "optional": true,
+          "json_tag": "hls_url"
+        },
+        {
+          "name": "error_message",
+          "type": "string",
+          "optional": true,
+          "json_tag": "error_message"
+        },
+        {
+          "name": "end_reason",
+          "type": "string",
+          "optional": true,
+          "json_tag": "end_reason"
+        },
+        {
+          "name": "request_id",
+          "type": "string",
+          "optional": false,
+          "json_tag": "request_id"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "AvatarRealtimeTextRequest",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "delta",
+          "type": "string",
+          "optional": true,
+          "json_tag": "delta"
+        },
+        {
+          "name": "final",
+          "type": "boolean",
+          "optional": true,
+          "json_tag": "final"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "AvatarRealtimeTextResponse",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "ok",
+          "type": "boolean",
+          "optional": false,
+          "json_tag": "ok"
+        },
+        {
+          "name": "buffered_bytes",
+          "type": "number",
+          "optional": false,
+          "json_tag": "buffered_bytes"
+        },
+        {
+          "name": "final",
+          "type": "boolean",
+          "optional": false,
+          "json_tag": "final"
+        },
+        {
+          "name": "request_id",
+          "type": "string",
+          "optional": false,
+          "json_tag": "request_id"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "AvatarRealtimeCancelResponse",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "stream_id",
+          "type": "string",
+          "optional": false,
+          "json_tag": "stream_id"
+        },
+        {
+          "name": "cancelled",
+          "type": "boolean",
+          "optional": false,
+          "json_tag": "cancelled"
+        },
+        {
+          "name": "request_id",
+          "type": "string",
+          "optional": false,
+          "json_tag": "request_id"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "AudioSoundsQuery",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "query",
+          "type": "string",
+          "optional": false,
+          "json_tag": "query"
+        },
+        {
+          "name": "type",
+          "type": "string",
+          "optional": true,
+          "json_tag": "type"
+        },
+        {
+          "name": "limit",
+          "type": "number",
+          "optional": true,
+          "json_tag": "limit"
+        },
+        {
+          "name": "min_score",
+          "type": "number",
+          "optional": true,
+          "json_tag": "min_score"
+        },
+        {
+          "name": "token",
+          "type": "string",
+          "optional": true,
+          "json_tag": "token"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "AudioSound",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string",
+          "optional": false,
+          "json_tag": "id"
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "optional": false,
+          "json_tag": "name"
+        },
+        {
+          "name": "description",
+          "type": "string",
+          "optional": false,
+          "json_tag": "description"
+        },
+        {
+          "name": "audio_url",
+          "type": "string",
+          "optional": false,
+          "json_tag": "audio_url"
+        },
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": false,
+          "json_tag": "duration"
+        },
+        {
+          "name": "score",
+          "type": "number",
+          "optional": false,
+          "json_tag": "score"
+        },
+        {
+          "name": "type",
+          "type": "string",
+          "optional": false,
+          "json_tag": "type"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "AudioSoundsResponse",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "sounds",
+          "type": "AudioSound[]",
+          "optional": false,
+          "json_tag": "sounds"
+        },
+        {
+          "name": "has_more",
+          "type": "boolean",
+          "optional": false,
+          "json_tag": "has_more"
+        },
+        {
+          "name": "next_token",
+          "type": "string",
+          "optional": false,
+          "json_tag": "next_token"
+        },
+        {
+          "name": "request_id",
+          "type": "string",
+          "optional": false,
+          "json_tag": "request_id"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "VideoTemplateSceneVariable",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "name",
+          "type": "string",
+          "optional": false,
+          "json_tag": "name"
+        },
+        {
+          "name": "variable_type",
+          "type": "string",
+          "optional": false,
+          "json_tag": "variable_type"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "VideoTemplateScene",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "scene_id",
+          "type": "string",
+          "optional": false,
+          "json_tag": "scene_id"
+        },
+        {
+          "name": "script",
+          "type": "string",
+          "optional": false,
+          "json_tag": "script"
+        },
+        {
+          "name": "variables",
+          "type": "VideoTemplateSceneVariable[]",
+          "optional": false,
+          "json_tag": "variables"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "VideoTemplateDetail",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string",
+          "optional": false,
+          "json_tag": "id"
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "optional": false,
+          "json_tag": "name"
+        },
+        {
+          "name": "aspect_ratio",
+          "type": "string",
+          "optional": false,
+          "json_tag": "aspect_ratio"
+        },
+        {
+          "name": "variables",
+          "type": "Record\u003cstring, unknown\u003e",
+          "optional": false,
+          "json_tag": "variables"
+        },
+        {
+          "name": "scenes",
+          "type": "VideoTemplateScene[]",
+          "optional": false,
+          "json_tag": "scenes"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "VideoTemplateDetailResponse",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "template",
+          "type": "VideoTemplateDetail",
+          "optional": false,
+          "json_tag": "template"
+        },
+        {
+          "name": "request_id",
+          "type": "string",
+          "optional": false,
+          "json_tag": "request_id"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "VideoTemplateDimension",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "width",
+          "type": "number",
+          "optional": false,
+          "json_tag": "width"
+        },
+        {
+          "name": "height",
+          "type": "number",
+          "optional": false,
+          "json_tag": "height"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "VideoSubtitlePosition",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "x",
+          "type": "number",
+          "optional": false,
+          "json_tag": "x"
+        },
+        {
+          "name": "y",
+          "type": "number",
+          "optional": false,
+          "json_tag": "y"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "VideoTemplateSubtitles",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "preset_name",
+          "type": "string",
+          "optional": false,
+          "json_tag": "preset_name"
+        },
+        {
+          "name": "alignment",
+          "type": "number",
+          "optional": true,
+          "json_tag": "alignment"
+        },
+        {
+          "name": "disable_highlight",
+          "type": "boolean",
+          "optional": true,
+          "json_tag": "disable_highlight"
+        },
+        {
+          "name": "font_size",
+          "type": "number",
+          "optional": true,
+          "json_tag": "font_size"
+        },
+        {
+          "name": "position",
+          "type": "VideoSubtitlePosition",
+          "optional": true,
+          "json_tag": "position"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "VideoTemplateGenerateRequest",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "variables",
+          "type": "Record\u003cstring, unknown\u003e",
+          "optional": false,
+          "json_tag": "variables"
+        },
+        {
+          "name": "title",
+          "type": "string",
+          "optional": true,
+          "json_tag": "title"
+        },
+        {
+          "name": "scene_ids",
+          "type": "string[]",
+          "optional": true,
+          "json_tag": "scene_ids"
+        },
+        {
+          "name": "dimension",
+          "type": "VideoTemplateDimension",
+          "optional": true,
+          "json_tag": "dimension"
+        },
+        {
+          "name": "fps",
+          "type": "number",
+          "optional": true,
+          "json_tag": "fps"
+        },
+        {
+          "name": "caption",
+          "type": "boolean",
+          "optional": true,
+          "json_tag": "caption"
+        },
+        {
+          "name": "subtitles",
+          "type": "VideoTemplateSubtitles",
+          "optional": true,
+          "json_tag": "subtitles"
+        },
+        {
+          "name": "reorder_music",
+          "type": "boolean",
+          "optional": true,
+          "json_tag": "reorder_music"
+        },
+        {
+          "name": "keep_text_vertically_centered",
+          "type": "boolean",
+          "optional": true,
+          "json_tag": "keep_text_vertically_centered"
+        },
+        {
+          "name": "include_gif",
+          "type": "boolean",
+          "optional": true,
+          "json_tag": "include_gif"
+        },
+        {
+          "name": "enable_sharing",
+          "type": "boolean",
+          "optional": true,
+          "json_tag": "enable_sharing"
+        },
+        {
+          "name": "folder_id",
+          "type": "string",
+          "optional": true,
+          "json_tag": "folder_id"
+        },
+        {
+          "name": "brand_voice_id",
+          "type": "string",
+          "optional": true,
+          "json_tag": "brand_voice_id"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "VideoBatchSubmitRequest",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "videos",
+          "type": "Record\u003cstring, unknown\u003e[]",
+          "optional": false,
+          "json_tag": "videos"
+        },
+        {
+          "name": "title",
+          "type": "string",
+          "optional": true,
+          "json_tag": "title"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "VideoBatchSubmitResponse",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "batch_id",
+          "type": "string",
+          "optional": false,
+          "json_tag": "batch_id"
+        },
+        {
+          "name": "status",
+          "type": "string",
+          "optional": false,
+          "json_tag": "status"
+        },
+        {
+          "name": "total_items",
+          "type": "number",
+          "optional": false,
+          "json_tag": "total_items"
+        },
+        {
+          "name": "request_id",
+          "type": "string",
+          "optional": false,
+          "json_tag": "request_id"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "VideoBatchStatusQuery",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "limit",
+          "type": "number",
+          "optional": true,
+          "json_tag": "limit"
+        },
+        {
+          "name": "token",
+          "type": "string",
+          "optional": true,
+          "json_tag": "token"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "VideoBatchItemError",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "code",
+          "type": "string",
+          "optional": false,
+          "json_tag": "code"
+        },
+        {
+          "name": "message",
+          "type": "string",
+          "optional": false,
+          "json_tag": "message"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "VideoBatchItem",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "item_index",
+          "type": "number",
+          "optional": false,
+          "json_tag": "item_index"
+        },
+        {
+          "name": "status",
+          "type": "string",
+          "optional": false,
+          "json_tag": "status"
+        },
+        {
+          "name": "video_id",
+          "type": "string",
+          "optional": true,
+          "json_tag": "video_id"
+        },
+        {
+          "name": "video_url",
+          "type": "string",
+          "optional": true,
+          "json_tag": "video_url"
+        },
+        {
+          "name": "error",
+          "type": "VideoBatchItemError",
+          "optional": true,
+          "json_tag": "error"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "VideoBatchStatusResponse",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "batch_id",
+          "type": "string",
+          "optional": false,
+          "json_tag": "batch_id"
+        },
+        {
+          "name": "title",
+          "type": "string",
+          "optional": false,
+          "json_tag": "title"
+        },
+        {
+          "name": "status",
+          "type": "string",
+          "optional": false,
+          "json_tag": "status"
+        },
+        {
+          "name": "total_items",
+          "type": "number",
+          "optional": false,
+          "json_tag": "total_items"
+        },
+        {
+          "name": "counts_by_status",
+          "type": "Record\u003cstring, number\u003e",
+          "optional": false,
+          "json_tag": "counts_by_status"
+        },
+        {
+          "name": "created_at",
+          "type": "number",
+          "optional": false,
+          "json_tag": "created_at"
+        },
+        {
+          "name": "items",
+          "type": "VideoBatchItem[]",
+          "optional": false,
+          "json_tag": "items"
+        },
+        {
+          "name": "has_more",
+          "type": "boolean",
+          "optional": false,
+          "json_tag": "has_more"
+        },
+        {
+          "name": "next_token",
+          "type": "string",
+          "optional": false,
+          "json_tag": "next_token"
+        },
+        {
+          "name": "billing_status",
+          "type": "string",
+          "optional": false,
+          "json_tag": "billing_status"
+        },
+        {
+          "name": "cost_ticks",
+          "type": "number",
+          "optional": false,
+          "json_tag": "cost_ticks"
+        },
+        {
+          "name": "request_id",
+          "type": "string",
+          "optional": false,
+          "json_tag": "request_id"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
       "name": "EmbedRequest",
       "kind": "interface",
       "file": "types.ts",
@@ -3379,6 +5815,208 @@
           "type": "SurrealRAGProviderInfo[]",
           "optional": false,
           "json_tag": "providers"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "Collection",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string",
+          "optional": false,
+          "json_tag": "id"
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "optional": false,
+          "json_tag": "name"
+        },
+        {
+          "name": "description",
+          "type": "string",
+          "optional": true,
+          "json_tag": "description"
+        },
+        {
+          "name": "document_count",
+          "type": "number",
+          "optional": true,
+          "json_tag": "document_count"
+        },
+        {
+          "name": "owner",
+          "type": "string",
+          "optional": true,
+          "json_tag": "owner"
+        },
+        {
+          "name": "provider",
+          "type": "string",
+          "optional": true,
+          "json_tag": "provider"
+        },
+        {
+          "name": "created_at",
+          "type": "string",
+          "optional": true,
+          "json_tag": "created_at"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "CollectionDocument",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "file_id",
+          "type": "string",
+          "optional": false,
+          "json_tag": "file_id"
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "optional": false,
+          "json_tag": "name"
+        },
+        {
+          "name": "size_bytes",
+          "type": "number",
+          "optional": true,
+          "json_tag": "size_bytes"
+        },
+        {
+          "name": "content_type",
+          "type": "string",
+          "optional": true,
+          "json_tag": "content_type"
+        },
+        {
+          "name": "processing_status",
+          "type": "string",
+          "optional": true,
+          "json_tag": "processing_status"
+        },
+        {
+          "name": "document_status",
+          "type": "string",
+          "optional": true,
+          "json_tag": "document_status"
+        },
+        {
+          "name": "indexed",
+          "type": "boolean",
+          "optional": true,
+          "json_tag": "indexed"
+        },
+        {
+          "name": "created_at",
+          "type": "string",
+          "optional": true,
+          "json_tag": "created_at"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "CollectionSearchResult",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "content",
+          "type": "string",
+          "optional": false,
+          "json_tag": "content"
+        },
+        {
+          "name": "score",
+          "type": "number",
+          "optional": true,
+          "json_tag": "score"
+        },
+        {
+          "name": "file_id",
+          "type": "string",
+          "optional": true,
+          "json_tag": "file_id"
+        },
+        {
+          "name": "collection_id",
+          "type": "string",
+          "optional": true,
+          "json_tag": "collection_id"
+        },
+        {
+          "name": "metadata",
+          "type": "Record\u003cstring, unknown\u003e",
+          "optional": true,
+          "json_tag": "metadata"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "CollectionSearchRequest",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "query",
+          "type": "string",
+          "optional": false,
+          "json_tag": "query"
+        },
+        {
+          "name": "collection_ids",
+          "type": "string[]",
+          "optional": false,
+          "json_tag": "collection_ids"
+        },
+        {
+          "name": "mode",
+          "type": "string",
+          "optional": true,
+          "json_tag": "mode"
+        },
+        {
+          "name": "max_results",
+          "type": "number",
+          "optional": true,
+          "json_tag": "max_results"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "CollectionUploadResult",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "file_id",
+          "type": "string",
+          "optional": false,
+          "json_tag": "file_id"
+        },
+        {
+          "name": "filename",
+          "type": "string",
+          "optional": false,
+          "json_tag": "filename"
+        },
+        {
+          "name": "bytes",
+          "type": "number",
+          "optional": true,
+          "json_tag": "bytes"
         }
       ]
     },
@@ -7952,7 +10590,957 @@
       "kind": "enum",
       "file": "types.ts",
       "fields": null
+    },
+    {
+      "sdk": "ts",
+      "name": "Citation",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "url",
+          "type": "string",
+          "optional": false,
+          "json_tag": "url"
+        },
+        {
+          "name": "title",
+          "type": "string",
+          "optional": false,
+          "json_tag": "title"
+        },
+        {
+          "name": "text",
+          "type": "string",
+          "optional": true,
+          "json_tag": "text"
+        },
+        {
+          "name": "index",
+          "type": "number",
+          "optional": true,
+          "json_tag": "index"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "CollectionsListResponse",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "collections",
+          "type": "Collection[]",
+          "optional": false,
+          "json_tag": "collections"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "CollectionDocumentsResponse",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "documents",
+          "type": "CollectionDocument[]",
+          "optional": false,
+          "json_tag": "documents"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "CollectionSearchResponse",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "results",
+          "type": "CollectionSearchResult[]",
+          "optional": false,
+          "json_tag": "results"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "CreateCollectionRequest",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "name",
+          "type": "string",
+          "optional": false,
+          "json_tag": "name"
+        },
+        {
+          "name": "description",
+          "type": "string",
+          "optional": true,
+          "json_tag": "description"
+        },
+        {
+          "name": "provider",
+          "type": "string",
+          "optional": true,
+          "json_tag": "provider"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "DeleteCollectionResponse",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "deleted",
+          "type": "boolean",
+          "optional": false,
+          "json_tag": "deleted"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "ModelsResponse",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "models",
+          "type": "ModelInfo[]",
+          "optional": false,
+          "json_tag": "models"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "RagCorporaResponse",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "corpora",
+          "type": "RagCorpus[]",
+          "optional": false,
+          "json_tag": "corpora"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "ContactResponse",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "status",
+          "type": "string",
+          "optional": false,
+          "json_tag": "status"
+        },
+        {
+          "name": "message",
+          "type": "string",
+          "optional": true,
+          "json_tag": "message"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "ContextOptions",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "count",
+          "type": "number",
+          "optional": true,
+          "json_tag": "count"
+        },
+        {
+          "name": "country",
+          "type": "string",
+          "optional": true,
+          "json_tag": "country"
+        },
+        {
+          "name": "language",
+          "type": "string",
+          "optional": true,
+          "json_tag": "language"
+        },
+        {
+          "name": "freshness",
+          "type": "string",
+          "optional": true,
+          "json_tag": "freshness"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "HeyGenAvatarsResponse",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "avatars",
+          "type": "Avatar[]",
+          "optional": false,
+          "json_tag": "avatars"
+        },
+        {
+          "name": "request_id",
+          "type": "string",
+          "optional": true,
+          "json_tag": "request_id"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "JobAcceptedResponse",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "job_id",
+          "type": "string",
+          "optional": false,
+          "json_tag": "job_id"
+        },
+        {
+          "name": "status",
+          "type": "string",
+          "optional": false,
+          "json_tag": "status"
+        },
+        {
+          "name": "type",
+          "type": "string",
+          "optional": true,
+          "json_tag": "type"
+        },
+        {
+          "name": "job_type",
+          "type": "string",
+          "optional": true,
+          "json_tag": "job_type"
+        },
+        {
+          "name": "request_id",
+          "type": "string",
+          "optional": true,
+          "json_tag": "request_id"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "JobListEntry",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "job_id",
+          "type": "string",
+          "optional": false,
+          "json_tag": "job_id"
+        },
+        {
+          "name": "status",
+          "type": "string",
+          "optional": false,
+          "json_tag": "status"
+        },
+        {
+          "name": "job_type",
+          "type": "string",
+          "optional": true,
+          "json_tag": "job_type"
+        },
+        {
+          "name": "result",
+          "type": "unknown",
+          "optional": true,
+          "json_tag": "result"
+        },
+        {
+          "name": "error",
+          "type": "string",
+          "optional": true,
+          "json_tag": "error"
+        },
+        {
+          "name": "cost_ticks",
+          "type": "number",
+          "optional": false,
+          "json_tag": "cost_ticks"
+        },
+        {
+          "name": "created_at",
+          "type": "string",
+          "optional": true,
+          "json_tag": "created_at"
+        },
+        {
+          "name": "completed_at",
+          "type": "string",
+          "optional": true,
+          "json_tag": "completed_at"
+        },
+        {
+          "name": "request_id",
+          "type": "string",
+          "optional": true,
+          "json_tag": "request_id"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "PostProcess",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "operation_type",
+          "type": "string",
+          "optional": false,
+          "json_tag": "operation_type"
+        },
+        {
+          "name": "fps",
+          "type": "number",
+          "optional": true,
+          "json_tag": "fps"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "RealtimeSessionResponse",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "ephemeral_token",
+          "type": "string",
+          "optional": true,
+          "json_tag": "ephemeral_token"
+        },
+        {
+          "name": "url",
+          "type": "string",
+          "optional": true,
+          "json_tag": "url"
+        },
+        {
+          "name": "signed_url",
+          "type": "string",
+          "optional": true,
+          "json_tag": "signed_url"
+        },
+        {
+          "name": "session_id",
+          "type": "string",
+          "optional": true,
+          "json_tag": "session_id"
+        },
+        {
+          "name": "provider",
+          "type": "string",
+          "optional": true,
+          "json_tag": "provider"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "SearchOptions",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "count",
+          "type": "number",
+          "optional": true,
+          "json_tag": "count"
+        },
+        {
+          "name": "offset",
+          "type": "number",
+          "optional": true,
+          "json_tag": "offset"
+        },
+        {
+          "name": "country",
+          "type": "string",
+          "optional": true,
+          "json_tag": "country"
+        },
+        {
+          "name": "language",
+          "type": "string",
+          "optional": true,
+          "json_tag": "language"
+        },
+        {
+          "name": "freshness",
+          "type": "string",
+          "optional": true,
+          "json_tag": "freshness"
+        },
+        {
+          "name": "safe_search",
+          "type": "string",
+          "optional": true,
+          "json_tag": "safe_search"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "ScrapeTarget",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "name",
+          "type": "string",
+          "optional": false,
+          "json_tag": "name"
+        },
+        {
+          "name": "url",
+          "type": "string",
+          "optional": false,
+          "json_tag": "url"
+        },
+        {
+          "name": "type",
+          "type": "string",
+          "optional": true,
+          "json_tag": "type"
+        },
+        {
+          "name": "selector",
+          "type": "string",
+          "optional": true,
+          "json_tag": "selector"
+        },
+        {
+          "name": "content",
+          "type": "string",
+          "optional": true,
+          "json_tag": "content"
+        },
+        {
+          "name": "notebook",
+          "type": "string",
+          "optional": true,
+          "json_tag": "notebook"
+        },
+        {
+          "name": "recursive",
+          "type": "boolean",
+          "optional": true,
+          "json_tag": "recursive"
+        },
+        {
+          "name": "max_pages",
+          "type": "number",
+          "optional": true,
+          "json_tag": "max_pages"
+        },
+        {
+          "name": "delay_ms",
+          "type": "number",
+          "optional": true,
+          "json_tag": "delay_ms"
+        },
+        {
+          "name": "ingest",
+          "type": "string",
+          "optional": true,
+          "json_tag": "ingest"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "ScrapeRequest",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "targets",
+          "type": "ScrapeTarget[]",
+          "optional": false,
+          "json_tag": "targets"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "ScrapeResponse",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "job_id",
+          "type": "string",
+          "optional": false,
+          "json_tag": "job_id"
+        },
+        {
+          "name": "status",
+          "type": "string",
+          "optional": false,
+          "json_tag": "status"
+        },
+        {
+          "name": "targets",
+          "type": "number",
+          "optional": false,
+          "json_tag": "targets"
+        },
+        {
+          "name": "request_id",
+          "type": "string",
+          "optional": false,
+          "json_tag": "request_id"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "ScreenshotURL",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "url",
+          "type": "string",
+          "optional": false,
+          "json_tag": "url"
+        },
+        {
+          "name": "width",
+          "type": "number",
+          "optional": true,
+          "json_tag": "width"
+        },
+        {
+          "name": "height",
+          "type": "number",
+          "optional": true,
+          "json_tag": "height"
+        },
+        {
+          "name": "full_page",
+          "type": "boolean",
+          "optional": true,
+          "json_tag": "full_page"
+        },
+        {
+          "name": "delay_ms",
+          "type": "number",
+          "optional": true,
+          "json_tag": "delay_ms"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "ScreenshotRequest",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "urls",
+          "type": "ScreenshotURL[]",
+          "optional": false,
+          "json_tag": "urls"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "ScreenshotResult",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "url",
+          "type": "string",
+          "optional": false,
+          "json_tag": "url"
+        },
+        {
+          "name": "base64",
+          "type": "string",
+          "optional": false,
+          "json_tag": "base64"
+        },
+        {
+          "name": "format",
+          "type": "string",
+          "optional": false,
+          "json_tag": "format"
+        },
+        {
+          "name": "width",
+          "type": "number",
+          "optional": false,
+          "json_tag": "width"
+        },
+        {
+          "name": "height",
+          "type": "number",
+          "optional": false,
+          "json_tag": "height"
+        },
+        {
+          "name": "error",
+          "type": "string",
+          "optional": true,
+          "json_tag": "error"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "ScreenshotResponse",
+      "kind": "interface",
+      "file": "types.ts",
+      "fields": [
+        {
+          "name": "screenshots",
+          "type": "ScreenshotResult[]",
+          "optional": false,
+          "json_tag": "screenshots"
+        },
+        {
+          "name": "count",
+          "type": "number",
+          "optional": false,
+          "json_tag": "count"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "VisionContext",
+      "kind": "interface",
+      "file": "vision.ts",
+      "fields": [
+        {
+          "name": "installationType",
+          "type": "string",
+          "optional": true,
+          "json_tag": "installationType"
+        },
+        {
+          "name": "phase",
+          "type": "string",
+          "optional": true,
+          "json_tag": "phase"
+        },
+        {
+          "name": "expectedItems",
+          "type": "string[]",
+          "optional": true,
+          "json_tag": "expectedItems"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "VisionRequest",
+      "kind": "interface",
+      "file": "vision.ts",
+      "fields": [
+        {
+          "name": "imageBase64",
+          "type": "string",
+          "optional": true,
+          "json_tag": "imageBase64"
+        },
+        {
+          "name": "imageUrl",
+          "type": "string",
+          "optional": true,
+          "json_tag": "imageUrl"
+        },
+        {
+          "name": "model",
+          "type": "string",
+          "optional": true,
+          "json_tag": "model"
+        },
+        {
+          "name": "profile",
+          "type": "string",
+          "optional": true,
+          "json_tag": "profile"
+        },
+        {
+          "name": "context",
+          "type": "VisionContext",
+          "optional": true,
+          "json_tag": "context"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "DetectedObject",
+      "kind": "interface",
+      "file": "vision.ts",
+      "fields": [
+        {
+          "name": "label",
+          "type": "string",
+          "optional": false,
+          "json_tag": "label"
+        },
+        {
+          "name": "confidence",
+          "type": "number",
+          "optional": false,
+          "json_tag": "confidence"
+        },
+        {
+          "name": "boundingBox",
+          "type": "[number, number, number, number]",
+          "optional": false,
+          "json_tag": "boundingBox"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "QualityAssessment",
+      "kind": "interface",
+      "file": "vision.ts",
+      "fields": [
+        {
+          "name": "overall",
+          "type": "string",
+          "optional": false,
+          "json_tag": "overall"
+        },
+        {
+          "name": "score",
+          "type": "number",
+          "optional": false,
+          "json_tag": "score"
+        },
+        {
+          "name": "blur",
+          "type": "string",
+          "optional": false,
+          "json_tag": "blur"
+        },
+        {
+          "name": "darkness",
+          "type": "string",
+          "optional": false,
+          "json_tag": "darkness"
+        },
+        {
+          "name": "resolution",
+          "type": "string",
+          "optional": false,
+          "json_tag": "resolution"
+        },
+        {
+          "name": "exposure",
+          "type": "string",
+          "optional": false,
+          "json_tag": "exposure"
+        },
+        {
+          "name": "issues",
+          "type": "string[]",
+          "optional": false,
+          "json_tag": "issues"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "RelevanceCheck",
+      "kind": "interface",
+      "file": "vision.ts",
+      "fields": [
+        {
+          "name": "relevant",
+          "type": "boolean",
+          "optional": false,
+          "json_tag": "relevant"
+        },
+        {
+          "name": "score",
+          "type": "number",
+          "optional": false,
+          "json_tag": "score"
+        },
+        {
+          "name": "expectedItems",
+          "type": "string[]",
+          "optional": false,
+          "json_tag": "expectedItems"
+        },
+        {
+          "name": "foundItems",
+          "type": "string[]",
+          "optional": false,
+          "json_tag": "foundItems"
+        },
+        {
+          "name": "missingItems",
+          "type": "string[]",
+          "optional": false,
+          "json_tag": "missingItems"
+        },
+        {
+          "name": "unexpectedItems",
+          "type": "string[]",
+          "optional": false,
+          "json_tag": "unexpectedItems"
+        },
+        {
+          "name": "notes",
+          "type": "string",
+          "optional": true,
+          "json_tag": "notes"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "TextOverlay",
+      "kind": "interface",
+      "file": "vision.ts",
+      "fields": [
+        {
+          "name": "text",
+          "type": "string",
+          "optional": false,
+          "json_tag": "text"
+        },
+        {
+          "name": "boundingBox",
+          "type": "[number, number, number, number]",
+          "optional": true,
+          "json_tag": "boundingBox"
+        },
+        {
+          "name": "type",
+          "type": "string",
+          "optional": true,
+          "json_tag": "type"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "OcrResult",
+      "kind": "interface",
+      "file": "vision.ts",
+      "fields": [
+        {
+          "name": "text",
+          "type": "string",
+          "optional": true,
+          "json_tag": "text"
+        },
+        {
+          "name": "metadata",
+          "type": "Record\u003cstring, string\u003e",
+          "optional": false,
+          "json_tag": "metadata"
+        },
+        {
+          "name": "overlays",
+          "type": "TextOverlay[]",
+          "optional": false,
+          "json_tag": "overlays"
+        }
+      ]
+    },
+    {
+      "sdk": "ts",
+      "name": "VisionResponse",
+      "kind": "interface",
+      "file": "vision.ts",
+      "fields": [
+        {
+          "name": "caption",
+          "type": "string",
+          "optional": true,
+          "json_tag": "caption"
+        },
+        {
+          "name": "tags",
+          "type": "string[]",
+          "optional": false,
+          "json_tag": "tags"
+        },
+        {
+          "name": "objects",
+          "type": "DetectedObject[]",
+          "optional": false,
+          "json_tag": "objects"
+        },
+        {
+          "name": "quality",
+          "type": "QualityAssessment",
+          "optional": true,
+          "json_tag": "quality"
+        },
+        {
+          "name": "relevance",
+          "type": "RelevanceCheck",
+          "optional": true,
+          "json_tag": "relevance"
+        },
+        {
+          "name": "ocr",
+          "type": "OcrResult",
+          "optional": true,
+          "json_tag": "ocr"
+        },
+        {
+          "name": "model",
+          "type": "string",
+          "optional": false,
+          "json_tag": "model"
+        },
+        {
+          "name": "costTicks",
+          "type": "number",
+          "optional": false,
+          "json_tag": "costTicks"
+        },
+        {
+          "name": "requestId",
+          "type": "string",
+          "optional": false,
+          "json_tag": "requestId"
+        }
+      ]
     }
   ],
-  "updated_at": "2026-03-23T20:44:45.872655+01:00"
+  "updated_at": "2026-07-17T19:42:53.052688+02:00"
 }

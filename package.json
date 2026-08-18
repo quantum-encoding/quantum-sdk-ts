@@ -1,7 +1,7 @@
 {
   "name": "quantum-ai-sdk",
-  "version": "0.7.0",
-  "description": "Cosmic Duck SDK — 100+ AI endpoints across 10 providers",
+  "version": "0.7.1",
+  "description": "Cosmic Duck SDK \u2014 100+ AI endpoints across 10 providers",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "type": "module",

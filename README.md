@@ -1,24 +1,27 @@
-# @quantum-encoding/quantum-sdk
+# quantum-ai-sdk
 
 TypeScript client SDK for the [Quantum AI API](https://api.quantumencoding.ai).
 
 ```bash
-npm install @quantum-encoding/quantum-sdk
+npm install quantum-ai-sdk
 ```
 
 ## Quick Start
 
 ```typescript
-import { QuantumClient } from "@quantum-encoding/quantum-sdk";
+import { QuantumClient, responseText } from "quantum-ai-sdk";
 
 const client = new QuantumClient("qai_k_your_key_here");
-const response = await client.chat("gemini-2.5-flash", "Hello! What is quantum computing?");
-console.log(response.text);
+const response = await client.chat({
+  model: "qwen3.8-max",
+  messages: [{ role: "user", content: "Hello! What is quantum computing?" }],
+});
+console.log(responseText(response));
 ```
 
 ## Features
 
-- 110+ endpoints across 10 AI providers and 45+ models
+- 110+ endpoints across 11 AI providers and 50+ models
 - TypeScript-first with full type definitions
 - ESM package (Node 20+; `package.json` is `"type": "module"`, tsc emits ESM only — no CommonJS build)
 - Streaming via async iterators
@@ -32,7 +35,7 @@ console.log(response.text);
 ### Chat Completion
 
 ```typescript
-import { QuantumClient } from "@quantum-encoding/quantum-sdk";
+import { QuantumClient, responseText } from "quantum-ai-sdk";
 
 const client = new QuantumClient("qai_k_your_key_here");
 
@@ -43,10 +46,33 @@ const response = await client.chat({
     { role: "user", content: "Explain closures in JavaScript" },
   ],
   temperature: 0.7,
-  maxTokens: 1000,
+  max_tokens: 1000,
 });
 
-console.log(response.text);
+console.log(responseText(response));
+```
+
+### Qwen (Alibaba Model Studio)
+
+Hybrid-thinking Qwen models stream their chain of thought alongside the
+answer. `reasoning_effort` maps onto Qwen's `enable_thinking` — `"none"`
+switches thinking off (cheaper, faster); omit it for the model default.
+Lineup: `qwen3.8-max`, `qwen3.7-plus`, `qwen3.6-flash`, `qwen-turbo`,
+`qwen3-coder-plus`, `qwen3-coder-flash`, `qwen-vl-max` (vision).
+
+```typescript
+import { QuantumClient, responseText, responseThinking } from "quantum-ai-sdk";
+
+const client = new QuantumClient("qai_k_your_key_here");
+
+const response = await client.chat({
+  model: "qwen3.8-max",
+  messages: [{ role: "user", content: "Plan a migration from REST to gRPC" }],
+  reasoning_effort: "high",
+});
+
+console.log("thinking:", responseThinking(response));
+console.log("answer:", responseText(response));
 ```
 
 ### Streaming
@@ -58,8 +84,8 @@ const stream = client.chatStream({
 });
 
 for await (const event of stream) {
-  if (event.deltaText) {
-    process.stdout.write(event.deltaText);
+  if (event.event_type === "content_delta" && event.delta) {
+    process.stdout.write(event.delta.text);
   }
 }
 ```
@@ -156,7 +182,7 @@ All SDKs are at v0.4.0 with type parity verified by scanner.
 |----------|---------|---------|
 | Rust | quantum-sdk | `cargo add quantum-sdk` |
 | Go | quantum-sdk | `go get github.com/quantum-encoding/quantum-sdk` |
-| **TypeScript** | @quantum-encoding/quantum-sdk | `npm i @quantum-encoding/quantum-sdk` |
+| **TypeScript** | quantum-ai-sdk | `npm i quantum-ai-sdk` |
 | Python | quantum-sdk | `pip install quantum-sdk` |
 | Swift | QuantumSDK | Swift Package Manager |
 | Kotlin | quantum-sdk | Gradle dependency |

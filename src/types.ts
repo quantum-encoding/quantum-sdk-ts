@@ -55,7 +55,10 @@ export interface ResponseMeta {
 // ── Chat ───────────────────────────────────────────────────────────
 
 export interface ChatRequest {
-  /** Model ID that determines provider routing (e.g. "claude-sonnet-4-6"). */
+  /**
+   * Model ID that determines provider routing (e.g. "claude-sonnet-4-6",
+   * "qwen3.8-max"). See QuantumClient.listModels().
+   */
   model: string;
 
   /** Conversation history. */
@@ -81,7 +84,8 @@ export interface ChatRequest {
 
   /**
    * JSON Schema constraining the response to valid JSON matching it.
-   * Supported by Anthropic, OpenAI, xAI, Gemini, and Vertex AI.
+   * Supported by Anthropic, OpenAI, xAI, Gemini, Vertex AI, and Qwen
+   * (DashScope json_object mode).
    */
   output_schema?: Record<string, unknown>;
 
@@ -89,7 +93,10 @@ export interface ChatRequest {
    * How much chain-of-thought a reasoning model runs before answering:
    * "none", "low", "medium", "high", "xhigh", "max". Omit for the provider
    * default (medium on GPT-5.5+). "max" is Anthropic Opus 4.7+ only and will
-   * 400 on OpenAI. An unknown value is rejected with 400.
+   * 400 on OpenAI. On hybrid-thinking Qwen models (qwen3.8-max,
+   * qwen3.7-plus, qwen3.6-flash, qwen3-coder-*) any value but "none"
+   * enables thinking and "none" disables it. An unknown value is rejected
+   * with 400.
    */
   reasoning_effort?: string;
 

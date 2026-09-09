@@ -5,3 +5,6 @@ dist/
 *.js.map
 !examples/*.ts
 .npmrc
+
+# Generated dependency graph — carries absolute local paths.
+sdk-graph.json

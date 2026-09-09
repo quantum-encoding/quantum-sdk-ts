@@ -180,6 +180,25 @@ export interface ChatUsage {
    * providers that charge no write premium.
    */
   cache_write_tokens?: number;
+  /**
+   * The AUDIO share of input_tokens. Several Gemini models price audio input
+   * above text — 3.3x the text rate on gemini-2.5-flash, 2x on
+   * gemini-3.1-flash-lite — so a turn carrying audio costs more than its
+   * token counts appear to justify.
+   *
+   * Overlaps input_tokens and is never added to it: reconciling a bill
+   * applies the audio rate to these tokens and the text rate to the
+   * remainder. Absent when the turn carried no audio, and absent on models
+   * that price audio at their text rate — gpt-5.x, Claude, and even
+   * gemini-2.5-pro and gemini-3.5-flash charge no premium at all.
+   */
+  audio_tokens?: number;
+  /**
+   * The audio share of cached_tokens, billed at the model's cached AUDIO
+   * rate rather than its cached text rate. Overlaps cached_tokens the way
+   * audio_tokens overlaps input_tokens.
+   */
+  cached_audio_tokens?: number;
   output_tokens: number;
   /**
    * Chain-of-thought tokens, billed at the output rate. Already INSIDE

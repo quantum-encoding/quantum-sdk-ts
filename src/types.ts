@@ -172,8 +172,21 @@ export interface ChatUsage {
   input_tokens: number;
   /** Portion of input_tokens served from a prompt cache (cheaper rate). */
   cached_tokens?: number;
+  /**
+   * Portion of input_tokens that triggered a cache WRITE, billed at a
+   * premium over standard input (Anthropic charges 1.25x base at the
+   * 5-minute TTL). Overlaps input_tokens, so reconciling a bill adds the
+   * premium on the write rate, never the tokens twice. Absent from
+   * providers that charge no write premium.
+   */
+  cache_write_tokens?: number;
   output_tokens: number;
-  /** Chain-of-thought tokens billed on top of output_tokens (Gemini/Vertex). */
+  /**
+   * Chain-of-thought tokens, billed at the output rate. Already INSIDE
+   * output_tokens on the non-streaming envelope; reported beside it on the
+   * streaming usage event, where billed output is
+   * output_tokens + reasoning_tokens.
+   */
   reasoning_tokens?: number;
   cost_ticks: number;
 }

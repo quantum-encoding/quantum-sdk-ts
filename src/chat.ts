@@ -185,12 +185,15 @@ export async function* chatStream(
             event.usage = {
               input_tokens: raw.input_tokens ?? 0,
               // cached_tokens/reasoning_tokens are optional on the wire; the
-              // gateway's Usage SSE event carries reasoning_tokens and the
-              // body ChatUsage also carries cached_tokens. Surface both so
+              // gateway's Usage SSE event carries the same four billed
+              // buckets as the body ChatUsage. Surface all of them so
               // multi-turn billing audits reconcile against the body.
               cached_tokens:
                 (raw as RawStreamEvent & { cached_tokens?: number })
                   .cached_tokens ?? 0,
+              cache_write_tokens:
+                (raw as RawStreamEvent & { cache_write_tokens?: number })
+                  .cache_write_tokens ?? 0,
               output_tokens: raw.output_tokens ?? 0,
               reasoning_tokens:
                 (raw as RawStreamEvent & { reasoning_tokens?: number })

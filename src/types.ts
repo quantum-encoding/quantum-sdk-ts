@@ -872,6 +872,15 @@ export interface MusicResponse {
   model?: string;
   request_id: string;
   cost_ticks: number;
+
+  /**
+   * Length actually generated, when the provider reports it. Music is
+   * duration-metered — Lyria per 30 seconds, ElevenLabs per minute — and
+   * settlement prefers this over the requested length, so it is the basis of
+   * `cost_ticks`. Undefined when the provider reports no length; never 0,
+   * which would claim a measured empty track.
+   */
+  duration_seconds?: number;
 }
 
 export interface SoundEffectRequest {
@@ -1175,11 +1184,55 @@ export interface GeneratedVideo {
   index?: number;
 }
 
+/**
+ * The token breakdown behind a token-billed media charge.
+ *
+ * Every bucket is optional because absent and zero are different claims:
+ * absent means the provider does not report that bucket, zero means it
+ * reported none. Defaulting to 0 would make a per-second video look like a
+ * token-billed one that used no tokens, and would report a 0% cache hit rate
+ * for models that have no cache.
+ */
+export interface MediaTokenUsage {
+  /** Input tokens billed at the prompt rate. */
+  prompt_tokens?: number;
+  /**
+   * Output tokens. For Gemini Omni this is the modality-metered video output,
+   * which is most of the charge.
+   */
+  completion_tokens?: number;
+  /** Reasoning tokens, billed at the output rate. */
+  reasoning_tokens?: number;
+  /** Input tokens served from cache, billed at the cache-read rate. */
+  cached_tokens?: number;
+  /** Provider-reported total across the buckets. */
+  total_tokens?: number;
+}
+
 export interface VideoResponse {
   videos: GeneratedVideo[];
   model: string;
   request_id: string;
   cost_ticks: number;
+
+  /**
+   * Length of the video actually produced, when the provider reports it. This
+   * is the quantity a per-second model is billed on — settlement prefers it
+   * over the requested duration — so it is the basis of `cost_ticks`.
+   * Undefined when the provider reports no length; never 0, which would claim
+   * a measured zero-length video.
+   */
+  duration_seconds?: number;
+
+  /**
+   * The token counts behind a TOKEN-billed video charge. Gemini Omni is the
+   * only such model — it meters output by modality at ~5,792 tokens per second
+   * of 720p — so on that path tokens are the whole cost basis. Undefined for
+   * per-second and per-clip models, whose cost is a function of duration
+   * instead; the gateway sends no all-zero object, because that would assert a
+   * token basis the charge does not have.
+   */
+  usage?: MediaTokenUsage;
 }
 
 // ── HeyGen Video ──────────────────────────────────────────────────

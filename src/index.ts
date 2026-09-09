@@ -62,6 +62,7 @@ export type {
   GeneratedImage,
   ImageEditRequest,
   ImageEditResponse,
+  ImageUsage,
   // Audio
   TTSRequest,
   TTSResponse,
@@ -100,6 +101,7 @@ export type {
   VideoRequest,
   VideoResponse,
   GeneratedVideo,
+  MediaTokenUsage,
   // HeyGen Video
   VideoStudioRequest,
   VideoTranslateRequest,

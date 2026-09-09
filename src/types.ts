@@ -681,11 +681,35 @@ export interface GeneratedImage {
   index?: number;
 }
 
+export interface ImageUsage {
+  prompt_tokens?: number;
+  completion_tokens?: number;
+  total_tokens?: number;
+}
+
 export interface ImageResponse {
   images: GeneratedImage[];
   model: string;
   request_id: string;
   cost_ticks: number;
+
+  /** Post-deduction credit balance in ticks. Absent on responses that omit it. */
+  balance_after?: number;
+
+  /**
+   * The prompt the provider actually generated from, when it rewrote the one
+   * it was given. On a model that rewrites — gpt-image routinely does — this
+   * is the text the picture was made from, so without it a caller cannot
+   * reproduce its own image or explain why the output drifted.
+   */
+  revised_prompt?: string;
+
+  /**
+   * The token counts the charge was computed from, for models priced on tokens
+   * rather than per image. Absent for flat-priced models, whose rate is per
+   * image and checkable without them.
+   */
+  usage?: ImageUsage;
 }
 
 export interface ImageEditRequest {
@@ -712,6 +736,31 @@ export interface ImageEditRequest {
 
   /** Number of edited images to generate. */
   count?: number;
+
+  /** Aspect ratio, e.g. "1:1" or "16:9" (Gemini). */
+  aspect_ratio?: string;
+
+  /**
+   * Resolution tier: "1K", "2K", "4K" (Gemini Pro / Nano Banana 2).
+   * Distinct from `size`, which is OpenAI's pixel enum — the two name
+   * different things and both reach the gateway.
+   */
+  image_size?: string;
+
+  /** Render effort: "auto", "low", "medium", "high" (OpenAI). */
+  quality?: string;
+
+  /** Output container: "png", "jpeg", "webp". */
+  output_format?: string;
+
+  /** Background mode: "auto", "transparent", "opaque" (OpenAI). */
+  background?: string;
+
+  /** "high" preserves faces across an edit (OpenAI). */
+  input_fidelity?: string;
+
+  /** Search grounding (Gemini Pro). */
+  grounding?: boolean;
 }
 
 export interface ImageEditResponse {
@@ -719,6 +768,9 @@ export interface ImageEditResponse {
   model: string;
   request_id: string;
   cost_ticks: number;
+  balance_after?: number;
+  revised_prompt?: string;
+  usage?: ImageUsage;
 }
 
 // ── Audio ──────────────────────────────────────────────────────────

@@ -101,6 +101,20 @@ export interface ChatRequest {
   reasoning_effort?: string;
 
   /**
+   * Pins every turn of one conversation to the same provider prompt-cache
+   * shard. Any stable string the client keeps per conversation — the gateway
+   * hashes it with the caller's identity before forwarding it as OpenAI/xAI
+   * `prompt_cache_key` (or `x-grok-conv-id` on the xAI chat-completions
+   * lane). Omit and it is derived from the caller's identity alone, which
+   * puts all of that user's conversations on one shard. Generate one per
+   * conversation object and reuse it on every turn.
+   *
+   * Honored by POST /qai/v1/chat only: the session endpoint derives its key
+   * from the session ID and ignores a client-supplied one.
+   */
+  prompt_cache_key?: string;
+
+  /**
    * Vertex resource name of a previously created context cache (e.g.
    * "cachedContents/abc123"). Cached content is billed at the cached-read
    * rate and need not be re-sent. Gemini-only; the cache's model must match.
@@ -108,10 +122,23 @@ export interface ChatRequest {
   cached_content?: string;
 
   /**
-   * Provider-specific settings (e.g. Anthropic thinking, xAI search).
+   * Provider-specific settings, keyed by provider. An OPEN map: the value is
+   * any JSON, so a key the gateway documents but this SDK version does not
+   * name still rides through — and so does the flat `region` entry, which a
+   * nested-object-only type could not express.
+   *
    * Example: { anthropic: { thinking: { budget_tokens: 10000 } } }
+   *
+   * Documented keys:
+   * - `openai.reasoning_summary`: "auto" | "concise" | "detailed" | "none"
+   * - `openai.reasoning_mode`: "standard" | "pro"
+   * - `openai.verbosity`: "low" | "medium" | "high"
+   * - `openai.text_format`: "text" | "json_object"
+   * - `xai.native_files`: boolean — send files to xAI natively instead of
+   *   extracting them gateway-side
+   * - `region`: "americas" | "europe" | "asia" (flat, not nested)
    */
-  provider_options?: Record<string, Record<string, unknown>>;
+  provider_options?: Record<string, unknown>;
 }
 
 export interface ChatMessage {
@@ -149,14 +176,39 @@ export interface ChatTool {
 
 export interface ContentBlock {
   type: string;
-  /** Canonical block type (e.g. "text", "thinking", "tool_use"). */
+  /** Canonical block type: "text", "thinking", "reasoning", "tool_use",
+   *  "image", "file" or "file_uri". */
   block_type?: string;
   text?: string;
   id?: string;
   name?: string;
   input?: Record<string, unknown>;
-  /** Gemini thought signature — must be echoed back with tool results. */
+  /**
+   * Gemini thought signature (base64). Rides "tool_use" blocks and, on
+   * Gemini 3, the "text" block of a turn that ended in text. Echo it back on
+   * the corresponding block of the next turn's assistant message. A streaming
+   * turn that ends in text carries it on the "thought_signature" event
+   * instead — see StreamEvent.thought_signature.
+   */
   thought_signature?: string;
+  /**
+   * The provider's own reasoning item, verbatim, on a block of type
+   * "reasoning". Opaque — never inspect or rebuild it. Pass the whole block
+   * back untouched, IN THE POSITION IT ARRIVED IN, on the next turn's
+   * assistant message: its place among the "tool_use" blocks is how the
+   * provider learns where the reasoning sat, and replaying it behind the call
+   * it reasoned about is a different conversation the provider rejects.
+   * Dropping it re-bills the reasoning tokens on every round of a tool loop.
+   *
+   * Distinct from a "thinking" block, which is the human-readable summary of
+   * the same turn: one is for the reader, one is for the wire.
+   */
+  reasoning?: unknown;
+  /**
+   * Model that produced a "reasoning" block. Reasoning state is bound to its
+   * model, so a block is never replayed to a different one.
+   */
+  minted_by?: string;
   /** Base64-encoded content for "image" and "file" blocks. */
   data?: string;
   /** MIME type for "image"/"file" blocks (e.g. "image/png", "application/pdf"). */
@@ -294,7 +346,7 @@ export interface StreamEvent {
   type: string;
   /** Event type (e.g. "content_delta", "thinking_delta", "tool_use_start",
    *  "tool_use_input_delta", "tool_use_complete", "tool_use" (legacy),
-   *  "usage", "error", "done"). */
+   *  "usage", "thought_signature", "error", "done"). */
   event_type?: string;
   delta?: StreamDelta;
   /** Populated for the legacy atomic "tool_use" event. New code should
@@ -308,6 +360,14 @@ export interface StreamEvent {
   /** Populated for "tool_use_complete" events. */
   tool_use_complete?: StreamToolUseComplete;
   usage?: ChatUsage;
+  /**
+   * Gemini 3's signature (base64) for a stream that ended in text, on the
+   * "thought_signature" event the gateway sends just before "done". It also
+   * rides the atomic "tool_use" event. Store it on the assistant block echoed
+   * back next turn — the same value ContentBlock.thought_signature carries on
+   * a non-streaming response.
+   */
+  thought_signature?: string;
   error?: string;
   done?: boolean;
 }
@@ -323,6 +383,8 @@ export interface RawStreamEvent {
   input?: Record<string, unknown>;
   partial_json?: string;
   usage?: ChatUsage;
+  /** Carried by the "thought_signature" event and by atomic "tool_use". */
+  thought_signature?: string;
   message?: string;
   input_tokens?: number;
   output_tokens?: number;
@@ -358,13 +420,13 @@ export interface SessionChatRequest {
   context_config?: ContextConfig;
 
   /**
-   * Reasoning depth: "none", "low", "medium", "high", "xhigh". Omit for the
-   * provider default. Mirrors ChatRequest.reasoning_effort.
+   * Reasoning depth: "none", "low", "medium", "high", "xhigh", "max". Omit
+   * for the provider default. Mirrors ChatRequest.reasoning_effort.
    */
   reasoning_effort?: string;
 
-  /** Provider-specific settings. */
-  provider_options?: Record<string, Record<string, unknown>>;
+  /** Provider-specific settings — the same open map as ChatRequest. */
+  provider_options?: Record<string, unknown>;
 }
 
 export interface SessionToolResult {

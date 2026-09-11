@@ -151,7 +151,12 @@ export async function* chatStream(
 
           case "tool_use":
             // Legacy atomic event — kept for back-compat with backends
-            // that haven't yet shipped the triplet (v0.6+).
+            // that haven't yet shipped the triplet (v0.6+). Gemini rides
+            // its signature here; the client echoes it on the tool_use
+            // block of the next turn.
+            if (raw.thought_signature !== undefined) {
+              event.thought_signature = String(raw.thought_signature);
+            }
             event.tool_use = {
               id: String(raw.id ?? ""),
               name: String(raw.name ?? ""),
@@ -209,6 +214,12 @@ export async function* chatStream(
                   .reasoning_tokens ?? 0,
               cost_ticks: raw.cost_ticks ?? 0,
             } satisfies ChatUsage;
+            break;
+
+          case "thought_signature":
+            // Gemini 3 signs a turn that ended in TEXT; the gateway sends
+            // this just before "done".
+            event.thought_signature = String(raw.thought_signature ?? "");
             break;
 
           case "error":

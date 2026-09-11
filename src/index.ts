@@ -66,6 +66,8 @@ export type {
   // Audio
   TTSRequest,
   TTSResponse,
+  TTSSpeaker,
+  TTSVoiceSettings,
   STTRequest,
   STTResponse,
   MusicRequest,

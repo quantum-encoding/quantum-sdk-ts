@@ -870,28 +870,114 @@ export interface ImageEditResponse {
 // ── Audio ──────────────────────────────────────────────────────────
 
 export interface TTSRequest {
-  /** Model for text-to-speech. */
+  /**
+   * TTS model. Omit for the gateway default,
+   * `gemini-3.1-flash-tts-preview`, paired with the `Laomedeia` voice — so
+   * `text` alone is a complete request. Also `gemini-2.5-flash-preview-tts`,
+   * `gemini-2.5-pro-preview-tts`, OpenAI `openai-tts-1` / `gpt-4o-mini-tts`,
+   * xAI `grok-tts`, ElevenLabs `eleven_*`.
+   */
   model?: string;
 
-  /** Text to speak. */
+  /**
+   * Text to speak. May carry inline audio tags (`[whispers]`, `[excited]`, …)
+   * and, for dialogue, the speaker labels named in `speakers`.
+   */
   text: string;
 
-  /** Voice ID. */
+  /**
+   * Voice id, from `listVoices()`. Gemini's default is `Laomedeia`. Ignored
+   * when `speakers` is set.
+   */
   voice?: string;
 
-  /** Output format (e.g. "mp3", "wav"). */
+  /** Output format: "mp3" (default), "wav", "opus", "pcm". */
   format?: string;
 
-  /** Speaking speed. */
+  /**
+   * Speech rate, 0.7–1.5. xAI only — on Gemini, ask for it in `instructions`
+   * ("at a slow, measured pace").
+   */
   speed?: number;
+
+  /**
+   * Style direction: tone, pace, accent, character. On Gemini this is
+   * prepended to the prompt and is the main way to steer a read, since Gemini
+   * exposes no knobs for any of it. On OpenAI only `gpt-4o-mini-tts` honours
+   * it — `tts-1`/`tts-1-hd` reject the field and the gateway drops it.
+   */
+  instructions?: string;
+
+  /**
+   * BCP-47 language tag, e.g. "en-GB", "es-ES", or "auto". Gemini detects the
+   * language on its own; set this to pin the pronunciation or accent family.
+   * Also drives xAI pronunciation, where an English default sounds robotic on
+   * other languages.
+   */
+  language?: string;
+
+  /** Output sample rate in Hz, e.g. 24000 or 44100. xAI only. */
+  sample_rate?: number;
+
+  /** Output bit rate in bits/sec, e.g. 128000. xAI only. */
+  bit_rate?: number;
+
+  /** ElevenLabs synthesis tuning. Ignored by every other provider. */
+  voice_settings?: TTSVoiceSettings;
+
+  /**
+   * Two-voice dialogue on Gemini TTS. Each entry pairs a speaker label used
+   * in `text` ("Lacey: …") with the prebuilt voice that reads it. **Exactly
+   * two** — the gateway rejects any other count with a 400 — and `voice` is
+   * then ignored.
+   */
+  speakers?: TTSSpeaker[];
+}
+
+/**
+ * ElevenLabs voice tuning. Every field is optional: an absent knob leaves the
+ * provider default alone, which is not the same as sending 0 — 0.0 stability
+ * is a real setting the provider honours.
+ */
+export interface TTSVoiceSettings {
+  /** 0.0–1.0. Lower is more expressive and less consistent. */
+  stability?: number;
+  /** 0.0–1.0. How closely to track the original voice. */
+  similarity_boost?: number;
+  /** 0.0–1.0 style exaggeration. */
+  style?: number;
+  /** Boost resemblance to the original speaker. */
+  use_speaker_boost?: boolean;
+}
+
+/** One voice in a Gemini two-speaker dialogue. */
+export interface TTSSpeaker {
+  /**
+   * The label this speaker's lines carry in the text, e.g. "Lacey" for lines
+   * written as `Lacey: …`.
+   */
+  name: string;
+  /** The prebuilt voice that reads those lines, e.g. "Laomedeia". */
+  voice: string;
 }
 
 export interface TTSResponse {
-  audio_url: string;
+  /** Base64-encoded audio. The audio arrives inline; there is no URL. */
+  audio_base64: string;
+  /** Audio format (e.g. "mp3"). */
   format: string;
-  duration_seconds: number;
-  request_id: string;
+  /** Audio size in bytes. */
+  size_bytes: number;
+  /** Model that generated the audio. */
+  model: string;
+  /** Total cost in ticks. */
   cost_ticks: number;
+  /** Post-deduction credit balance in ticks. */
+  balance_after?: number;
+  /** Unique request identifier. */
+  request_id: string;
+  /** EU AI Act Art 50(2) marking record for this speech. */
+  provenance?: Record<string, unknown>;
 }
 
 export interface STTRequest {
@@ -2452,16 +2538,34 @@ export interface DeleteResponse {
 
 // ── Voice Management ──────────────────────────────────────────────
 
+/** A voice from `GET /qai/v1/voices`. */
 export interface VoiceInfo {
+  /** Voice identifier, passed as `voice` on a TTS request. */
   voice_id: string;
+  /** Human-readable voice name. */
   name: string;
+  /** Voice category, e.g. "premade", "cloned", "professional". */
+  category?: string;
+  /** Provider serving this voice, e.g. "gemini", "openai", "elevenlabs". */
   provider: string;
+  /**
+   * TTS model id to pass back for this voice, so a picker never hardcodes the
+   * provider-to-model mapping. For ElevenLabs, which serves several models
+   * against one voice, this is the standard default and may be overridden.
+   */
+  model?: string;
+  /** Whether this is a cloned or professional voice rather than a prebuilt one. */
+  is_cloned?: boolean;
+  /** Description of the voice's characteristics. */
+  description?: string;
+  /** URL to preview the voice. */
   preview_url?: string;
   [key: string]: unknown;
 }
 
 export interface VoicesResponse {
   voices: VoiceInfo[];
+  request_id?: string;
 }
 
 export interface CloneVoiceRequest {
@@ -2897,34 +3001,18 @@ export interface RemixRequest {
 }
 
 /** Request body for text-to-speech (canonical). */
-export interface TtsRequest {
-  /** TTS model. */
-  model: string;
-  /** Text to synthesise into speech. */
-  text: string;
-  /** Voice to use. */
-  voice?: string;
-  /** Audio format (e.g. "mp3", "wav", "opus"). */
-  output_format?: string;
-  /** Speech rate. */
-  speed?: number;
-}
+/**
+ * Alias of {@link TTSRequest}.
+ *
+ * This was a second, divergent declaration that named the format field
+ * `output_format` — a key `POST /qai/v1/audio/tts` does not read, so a request
+ * built from it lost its format silently. It is an alias now so there is one
+ * TTS request shape in this SDK.
+ */
+export type TtsRequest = TTSRequest;
 
-/** Response from text-to-speech (canonical). */
-export interface TtsResponse {
-  /** Base64-encoded audio data. */
-  audio_base64: string;
-  /** Audio format (e.g. "mp3"). */
-  format: string;
-  /** Audio file size. */
-  size_bytes: number;
-  /** Model that generated the audio. */
-  model: string;
-  /** Total cost in ticks. */
-  cost_ticks: number;
-  /** Unique request identifier. */
-  request_id: string;
-}
+/** Alias of {@link TTSResponse}. */
+export type TtsResponse = TTSResponse;
 
 /** Request body for speech-to-text (canonical). */
 export interface SttRequest {

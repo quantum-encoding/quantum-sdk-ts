@@ -2041,17 +2041,6 @@ export interface Collection {
   created_at?: string;
 }
 
-export interface CollectionDocument {
-  file_id: string;
-  name: string;
-  size_bytes?: number;
-  content_type?: string;
-  processing_status?: string;
-  document_status?: string;
-  indexed?: boolean;
-  created_at?: string;
-}
-
 export interface CollectionSearchResult {
   content: string;
   score?: number;
@@ -3341,11 +3330,6 @@ export interface Citation {
 /** Response from listing RAG collections. */
 export interface CollectionsListResponse {
   collections: Collection[];
-}
-
-/** Response from listing documents in a collection. */
-export interface CollectionDocumentsResponse {
-  documents: CollectionDocument[];
 }
 
 /** Response from searching a collection. */

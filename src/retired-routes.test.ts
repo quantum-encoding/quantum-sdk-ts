@@ -1,9 +1,9 @@
-// The client surface for gateway routes that no longer exist, and the one
+// The client surface for gateway routes that do not exist, and the one
 // photo-avatar body the gateway still accepts.
 //
-// The gateway answers 404 on the user batch, documents, search answer and
-// HeyGen studio routes (listed in CHANGELOG.md), so the client must not offer
-// a method that can only fail. POST /qai/v1/video/photo-avatar takes the
+// The gateway answers 404 on the user batch, documents, search answer, HeyGen
+// studio, compute billing and collection-documents routes (listed in
+// CHANGELOG.md), so the client must not offer a method that can only fail. POST /qai/v1/video/photo-avatar takes the
 // talking-photo body only: photo_base64 + script.
 //
 // Tests import the compiled dist/ output (the build runs first in the test
@@ -14,6 +14,7 @@ import assert from "node:assert/strict";
 
 import { QuantumClient } from "../dist/client.js";
 import * as sdk from "../dist/index.js";
+import * as rag from "../dist/rag.js";
 
 const RETIRED_METHODS = [
   "batchSubmit",
@@ -25,6 +26,7 @@ const RETIRED_METHODS = [
   "processDocument",
   "searchAnswer",
   "videoStudio",
+  "computeBilling",
 ];
 
 test("the client offers no method for a retired route", () => {
@@ -41,6 +43,13 @@ test("the client offers no method for a retired route", () => {
       `the package root exports ${name}`,
     );
   }
+});
+
+test("the rag module has no collection-documents function", () => {
+  assert.equal(
+    (rag as Record<string, unknown>).collectionsDocuments,
+    undefined,
+  );
 });
 
 test("videoPhotoAvatar sends the talking-photo body and decodes the job", async () => {

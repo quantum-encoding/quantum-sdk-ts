@@ -22,9 +22,6 @@ export type { RealtimeConfig, RealtimeEvent, RealtimeSession } from "./realtime.
 // ── Contact (standalone, no auth required) ──────────────────────────
 export { contact } from "./contact.js";
 
-// ── Compute Billing (types + standalone function) ───────────────────
-export type { BillingRequest, BillingEntry, BillingResponse } from "./compute-billing.js";
-
 // ── Types ───────────────────────────────────────────────────────────
 export type {
   ClientOptions,
@@ -223,7 +220,6 @@ export type {
   // Cross-SDK parity
   Citation,
   CollectionsListResponse,
-  CollectionDocumentsResponse,
   CollectionSearchResponse,
   CreateCollectionRequest,
   DeleteCollectionResponse,

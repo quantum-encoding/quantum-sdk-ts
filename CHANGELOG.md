@@ -2,9 +2,10 @@
 
 ## Unreleased
 
-The client stops offering methods for gateway routes that were removed on
-10 Nov 2026. Each of these routes now answers 404, so every call to these
-methods already failed.
+The client stops offering methods for gateway routes that do not exist:
+routes the gateway removed on 10 Nov 2026, and two it has never served. Each
+of these routes answers 404, so every call to these methods already failed.
+Every path the SDK still calls matches a route the gateway serves.
 
 ### Removed — BREAKING
 - **User batch** (`POST /qai/v1/batch`, `POST /qai/v1/batch/jsonl`,
@@ -26,6 +27,14 @@ methods already failed.
   `SearchMessage`. `webSearch()` and `searchContext()` are unaffected.
 - **HeyGen studio** (`POST /qai/v1/video/studio`): `videoStudio()`; types
   `VideoStudioRequest`, `StudioClip`, `StudioVideoRequest`.
+- **Compute billing** (`POST /qai/v1/compute/billing`, never served):
+  `computeBilling()` and the `src/compute-billing.ts` module; types
+  `BillingRequest`, `BillingEntry`, `BillingResponse`. The other compute
+  methods are unaffected.
+- **Collection documents** (`GET /qai/v1/rag/collections/{id}/documents`,
+  never served): the `collectionsDocuments()` function in `src/rag.ts`; types
+  `CollectionDocument`, `CollectionDocumentsResponse`. The other collection
+  functions are unaffected.
 
 ### Changed — BREAKING
 - **`PhotoAvatarRequest` is the talking-photo body.** `POST

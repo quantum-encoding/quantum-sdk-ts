@@ -8,7 +8,6 @@ import type {
   SurrealRAGSearchRequest,
   SurrealRAGSearchResponse,
   Collection,
-  CollectionDocument,
   CollectionSearchRequest,
   CollectionSearchResult,
   CollectionUploadResult,
@@ -113,11 +112,6 @@ export async function collectionsGet(client: QuantumClient, id: string): Promise
 
 export async function collectionsDelete(client: QuantumClient, id: string): Promise<void> {
   await client._doJSON("DELETE", `/qai/v1/rag/collections/${id}`, undefined);
-}
-
-export async function collectionsDocuments(client: QuantumClient, collectionId: string): Promise<CollectionDocument[]> {
-  const { data } = await client._doJSON<{ documents: CollectionDocument[] }>("GET", `/qai/v1/rag/collections/${collectionId}/documents`, undefined);
-  return data.documents;
 }
 
 export async function collectionsSearch(client: QuantumClient, req: CollectionSearchRequest): Promise<CollectionSearchResult[]> {

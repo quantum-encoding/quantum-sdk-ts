@@ -48,7 +48,6 @@ import {
 } from "./account.js";
 import { createJob, getJob, pollJob, listJobs, chatJob, streamJob, generate3D } from "./jobs.js";
 import { webSearch, searchContext } from "./search.js";
-import type { BillingRequest, BillingResponse } from "./compute-billing.js";
 import { createKey, listKeys, revokeKey } from "./keys.js";
 import {
   computeTemplates,
@@ -810,12 +809,6 @@ export class QuantumClient {
   /** Reset the inactivity timer on a compute instance. */
   async computeKeepalive(id: string): Promise<StatusResponse> {
     return computeKeepalive(this, id);
-  }
-
-  /** Query compute billing from BigQuery. */
-  async computeBilling(req: BillingRequest): Promise<BillingResponse> {
-    const { data } = await this._doJSON<BillingResponse>("POST", "/qai/v1/compute/billing", req);
-    return data;
   }
 
   // ── Voice Management ──────────────────────────────────────────────

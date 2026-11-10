@@ -5,7 +5,8 @@
 The client stops offering methods for gateway routes that do not exist:
 routes the gateway removed on 10 Nov 2026, and two it has never served. Each
 of these routes answers 404, so every call to these methods already failed.
-Every path the SDK still calls matches a route the gateway serves.
+The types for the scraper routes, retired on 31 Aug 2026, go too. Every path
+the SDK still calls matches a route the gateway serves.
 
 ### Removed — BREAKING
 - **User batch** (`POST /qai/v1/batch`, `POST /qai/v1/batch/jsonl`,

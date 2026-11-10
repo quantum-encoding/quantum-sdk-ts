@@ -1434,21 +1434,51 @@ export interface PhotoAvatarRequest {
   aspect_ratio?: string;
 }
 
-export interface DigitalTwinRequest {
-  /** Base64-encoded training video. */
-  video?: string;
+/**
+ * Request body for creating a digital twin from training footage
+ * (POST /qai/v1/video/digital-twin). This trains an avatar; it does not
+ * render a video. The gateway holds a flat fee before decoding the body
+ * and releases it on every error path, so a rejected request costs nothing.
+ */
+export interface DigitalTwinCreateRequest {
+  /** Display name for the twin. */
+  name: string;
 
-  /** Digital twin / avatar ID. */
+  /** Public URL of the training footage. */
+  video_url: string;
+
+  /** Add the look to an existing avatar group instead of creating one. */
+  avatar_group_id?: string;
+}
+
+/** Response from creating a digital twin (synchronous, not a job). */
+export interface DigitalTwinCreateResponse {
+  /** Echo of the twin's name. */
+  name: string;
+
+  /**
+   * Hosted consent page the subject of the footage must complete before the
+   * twin trains. Valid 24h; empty when the gateway could not mint one.
+   */
+  consent_url: string;
+
+  /** Billing model label ("heygen-digital-twin"). */
+  model: string;
+
+  /** Avatar group holding the twin; absent when HeyGen returned no group. */
+  group_id?: string;
+
+  /** Group training status. */
+  status?: string;
+
+  /** Consent status of the group. */
+  consent_status?: string;
+
+  /** Look id of the twin; absent when HeyGen returned no look. */
   avatar_id?: string;
 
-  /** Script text. */
-  script?: string;
-
-  /** Voice ID. */
-  voice_id?: string;
-
-  /** Aspect ratio. */
-  aspect_ratio?: string;
+  /** Unique request identifier. */
+  request_id: string;
 }
 
 export interface AsyncJobResponse {

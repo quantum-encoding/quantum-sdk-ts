@@ -3,6 +3,7 @@
 //   - Audio sounds search
 //   - Video template detail / generate (async job)
 //   - Video batch submit / status
+//   - Digital twin creation (synchronous)
 //
 // The gateway is mocked via the ClientOptions.fetch injection point — no
 // network calls are made. Run with: npm test
@@ -590,4 +591,94 @@ test("upstream 410 provider_error passthrough (closed text stream)", async () =>
       return true;
     },
   );
+});
+
+// ── Digital twin creation ───────────────────────────────────────────
+
+test("videoDigitalTwin: POSTs exactly name + video_url as JSON", async () => {
+  const { client, captured } = mockClient(200, {
+    name: "Rich",
+    consent_url: "https://app.heygen.com/consent/abc",
+    model: "heygen-digital-twin",
+    request_id: "req_twin_1",
+    group_id: "grp_1",
+    status: "pending",
+    consent_status: "not_started",
+    avatar_id: "look_1",
+  });
+
+  const resp = await client.videoDigitalTwin({
+    name: "Rich",
+    video_url: "https://example.com/train.mp4",
+  });
+
+  assert.equal(captured.method, "POST");
+  assert.equal(
+    captured.url,
+    "https://api.quantumencoding.ai/qai/v1/video/digital-twin",
+  );
+  assert.equal(captured.headers["Content-Type"], "application/json");
+  assert.deepEqual(Object.keys(captured.body as object).sort(), [
+    "name",
+    "video_url",
+  ]);
+  assert.deepEqual(captured.body, {
+    name: "Rich",
+    video_url: "https://example.com/train.mp4",
+  });
+
+  assert.equal(resp.name, "Rich");
+  assert.equal(resp.consent_url, "https://app.heygen.com/consent/abc");
+  assert.equal(resp.model, "heygen-digital-twin");
+  assert.equal(resp.group_id, "grp_1");
+  assert.equal(resp.status, "pending");
+  assert.equal(resp.consent_status, "not_started");
+  assert.equal(resp.avatar_id, "look_1");
+  assert.equal(resp.request_id, "req_twin_1");
+  // A synchronous create, not an async job envelope.
+  assert.equal((resp as unknown as Record<string, unknown>).job_id, undefined);
+});
+
+test("videoDigitalTwin: avatar_group_id is sent when set", async () => {
+  const { client, captured } = mockClient(200, {
+    name: "Rich",
+    consent_url: "",
+    model: "heygen-digital-twin",
+    request_id: "req_twin_2",
+  });
+
+  await client.videoDigitalTwin({
+    name: "Rich",
+    video_url: "https://example.com/train.mp4",
+    avatar_group_id: "grp_existing",
+  });
+
+  assert.deepEqual(Object.keys(captured.body as object).sort(), [
+    "avatar_group_id",
+    "name",
+    "video_url",
+  ]);
+  assert.equal(
+    (captured.body as Record<string, unknown>).avatar_group_id,
+    "grp_existing",
+  );
+});
+
+test("videoDigitalTwin: no group or look leaves those fields absent; request_id falls back to the header", async () => {
+  const { client } = mockClient(
+    200,
+    { name: "Rich", consent_url: "", model: "heygen-digital-twin" },
+    { "X-QAI-Request-Id": "req_from_header" },
+  );
+
+  const resp = await client.videoDigitalTwin({
+    name: "Rich",
+    video_url: "https://example.com/train.mp4",
+  });
+
+  assert.equal(resp.group_id, undefined);
+  assert.equal(resp.avatar_id, undefined);
+  assert.equal(resp.status, undefined);
+  assert.equal(resp.consent_url, "");
+  assert.equal(resp.request_id, "req_from_header");
 });

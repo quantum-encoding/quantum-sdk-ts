@@ -101,7 +101,8 @@ import type {
   DevProgramApplyResponse,
   DialogueRequest,
   DialogueResponse,
-  DigitalTwinRequest,
+  DigitalTwinCreateRequest,
+  DigitalTwinCreateResponse,
   DubRequest,
   DubResponse,
   EmbedRequest,
@@ -479,10 +480,14 @@ export class QuantumClient {
     return videoPhotoAvatar(this, req);
   }
 
-  /** Create a digital twin via HeyGen. Returns an async job. */
+  /**
+   * Create a digital twin from training footage (HeyGen). Synchronous, not
+   * a job: the subject of the footage must complete `consent_url` before
+   * the twin trains.
+   */
   async videoDigitalTwin(
-    req: DigitalTwinRequest,
-  ): Promise<AsyncJobResponse> {
+    req: DigitalTwinCreateRequest,
+  ): Promise<DigitalTwinCreateResponse> {
     return videoDigitalTwin(this, req);
   }
 

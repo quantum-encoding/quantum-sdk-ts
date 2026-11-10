@@ -2,7 +2,8 @@ import type { QuantumClient } from "./client.js";
 import type {
   AsyncJobResponse,
   AvatarsResponse,
-  DigitalTwinRequest,
+  DigitalTwinCreateRequest,
+  DigitalTwinCreateResponse,
   HeyGenTemplatesResponse,
   HeyGenVoicesResponse,
   JobAcceptedResponse,
@@ -82,18 +83,24 @@ export async function videoPhotoAvatar(
 }
 
 /**
- * Create a digital twin via HeyGen. Returns an async job.
+ * Create a digital twin from training footage (HeyGen). Synchronous, not a
+ * job: the subject of the footage must complete `consent_url` before the
+ * twin trains.
  * @internal — called by QuantumClient.videoDigitalTwin()
  */
 export async function videoDigitalTwin(
   client: QuantumClient,
-  req: DigitalTwinRequest,
-): Promise<AsyncJobResponse> {
-  const { data } = await client._doJSON<AsyncJobResponse>(
+  req: DigitalTwinCreateRequest,
+): Promise<DigitalTwinCreateResponse> {
+  const { data, meta } = await client._doJSON<DigitalTwinCreateResponse>(
     "POST",
     "/qai/v1/video/digital-twin",
     req,
   );
+
+  if (!data.request_id) {
+    data.request_id = meta.requestId;
+  }
 
   return data;
 }

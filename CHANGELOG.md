@@ -42,6 +42,18 @@ the SDK still calls matches a route the gateway serves.
   `ScreenshotResponse`. No SDK method used them.
 
 ### Changed — BREAKING
+- **`videoDigitalTwin()` sends the body the route reads and returns what it
+  writes.** `POST /qai/v1/video/digital-twin` creates a twin from training
+  footage: it reads `{ name, video_url, avatar_group_id? }` and answers
+  synchronously with `{ name, consent_url, model, request_id, group_id?,
+  status?, consent_status?, avatar_id? }`. The method took
+  `DigitalTwinRequest` (`video`, `avatar_id`, `script`, `voice_id`,
+  `aspect_ratio`), a body the gateway rejects for lacking `video_url`, and
+  typed the reply as an `AsyncJobResponse` job the route never returns. It now
+  takes the new `DigitalTwinCreateRequest` and returns the new
+  `DigitalTwinCreateResponse` (both exported from the package root), matching
+  the Rust SDK; `DigitalTwinRequest` is gone. The subject of the footage must complete `consent_url` before the
+  twin trains.
 - **`PhotoAvatarRequest` is the talking-photo body.** `POST
   /qai/v1/video/photo-avatar` accepts only `photo_base64` + `script`
   (optionally `voice_id`, `aspect_ratio`) and answers 400 to anything else.

@@ -104,7 +104,8 @@ export type {
   // HeyGen Video
   VideoTranslateRequest,
   PhotoAvatarRequest,
-  DigitalTwinRequest,
+  DigitalTwinCreateRequest,
+  DigitalTwinCreateResponse,
   AsyncJobResponse,
   AvatarsResponse,
   HeyGenAvatar,

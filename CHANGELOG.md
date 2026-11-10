@@ -35,6 +35,10 @@ Every path the SDK still calls matches a route the gateway serves.
   never served): the `collectionsDocuments()` function in `src/rag.ts`; types
   `CollectionDocument`, `CollectionDocumentsResponse`. The other collection
   functions are unaffected.
+- **Scraper types** (`/qai/v1/scraper/*`, retired by the gateway on
+  31 Aug 2026): `ScrapeTarget`, `ScrapeRequest`, `ScrapeResponse`,
+  `ScreenshotURL`, `ScreenshotRequest`, `ScreenshotResult`,
+  `ScreenshotResponse`. No SDK method used them.
 
 ### Changed — BREAKING
 - **`PhotoAvatarRequest` is the talking-photo body.** `POST

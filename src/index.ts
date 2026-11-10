@@ -240,14 +240,6 @@ export type {
   PostProcess,
   RealtimeSessionResponse,
   SearchOptions,
-  // Scraper
-  ScrapeTarget,
-  ScrapeRequest,
-  ScrapeResponse,
-  ScreenshotURL,
-  ScreenshotRequest,
-  ScreenshotResult,
-  ScreenshotResponse,
 } from "./types.js";
 
 // ── Vision ──────────────────────────────────────────────────────────

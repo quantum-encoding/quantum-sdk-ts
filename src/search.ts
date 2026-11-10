@@ -4,8 +4,6 @@ import type {
   WebSearchResponse,
   LLMContextRequest,
   LLMContextResponse,
-  SearchAnswerRequest,
-  SearchAnswerResponse,
 } from "./types.js";
 
 /**
@@ -35,22 +33,6 @@ export async function searchContext(
   const { data } = await client._doJSON<LLMContextResponse>(
     "POST",
     "/qai/v1/search/context",
-    req,
-  );
-  return data;
-}
-
-/**
- * Get a grounded AI answer with citations.
- * @internal
- */
-export async function searchAnswer(
-  client: QuantumClient,
-  req: SearchAnswerRequest,
-): Promise<SearchAnswerResponse> {
-  const { data } = await client._doJSON<SearchAnswerResponse>(
-    "POST",
-    "/qai/v1/search/answer",
     req,
   );
   return data;

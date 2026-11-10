@@ -20,7 +20,6 @@ import {
 } from "./audio.js";
 import {
   generateVideo,
-  videoStudio,
   videoTranslate,
   videoPhotoAvatar,
   videoDigitalTwin,
@@ -39,7 +38,6 @@ import {
   cancelAvatarRealtimeSession,
 } from "./avatar.js";
 import { embed } from "./embeddings.js";
-import { extractDocument, chunkDocument, processDocument } from "./documents.js";
 import { ragSearch, ragCorpora, surrealRagSearch, surrealRagProviders } from "./rag.js";
 import { listModels, getPricing } from "./models.js";
 import {
@@ -49,7 +47,7 @@ import {
   accountPricing,
 } from "./account.js";
 import { createJob, getJob, pollJob, listJobs, chatJob, streamJob, generate3D } from "./jobs.js";
-import { webSearch, searchContext, searchAnswer } from "./search.js";
+import { webSearch, searchContext } from "./search.js";
 import type { BillingRequest, BillingResponse } from "./compute-billing.js";
 import { createKey, listKeys, revokeKey } from "./keys.js";
 import {
@@ -64,7 +62,6 @@ import {
 import { listVoices, cloneVoice, deleteVoice } from "./voices.js";
 import { realtimeConnect, realtimeConnectDirect, realtimeSession, realtimeEnd, realtimeRefresh, RealtimeSender, RealtimeReceiver } from "./realtime.js";
 import type { RealtimeConfig, RealtimeSession } from "./realtime.js";
-import { batchSubmit, batchSubmitJsonl, batchJobs, batchJob } from "./batch.js";
 import { creditPacks, creditPurchase, creditBalance, creditTiers, devProgramApply } from "./credits.js";
 import { authApple } from "./auth.js";
 import type {
@@ -88,15 +85,8 @@ import type {
   AvatarRealtimeTextResponse,
   AvatarsResponse,
   BalanceResponse,
-  BatchJobInfo,
-  BatchJobsResponse,
-  BatchJsonlResponse,
-  BatchSubmitRequest,
-  BatchSubmitResponse,
   ChatRequest,
   ChatResponse,
-  ChunkDocumentRequest,
-  ChunkDocumentResponse,
   ClientOptions,
   CloneVoiceRequest,
   CloneVoiceResponse,
@@ -113,8 +103,6 @@ import type {
   DialogueRequest,
   DialogueResponse,
   DigitalTwinRequest,
-  DocumentRequest,
-  DocumentResponse,
   DubRequest,
   DubResponse,
   EmbedRequest,
@@ -138,8 +126,6 @@ import type {
   WebSearchResponse,
   LLMContextRequest,
   LLMContextResponse,
-  SearchAnswerRequest,
-  SearchAnswerResponse,
   RemeshRequest,
   RetextureRequest,
   RigRequest,
@@ -153,8 +139,6 @@ import type {
   MusicResponse,
   PhotoAvatarRequest,
   PricingInfo,
-  ProcessDocumentRequest,
-  ProcessDocumentResponse,
   ProvisionRequest,
   ProvisionResponse,
   RAGCorpus,
@@ -191,7 +175,6 @@ import type {
   VideoBatchSubmitResponse,
   VideoRequest,
   VideoResponse,
-  VideoStudioRequest,
   VideoTemplateDetailResponse,
   VideoTemplateGenerateRequest,
   VideoTranslateRequest,
@@ -480,11 +463,6 @@ export class QuantumClient {
     return generateVideo(this, req);
   }
 
-  /** Create a talking-head video via HeyGen Studio. Returns an async job. */
-  async videoStudio(req: VideoStudioRequest): Promise<AsyncJobResponse> {
-    return videoStudio(this, req);
-  }
-
   /** Submit a video translation job via HeyGen. Returns an async job. */
   async videoTranslate(
     req: VideoTranslateRequest,
@@ -492,7 +470,10 @@ export class QuantumClient {
     return videoTranslate(this, req);
   }
 
-  /** Create a photo avatar via HeyGen. Returns an async job. */
+  /**
+   * Animate a photo into a talking-photo video that speaks `script` (HeyGen).
+   * Returns an async job; poll it via the Jobs API.
+   */
   async videoPhotoAvatar(
     req: PhotoAvatarRequest,
   ): Promise<AsyncJobResponse> {
@@ -626,27 +607,6 @@ export class QuantumClient {
     return embed(this, req);
   }
 
-  // ── Documents ─────────────────────────────────────────────────────
-
-  /** Extract text content from a document (PDF, image, etc.). */
-  async extractDocument(req: DocumentRequest): Promise<DocumentResponse> {
-    return extractDocument(this, req);
-  }
-
-  /** Chunk a document into smaller pieces for embedding or processing. */
-  async chunkDocument(
-    req: ChunkDocumentRequest,
-  ): Promise<ChunkDocumentResponse> {
-    return chunkDocument(this, req);
-  }
-
-  /** Process a document with extraction + optional instructions. */
-  async processDocument(
-    req: ProcessDocumentRequest,
-  ): Promise<ProcessDocumentResponse> {
-    return processDocument(this, req);
-  }
-
   // ── RAG ───────────────────────────────────────────────────────────
 
   /** Search Vertex AI RAG corpora for relevant documentation. */
@@ -681,11 +641,6 @@ export class QuantumClient {
   /** Get LLM-optimized content chunks for grounding. */
   async searchContext(req: LLMContextRequest): Promise<LLMContextResponse> {
     return searchContext(this, req);
-  }
-
-  /** Get a grounded AI answer with citations. */
-  async searchAnswer(req: SearchAnswerRequest): Promise<SearchAnswerResponse> {
-    return searchAnswer(this, req);
   }
 
   // ── Models ────────────────────────────────────────────────────────
@@ -914,28 +869,6 @@ export class QuantumClient {
   /** Refresh an ephemeral token for long sessions (>4 min). */
   async realtimeRefresh(sessionId: string): Promise<string> {
     return realtimeRefresh(this, sessionId);
-  }
-
-  // ── Batch Processing ──────────────────────────────────────────────
-
-  /** Submit a batch of jobs for processing. */
-  async batchSubmit(req: BatchSubmitRequest): Promise<BatchSubmitResponse> {
-    return batchSubmit(this, req);
-  }
-
-  /** Submit a batch of jobs using JSONL format. */
-  async batchSubmitJsonl(jsonl: string): Promise<BatchJsonlResponse> {
-    return batchSubmitJsonl(this, jsonl);
-  }
-
-  /** List all batch jobs for the account. */
-  async batchJobs(): Promise<BatchJobsResponse> {
-    return batchJobs(this);
-  }
-
-  /** Get the status and result of a single batch job. */
-  async batchJob(id: string): Promise<BatchJobInfo> {
-    return batchJob(this, id);
   }
 
   // ── Credits ───────────────────────────────────────────────────────

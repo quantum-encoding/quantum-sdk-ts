@@ -1404,27 +1404,6 @@ export interface VideoResponse {
 
 // ── HeyGen Video ──────────────────────────────────────────────────
 
-export interface VideoStudioRequest {
-  /** Avatar ID. */
-  avatar_id: string;
-
-  /** Script text. */
-  script: string;
-
-  /** Voice ID (optional). */
-  voice_id?: string;
-
-  /** Clips for multi-scene videos. */
-  clips?: StudioClip[];
-}
-
-export interface StudioClip {
-  avatar_id: string;
-  script: string;
-  voice_id?: string;
-  background?: string;
-}
-
 export interface VideoTranslateRequest {
   /** URL of the video to translate. */
   video_url: string;
@@ -1436,15 +1415,17 @@ export interface VideoTranslateRequest {
   source_lang?: string;
 }
 
+/**
+ * Talking-photo request for POST /qai/v1/video/photo-avatar: the photo is
+ * animated speaking `script`. The gateway rejects a body without both
+ * `photo_base64` and `script` with a 400.
+ */
 export interface PhotoAvatarRequest {
-  /** Base64-encoded photo image. */
-  image?: string;
+  /** Base64-encoded photo. */
+  photo_base64: string;
 
-  /** Base64-encoded photo (canonical). */
-  photo_base64?: string;
-
-  /** Script text for the avatar to speak. */
-  script?: string;
+  /** Script text for the photo to speak. */
+  script: string;
 
   /** Voice ID. */
   voice_id?: string;
@@ -1982,80 +1963,6 @@ export interface EmbedResponse {
   cost_ticks: number;
 }
 
-// ── Documents ─────────────────────────────────────────────────────
-
-export interface DocumentRequest {
-  /** Document content (base64 or URL). */
-  content?: string;
-
-  /** Base64-encoded file content. */
-  file_base64?: string;
-
-  /** Original filename (helps determine the file type). */
-  filename?: string;
-
-  /** Content type (e.g. "pdf", "image", "url"). */
-  type?: string;
-
-  /** Desired output format (e.g. "markdown", "text"). */
-  output_format?: string;
-
-  /** Model for extraction. */
-  model?: string;
-}
-
-export interface DocumentResponse {
-  text?: string;
-  /** Extracted text content. */
-  content?: string;
-  /** Format of the extracted content (e.g. "markdown"). */
-  format?: string;
-  /** Provider-specific metadata about the document. */
-  meta?: Record<string, unknown>;
-  pages?: number;
-  request_id: string;
-  cost_ticks: number;
-}
-
-export interface ChunkDocumentRequest {
-  /** Text to chunk. */
-  text: string;
-
-  /** Target chunk size in tokens. */
-  chunk_size?: number;
-}
-
-export interface DocumentChunk {
-  text: string;
-  index: number;
-  tokens?: number;
-  /** Estimated token count. */
-  token_count?: number;
-}
-
-export interface ChunkDocumentResponse {
-  chunks: DocumentChunk[];
-  request_id: string;
-  cost_ticks: number;
-}
-
-export interface ProcessDocumentRequest {
-  /** Text to process. */
-  text: string;
-
-  /** Processing instructions. */
-  instructions?: string;
-
-  /** Model for processing. */
-  model?: string;
-}
-
-export interface ProcessDocumentResponse {
-  result: string;
-  request_id: string;
-  cost_ticks: number;
-}
-
 // ── RAG ───────────────────────────────────────────────────────────
 
 export interface RAGSearchRequest {
@@ -2381,30 +2288,6 @@ export interface LLMContextResponse {
   query?: string;
 }
 
-export interface SearchAnswerRequest {
-  messages: { role: string; content: string }[];
-  model?: string;
-}
-
-export interface SearchAnswerChoice {
-  index?: number;
-  message?: { role: string; content: string };
-  finish_reason?: string;
-}
-
-export interface SearchCitation {
-  url?: string;
-  title?: string;
-  snippet?: string;
-}
-
-export interface SearchAnswerResponse {
-  choices: SearchAnswerChoice[];
-  model?: string;
-  id?: string;
-  citations?: SearchCitation[];
-}
-
 // ── API Keys ──────────────────────────────────────────────────────
 
 export interface CreateKeyRequest {
@@ -2648,65 +2531,6 @@ export interface ContactRequest {
 
   /** Message body. */
   message: string;
-}
-
-// ── Batch Processing ──────────────────────────────────────────────
-
-/** A single job in a batch submission. */
-export interface BatchJobInput {
-  /** Model to use for this job. */
-  model: string;
-
-  /** The prompt text. */
-  prompt: string;
-
-  /** Optional title for this job. */
-  title?: string;
-
-  /** Optional system prompt. */
-  system_prompt?: string;
-
-  /** Optional maximum tokens to generate. */
-  max_tokens?: number;
-}
-
-/** Request to submit a batch of jobs. */
-export interface BatchSubmitRequest {
-  /** Array of jobs to submit. */
-  jobs: BatchJobInput[];
-}
-
-/** Response from batch submission. */
-export interface BatchSubmitResponse {
-  /** The IDs of the created jobs. */
-  job_ids: string[];
-
-  /** Status of the batch submission. */
-  status: string;
-}
-
-/** Response from JSONL batch submission. */
-export interface BatchJsonlResponse {
-  /** The IDs of the created jobs. */
-  job_ids: string[];
-}
-
-/** A single job in the batch jobs list. */
-export interface BatchJobInfo {
-  job_id: string;
-  status: string;
-  model?: string;
-  title?: string;
-  created_at?: string;
-  completed_at?: string;
-  result?: unknown;
-  error?: string;
-  cost_ticks: number;
-}
-
-/** Response from listing batch jobs. */
-export interface BatchJobsResponse {
-  jobs: BatchJobInfo[];
 }
 
 // ── Credits ───────────────────────────────────────────────────────
@@ -3110,22 +2934,6 @@ export interface ListFinetunesResponse {
   finetunes: FinetuneInfo[];
 }
 
-// ── Batch Types ──────────────────────────────────────────────────
-
-/** A single job in a batch submission (Rust canonical). */
-export interface BatchJob {
-  /** Model to use for this job. */
-  model: string;
-  /** The prompt text. */
-  prompt: string;
-  /** Optional title for this job. */
-  title?: string;
-  /** Optional system prompt. */
-  system_prompt?: string;
-  /** Optional maximum tokens to generate. */
-  max_tokens?: number;
-}
-
 // ── Compute Types ────────────────────────────────────────────────
 
 /** A running compute instance. */
@@ -3146,56 +2954,6 @@ export interface ComputeInstance {
   price_per_hour_usd?: number;
   /** Auto-teardown setting in minutes. */
   auto_teardown_minutes?: number;
-}
-
-// ── Document Types ───────────────────────────────────────────────
-
-/** Request body for document chunking (canonical). */
-export interface ChunkRequest {
-  /** Base64-encoded file content. */
-  file_base64: string;
-  /** Original filename. */
-  filename: string;
-  /** Maximum chunk size in tokens. */
-  max_chunk_tokens?: number;
-  /** Overlap between chunks in tokens. */
-  overlap_tokens?: number;
-}
-
-/** Response from document chunking (canonical). */
-export interface ChunkResponse {
-  /** Document chunks. */
-  chunks: DocumentChunk[];
-  /** Total number of chunks. */
-  total_chunks?: number;
-  /** Total cost in ticks. */
-  cost_ticks: number;
-  /** Unique request identifier. */
-  request_id: string;
-}
-
-/** Request body for document processing (canonical). */
-export interface ProcessRequest {
-  /** Base64-encoded file content. */
-  file_base64: string;
-  /** Original filename. */
-  filename: string;
-  /** Processing instructions or prompt. */
-  prompt?: string;
-  /** Model to use for processing. */
-  model?: string;
-}
-
-/** Response from document processing (canonical). */
-export interface ProcessResponse {
-  /** Processed content / analysis result. */
-  content: string;
-  /** Model used for processing. */
-  model?: string;
-  /** Total cost in ticks. */
-  cost_ticks: number;
-  /** Unique request identifier. */
-  request_id: string;
 }
 
 // ── Error Types ──────────────────────────────────────────────────
@@ -3471,24 +3229,6 @@ export interface SearchContextResponse {
   query: string;
 }
 
-/** A chat message for the search answer endpoint (canonical). */
-export interface SearchAnswerMessage {
-  /** Message role. */
-  role: string;
-  /** Message text content. */
-  content: string;
-}
-
-/** A citation reference in a search answer (canonical). */
-export interface SearchAnswerCitation {
-  /** Source URL. */
-  url: string;
-  /** Source title. */
-  title?: string;
-  /** Snippet from the source. */
-  snippet?: string;
-}
-
 // ── Session Types ────────────────────────────────────────────────
 
 /** Context metadata returned with session responses (canonical). */
@@ -3527,18 +3267,6 @@ export interface Avatar {
   preview_url?: string;
   /** Additional fields. */
   extra?: Record<string, unknown>;
-}
-
-/** Request body for HeyGen studio video creation. */
-export interface StudioVideoRequest {
-  /** Video title. */
-  title?: string;
-  /** Video clips. */
-  clips: StudioClip[];
-  /** Video dimensions. */
-  dimension?: string;
-  /** Aspect ratio. */
-  aspect_ratio?: string;
 }
 
 /** A HeyGen video template (canonical). */
@@ -3719,9 +3447,6 @@ export interface RealtimeSessionResponse {
   session_id?: string;
   provider?: string;
 }
-
-/** Canonical alias for SearchAnswerMessage. */
-export type SearchMessage = SearchAnswerMessage;
 
 /** Options for configuring web search requests. */
 export interface SearchOptions {

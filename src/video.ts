@@ -13,7 +13,6 @@ import type {
   VideoBatchSubmitResponse,
   VideoRequest,
   VideoResponse,
-  VideoStudioRequest,
   VideoTemplateDetailResponse,
   VideoTemplateGenerateRequest,
   VideoTranslateRequest,
@@ -48,23 +47,6 @@ export async function generateVideo(
 }
 
 /**
- * Create a talking-head video via HeyGen Studio. Returns an async job.
- * @internal — called by QuantumClient.videoStudio()
- */
-export async function videoStudio(
-  client: QuantumClient,
-  req: VideoStudioRequest,
-): Promise<AsyncJobResponse> {
-  const { data } = await client._doJSON<AsyncJobResponse>(
-    "POST",
-    "/qai/v1/video/studio",
-    req,
-  );
-
-  return data;
-}
-
-/**
  * Submit a video translation job via HeyGen. Returns an async job.
  * @internal — called by QuantumClient.videoTranslate()
  */
@@ -82,7 +64,8 @@ export async function videoTranslate(
 }
 
 /**
- * Create a photo avatar via HeyGen. Returns an async job.
+ * Animate a photo into a talking-photo video that speaks `script` (HeyGen).
+ * Returns an async job.
  * @internal — called by QuantumClient.videoPhotoAvatar()
  */
 export async function videoPhotoAvatar(

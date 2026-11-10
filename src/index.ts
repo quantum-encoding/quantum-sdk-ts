@@ -105,7 +105,6 @@ export type {
   GeneratedVideo,
   MediaTokenUsage,
   // HeyGen Video
-  VideoStudioRequest,
   VideoTranslateRequest,
   PhotoAvatarRequest,
   DigitalTwinRequest,
@@ -143,14 +142,6 @@ export type {
   // Embeddings
   EmbedRequest,
   EmbedResponse,
-  // Documents
-  DocumentRequest,
-  DocumentResponse,
-  ChunkDocumentRequest,
-  ChunkDocumentResponse,
-  DocumentChunk,
-  ProcessDocumentRequest,
-  ProcessDocumentResponse,
   // RAG
   RAGSearchRequest,
   RAGSearchResponse,
@@ -203,13 +194,6 @@ export type {
   CloneVoiceResponse,
   // Contact
   ContactRequest,
-  // Batch Processing
-  BatchJobInput,
-  BatchSubmitRequest,
-  BatchSubmitResponse,
-  BatchJsonlResponse,
-  BatchJobInfo,
-  BatchJobsResponse,
   // Credits
   CreditPack,
   CreditPacksResponse,
@@ -234,10 +218,6 @@ export type {
   LLMContextResponse,
   ContentChunk,
   ContextSource,
-  SearchAnswerRequest,
-  SearchAnswerResponse,
-  SearchAnswerChoice,
-  SearchCitation,
   // Common
   StatusResponse,
   // Cross-SDK parity
@@ -263,7 +243,6 @@ export type {
   JobListEntry,
   PostProcess,
   RealtimeSessionResponse,
-  SearchMessage,
   SearchOptions,
   // Scraper
   ScrapeTarget,

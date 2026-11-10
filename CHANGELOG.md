@@ -1,5 +1,50 @@
 # Changelog
 
+## Unreleased
+
+The client stops offering methods for gateway routes that were removed on
+10 Nov 2026. Each of these routes now answers 404, so every call to these
+methods already failed.
+
+### Removed — BREAKING
+- **User batch** (`POST /qai/v1/batch`, `POST /qai/v1/batch/jsonl`,
+  `GET /qai/v1/batch/jobs`, `GET /qai/v1/batch/jobs/{id}`):
+  `batchSubmit()`, `batchSubmitJsonl()`, `batchJobs()`, `batchJob()` and the
+  `src/batch.ts` module; types `BatchJobInput`, `BatchSubmitRequest`,
+  `BatchSubmitResponse`, `BatchJsonlResponse`, `BatchJobInfo`,
+  `BatchJobsResponse`, `BatchJob`. HeyGen video batches
+  (`videoBatchSubmit()` / `videoBatchStatus()`) are unaffected.
+- **Documents** (`POST /qai/v1/documents/extract`, `/chunk`, `/process`):
+  `extractDocument()`, `chunkDocument()`, `processDocument()` and the
+  `src/documents.ts` module; types `DocumentRequest`, `DocumentResponse`,
+  `ChunkDocumentRequest`, `ChunkDocumentResponse`, `DocumentChunk`,
+  `ProcessDocumentRequest`, `ProcessDocumentResponse`, `ChunkRequest`,
+  `ChunkResponse`, `ProcessRequest`, `ProcessResponse`.
+- **Search answer** (`POST /qai/v1/search/answer`): `searchAnswer()`; types
+  `SearchAnswerRequest`, `SearchAnswerResponse`, `SearchAnswerChoice`,
+  `SearchCitation`, `SearchAnswerMessage`, `SearchAnswerCitation`,
+  `SearchMessage`. `webSearch()` and `searchContext()` are unaffected.
+- **HeyGen studio** (`POST /qai/v1/video/studio`): `videoStudio()`; types
+  `VideoStudioRequest`, `StudioClip`, `StudioVideoRequest`.
+
+### Changed — BREAKING
+- **`PhotoAvatarRequest` is the talking-photo body.** `POST
+  /qai/v1/video/photo-avatar` accepts only `photo_base64` + `script`
+  (optionally `voice_id`, `aspect_ratio`) and answers 400 to anything else.
+  `photo_base64` and `script` are now required, and the `image` field is
+  gone: the gateway reads the photo only from `photo_base64`, so a request
+  carrying it in `image` gets a 400.
+  `videoPhotoAvatar()` itself is unchanged.
+
+### Fixed
+- `npm run build` empties `dist/` before compiling, so a module deleted from
+  `src/` no longer survives as stale output inside the published package.
+
+### Docs
+- README endpoint table: the Documents, Batch, Scanner and Scraper rows are
+  gone (the SDK has no methods for any of them), Search lists web search and
+  context, and Video lists the eleven methods it has.
+
 ## 0.9.0
 
 The TTS request catches up with the gateway — and the TTS *response* stops
